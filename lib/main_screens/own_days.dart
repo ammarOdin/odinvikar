@@ -5,6 +5,8 @@ import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'home_screen.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
@@ -14,10 +16,13 @@ class OwnDaysScreen extends StatefulWidget {
 }
 
 class _State extends State<OwnDaysScreen> {
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   late final ValueNotifier<List<Event>> _selectedEvents;
+  late DateTime _pickedDay;
+
 
   List<Event> _getEventsForDay(DateTime day) {
     return kEvents[day] ?? [];
@@ -36,9 +41,16 @@ class _State extends State<OwnDaysScreen> {
     super.dispose();
   }
 
+  Future<void> addShift() async {
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference shift = FirebaseFirestore.instance.collection('shift');
+
+
     return SizedBox(
       height: MediaQuery.of(context).size.height / 1.5,
       child: ListView(
@@ -101,13 +113,19 @@ class _State extends State<OwnDaysScreen> {
               },)),*/
           Container(
             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 5, right: MediaQuery.of(context).size.width / 5, top: MediaQuery.of(context).size.width / 25, bottom: MediaQuery.of(context).size.height / 40),
-            child: ElevatedButton.icon(onPressed: () {
-              showDatePicker(
+            child: ElevatedButton.icon(onPressed: () async {
+              _pickedDay = (await showDatePicker(
                   locale : const Locale("da","DA"),
                   context: context,
+                  confirmText: "Vælg dag",
+                  cancelText: "Annuller",
                   initialDate: DateTime.now(),
                   firstDate: DateTime.utc(2010, 10, 16),
-                  lastDate: DateTime.utc(2030, 3, 14));
+                  lastDate: DateTime.utc(2030, 3, 14)))!;
+
+                  var pickedDate = DateFormat.yMMMd().format(_pickedDay);
+                  await shift.add({'date': pickedDate});
+
               }, icon: const Icon(Icons.add_circle), label: const Text("Tilføj dag"), style: ElevatedButton.styleFrom(primary: Colors.blueAccent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),),
           ),
           const Divider(thickness: 1, height: 4),
@@ -118,6 +136,7 @@ class _State extends State<OwnDaysScreen> {
       ),
     );
   }
+
   Future showJobInfo () => showSlidingBottomSheet(
     context,
     builder: (context) => SlidingSheetDialog(

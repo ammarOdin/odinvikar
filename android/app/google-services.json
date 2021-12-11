@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "320368504585",
+    "project_id": "odinvikar",
+    "storage_bucket": "odinvikar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320368504585:android:faf21b348c2b06047aedd8",
+        "android_client_info": {
+          "package_name": "com.odinvikar.odinvikar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320368504585-d8p6blsb3ir4fjhe7of1ftg9q2q1mp5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU0I4h6PEocz7ZgT5Eb2FEo0tVSUD-jIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320368504585-d8p6blsb3ir4fjhe7of1ftg9q2q1mp5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
