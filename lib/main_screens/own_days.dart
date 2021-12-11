@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/utils/calendar_utils.dart';
@@ -60,6 +61,7 @@ class _State extends State<OwnDaysScreen> {
             padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             margin: const EdgeInsets.only(left: 10, right: 10),
             child: TableCalendar(
+              locale: Localizations.localeOf(context).languageCode,
               firstDay: DateTime.utc(2010, 10, 16),
               lastDay: DateTime.utc(2030, 3, 14),
               focusedDay: _focusedDay,
@@ -131,7 +133,18 @@ class _State extends State<OwnDaysScreen> {
           const Divider(thickness: 1, height: 4),
           Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Dage", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
           // one card, make foreach from db within current user
-          CardFb2(text: "Vikar - DATO", imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se mere", onPressed: showJobInfo),
+          StreamBuilder(
+              stream: shift.snapshots() ,
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                if (!snapshot.hasData){
+                  return const Center(child: CircularProgressIndicator(),);
+                }
+                return Column(
+                  children: snapshot.data!.docs.map((document){
+                    return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se mere", onPressed: showJobInfo);
+                  }).toList(),
+                );
+              } ),
         ],
       ),
     );
@@ -162,7 +175,7 @@ class _State extends State<OwnDaysScreen> {
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: DATO"),) ,),
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive kontaktet på dagen hvis du får vagten. Ellers kontakter du IKKE vagt-telefonen."),) ,),
         // Container(margin: const EdgeInsets.all(3), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {  }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Rediger", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.black,))]),)) ,),
-        Container(margin: const EdgeInsets.only(top: 3, left: 3, right: 3, bottom: 10), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {  }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+        Container(margin: const EdgeInsets.only(top: 3, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {  }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
       ],
     ),
   );
