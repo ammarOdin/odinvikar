@@ -144,7 +144,7 @@ class _State extends State<OwnDaysScreen> {
                     return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se mere", onPressed: showJobInfo);
                   }).toList(),
                 );
-              } ),
+              }),
         ],
       ),
     );
