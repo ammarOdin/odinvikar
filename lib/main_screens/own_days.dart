@@ -121,9 +121,9 @@ class _State extends State<OwnDaysScreen> {
                   context: context,
                   confirmText: "Vælg dag",
                   cancelText: "Annuller",
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.utc(2010, 10, 16),
-                  lastDate: DateTime.utc(2030, 3, 14)))!;
+                  initialDate: DateTime.now().add(const Duration(days: 1)),
+                  firstDate: DateTime.now().add(const Duration(days: 1)),
+                  lastDate: DateTime.utc(2030, 1, 1)))!;
 
                   var pickedDate = DateFormat.yMMMd().format(_pickedDay);
                   await shift.add({'date': pickedDate});
