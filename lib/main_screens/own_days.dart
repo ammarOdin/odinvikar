@@ -172,22 +172,23 @@ class _State extends State<OwnDaysScreen> {
       primary: false,
       children: [
         StreamBuilder(
-            stream: shift.snapshots() ,
+            stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
                 return const Center(child: CircularProgressIndicator(),);
               }
-              return Container(
+              for (var i = 0; i <= snapshot.data!.size; i++){
+                return Container(
                 child: snapshot.data!.docs.map((document){
                   return Column(children: [
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: " + document['date']),) ,),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive kontaktet på dagen hvis du får vagten. Ellers kontakter du IKKE vagt-telefonen."),) ,),
-                    // Container(margin: const EdgeInsets.all(3), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {  }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Rediger", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.black,))]),)) ,),
                     Container(margin: const EdgeInsets.only(top: 3, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
                   ],);
-                }).elementAt(0),
-              );
+                }).elementAt(i),
+              );}
+              throw Exception("error");
             }),
 /*        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: DATO"),) ,),
