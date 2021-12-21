@@ -36,7 +36,7 @@ class _State extends State<HomeScreen> {
                     top: MediaQuery.of(context).size.height / 40),
                 child: const Center(
                     child: Text(
-                      "DAG - DATO",
+                      "DATO",
                       style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
                     )),
               ),
