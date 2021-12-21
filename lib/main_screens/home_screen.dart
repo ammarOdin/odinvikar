@@ -44,14 +44,13 @@ class _State extends State<HomeScreen> {
                         "Ingen Tilgængelige",
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),);
-                    }
-                    return Center(
+                    } else {return Center(
                         child: snapshot.data!.docs.map((document){
                           return Text(
                             document['date'],
                             style: const TextStyle(color: Colors.white, fontSize: 26),
                           );
-                        }).first);
+                        }).first);}
                   }
                 ),
               ),
