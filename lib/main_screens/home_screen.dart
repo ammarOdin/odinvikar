@@ -39,6 +39,12 @@ class _State extends State<HomeScreen> {
                 child: StreamBuilder(
                   stream: shift.snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.data!.docs.isEmpty){
+                      return const Center(child: Text(
+                        "Ingen Tilgængelige",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),);
+                    }
                     return Center(
                         child: snapshot.data!.docs.map((document){
                           return Text(
