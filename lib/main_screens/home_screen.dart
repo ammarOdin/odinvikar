@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -11,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _State extends State<HomeScreen> {
 
+  get shift => FirebaseFirestore.instance.collection('shift');
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +31,23 @@ class _State extends State<HomeScreen> {
                   child: const Center(
                       child: Text(
                         "Næste mulige vagt",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
               Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 40),
-                child: const Center(
-                    child: Text(
-                      "DATO",
-                      style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
-                    )),
+                child: StreamBuilder(
+                  stream: shift.snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    return Center(
+                        child: snapshot.data!.docs.map((document){
+                          return Text(
+                            document['date'],
+                            style: const TextStyle(color: Colors.white, fontSize: 26),
+                          );
+                        }).first);
+                  }
+                ),
               ),
             ],
           ),
