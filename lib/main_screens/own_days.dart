@@ -141,6 +141,11 @@ class _State extends State<OwnDaysScreen> {
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (!snapshot.hasData){
                   return const Center(child: CircularProgressIndicator(),);
+                } else if (snapshot.data!.docs.isEmpty){
+                  return const Center(child: Text(
+                    "Ingen Vagter",
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),);
                 }
                 return Column(
                   children: snapshot.data!.docs.map((document){
@@ -179,13 +184,7 @@ class _State extends State<OwnDaysScreen> {
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
                 return const Center(child: CircularProgressIndicator(),);
-              } else if (snapshot.data!.docs.isEmpty){
-                return const Center(child: Text(
-                  "Ingen Tilgængelige",
-                  style: TextStyle(color: Colors.blue, fontSize: 18),
-                ),);
               }
-
                 return Column(
                 children: snapshot.data!.docs.map((document){
                   return Column(children: [

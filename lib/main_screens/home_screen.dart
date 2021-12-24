@@ -64,7 +64,7 @@ class _State extends State<HomeScreen> {
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (snapshot.data!.docs.isEmpty){
                 return const Center(child: Text(
-                  "Ingen Tilgængelige",
+                  "Ingen Vagter",
                   style: TextStyle(color: Colors.blue, fontSize: 18),
                 ),);
               }
