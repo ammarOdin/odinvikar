@@ -23,7 +23,8 @@ class _State extends State<OwnDaysScreen> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   late DateTime _pickedDay;
 
-  get shift => FirebaseFirestore.instance.collection('shift');
+  get shift => FirebaseFirestore.instance.collection('shift').orderBy('date', descending: false);
+  get saveShift => FirebaseFirestore.instance.collection('shift');
 
 
   List<Event> _getEventsForDay(DateTime day) {
@@ -122,10 +123,10 @@ class _State extends State<OwnDaysScreen> {
                   cancelText: "Annuller",
                   initialDate: DateTime.now().add(const Duration(days: 1)),
                   firstDate: DateTime.now().add(const Duration(days: 1)),
-                  lastDate: DateTime.utc(2030, 1, 1)))!;
+                  lastDate: DateTime.now().add(const Duration(days: 32))))!;
 
                   var pickedDate = DateFormat.yMMMd().format(_pickedDay);
-                  await shift.add({'date': pickedDate});
+                  await saveShift.add({'date': pickedDate});
 
               }, icon: const Icon(Icons.add_circle), label: const Text("Tilføj dag"), style: ElevatedButton.styleFrom(primary: Colors.blueAccent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),),
           ),
@@ -140,6 +141,11 @@ class _State extends State<OwnDaysScreen> {
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (!snapshot.hasData){
                   return const Center(child: CircularProgressIndicator(),);
+                } else if (snapshot.data!.docs.isEmpty){
+                  return const Center(child: Text(
+                    "Ingen Tilgængelige",
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),);
                 }
                 return Column(
                   children: snapshot.data!.docs.map((document){
@@ -186,7 +192,7 @@ class _State extends State<OwnDaysScreen> {
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: " + document['date'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
-                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {shift.doc(document.id).delete();}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {saveShift.doc(document.id).delete();}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
                   ],);
                 }).toList(),
               );

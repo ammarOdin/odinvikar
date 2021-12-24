@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _State extends State<HomeScreen> {
 
-  get shift => FirebaseFirestore.instance.collection('shift');
+  get shift => FirebaseFirestore.instance.collection('shift').orderBy('date', descending: false);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,22 @@ class _State extends State<HomeScreen> {
         ),
         Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne Uge", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
 
-        CardFb2(text: "Vikar - DATO", imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se mere", onPressed: showJobInfo),
+        StreamBuilder(
+            stream: shift.snapshots() ,
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+              if (snapshot.data!.docs.isEmpty){
+                return const Center(child: Text(
+                  "Ingen Tilgængelige",
+                  style: TextStyle(color: Colors.blue, fontSize: 18),
+                ),);
+              }
+              return Column(
+                children: snapshot.data!.docs.map((document){
+                  return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
+                }).toList(),
+              );
+            }),
+
       ],
     );
   }
