@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/utils/calendar_utils.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -134,7 +133,7 @@ class _State extends State<OwnDaysScreen> {
             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 5, right: MediaQuery.of(context).size.width / 5, bottom: MediaQuery.of(context).size.height / 40),
             child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Text("Rediger Vagter"), style: ElevatedButton.styleFrom(primary: Colors.grey, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),),),
           const Divider(thickness: 1, height: 4),
-          Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Dage", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+          Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Vagter", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
           // one card, make foreach from db within current user
           StreamBuilder(
               stream: shift.snapshots() ,
@@ -199,7 +198,7 @@ class _State extends State<OwnDaysScreen> {
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: " + document['date'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
-                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent, ), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), content: const Text("Er du sikker på at slette?"), actions: [TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context);}, child: const Text("Slet")), TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), content: const Text("Er du sikker på at slette?"), actions: [TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context);}, child: const Text("Slet")), TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
                   ],);
                 }).toList(),
               );
