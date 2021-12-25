@@ -39,7 +39,9 @@ class _State extends State<HomeScreen> {
                 child: StreamBuilder(
                   stream: shift.snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.data!.docs.isEmpty){
+                    if (!snapshot.hasData){
+                      return const Center(child: CircularProgressIndicator(),);
+                    } else if (snapshot.data!.docs.isEmpty){
                       return const Center(child: Text(
                         "Ingen Tilgængelige",
                         style: TextStyle(color: Colors.white, fontSize: 18),
@@ -62,7 +64,9 @@ class _State extends State<HomeScreen> {
         StreamBuilder(
             stream: shift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (snapshot.data!.docs.isEmpty){
+              if (!snapshot.hasData){
+                return const Center(child: CircularProgressIndicator(),);
+              }else if (snapshot.data!.docs.isEmpty){
                 return const Center(child: Text(
                   "Ingen Vagter",
                   style: TextStyle(color: Colors.blue, fontSize: 18),
