@@ -18,6 +18,7 @@ class _State extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       children: [
         Container(
