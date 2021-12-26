@@ -22,7 +22,7 @@ class _State extends State<HomeScreen> {
       children: [
         Container(
           color: Colors.blue,
-          margin: const EdgeInsets.only(bottom: 10),
+          margin: const EdgeInsets.only(bottom: 20),
           height: MediaQuery.of(context).size.height / 3,
           child: ListView(
             children: [
@@ -60,10 +60,12 @@ class _State extends State<HomeScreen> {
             ],
           ),
         ),
-        CarouselSlider(items: [
-          Column(
+        CarouselSlider(
+          items: [
+          ListView(
+            padding: EdgeInsets.zero,
             children: [
-              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne uge", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+              Container(padding: const EdgeInsets.only(bottom: 20, left: 20), child: const Align(alignment: Alignment.centerLeft, child: Text("Denne uge", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),),
               StreamBuilder(
                   stream: shift.snapshots() ,
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -88,9 +90,10 @@ class _State extends State<HomeScreen> {
                   }),
             ],
           ),
-          Column(
+          ListView(
+            padding: EdgeInsets.zero,
             children: [
-              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne måned", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+              Container(padding: const EdgeInsets.only(bottom: 20, left: 20), child: const Align(alignment: Alignment.centerLeft, child: Text("Denne måned", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),),
               StreamBuilder(
                   stream: shift.snapshots() ,
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -111,7 +114,6 @@ class _State extends State<HomeScreen> {
                         }
                       }).toList(),
                     );
-
                   }),
             ],
           ),
