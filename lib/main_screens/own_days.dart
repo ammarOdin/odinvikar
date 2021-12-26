@@ -6,6 +6,7 @@ import 'home_screen.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:week_of_year/week_of_year.dart';
 
 class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
@@ -125,7 +126,9 @@ class _State extends State<OwnDaysScreen> {
                   lastDate: DateTime.now().add(const Duration(days: 32))))!;
 
                   var pickedDate = DateFormat.yMMMd().format(_pickedDay);
-                  await saveShift.add({'date': pickedDate});
+                  var pickedMonth = _pickedDay.month;
+                  var pickedWeek = _pickedDay.weekOfYear;
+                  await saveShift.add({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
 
               }, icon: const Icon(Icons.add_circle), label: const Text("Tilføj dag"), style: ElevatedButton.styleFrom(primary: Colors.blueAccent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),),
           ),

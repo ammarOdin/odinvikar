@@ -1,5 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:week_of_year/week_of_year.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -57,8 +60,62 @@ class _State extends State<HomeScreen> {
             ],
           ),
         ),
+        CarouselSlider(items: [
+          Column(
+            children: [
+              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne uge", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+              StreamBuilder(
+                  stream: shift.snapshots() ,
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                    if (!snapshot.hasData){
+                      return const Center(child: CircularProgressIndicator(),);
+                    }else if (snapshot.data!.docs.isEmpty){
+                      return const Center(child: Text(
+                        "Ingen Vagter",
+                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                      ),);
+                    }
+                    return Column(
+                      children: snapshot.data!.docs.map((document){
+                        if (document['week'] == DateTime.now().weekOfYear) {
+                          return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    );
 
-        Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne uge", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+                  }),
+            ],
+          ),
+          Column(
+            children: [
+              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Denne måned", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+              StreamBuilder(
+                  stream: shift.snapshots() ,
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                    if (!snapshot.hasData){
+                      return const Center(child: CircularProgressIndicator(),);
+                    }else if (snapshot.data!.docs.isEmpty){
+                      return const Center(child: Text(
+                        "Ingen Vagter",
+                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                      ),);
+                    }
+                    return Column(
+                      children: snapshot.data!.docs.map((document){
+                        if (document['month'] == DateTime.now().month) {
+                          return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    );
+
+                  }),
+            ],
+          ),
+        ], options: CarouselOptions(height: MediaQuery.of(context).size.height, enableInfiniteScroll: false, viewportFraction: 1),),
 
         /*Row(
           children: [
@@ -67,25 +124,6 @@ class _State extends State<HomeScreen> {
           ],
         ),
         const Divider(thickness: 1, height: 4),*/
-
-        StreamBuilder(
-            stream: shift.snapshots() ,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return const Center(child: CircularProgressIndicator(),);
-              }else if (snapshot.data!.docs.isEmpty){
-                return const Center(child: Text(
-                  "Ingen Vagter",
-                  style: TextStyle(color: Colors.blue, fontSize: 18),
-                ),);
-              }
-              return Column(
-                children: snapshot.data!.docs.map((document){
-                  return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
-                }).toList(),
-              );
-            }),
-
       ],
     );
   }
