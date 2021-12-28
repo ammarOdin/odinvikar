@@ -83,45 +83,45 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
         TabBar(controller: _controller, tabs: const [Tab(text: "1",), Tab(text: "2",)]),
 
-        Container(
-          padding: const EdgeInsets.all(50),
-          child: StreamBuilder(
-              stream: shift.snapshots() ,
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if (!snapshot.hasData){
-                  return const Center(child: CircularProgressIndicator(),);
-                }else if (snapshot.data!.docs.isEmpty){
-                  return const Center(child: Text(
+        StreamBuilder(
+            stream: shift.snapshots() ,
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+              if (!snapshot.hasData){
+                return const Center(child: CircularProgressIndicator(),);
+              }else if (snapshot.data!.docs.isEmpty){
+                return Container(
+                  padding: const EdgeInsets.all(50),
+                  child: const Center(child: Text(
                     "Ingen Vagter",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),);
-                }
-                if (_controller.index == 0){
-                  return Column(
-                    children: snapshot.data!.docs.map((document){
-                      if (document['week'] == DateTime.now().weekOfYear) {
-                        return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
-                      } else {
-                        return Container();
-                      }
-                    }).toList(),
-                  );
-                } else if (_controller.index == 1){
-                  return Column(
-                    children: snapshot.data!.docs.map((document){
-                      if (document['month'] == DateTime.now().month) {
-                        return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
-                      } else {
-                        return Container();
-                      }
-                    }).toList(),
-                  );
-                } else {
-                  return Container();
-                }
+                  ),),
+                );
+              }
+              if (_controller.index == 0){
+                return Column(
+                  children: snapshot.data!.docs.map((document){
+                    if (document['week'] == DateTime.now().weekOfYear) {
+                      return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                    } else {
+                      return Container();
+                    }
+                  }).toList(),
+                );
+              } else if (_controller.index == 1){
+                return Column(
+                  children: snapshot.data!.docs.map((document){
+                    if (document['month'] == DateTime.now().month) {
+                      return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                    } else {
+                      return Container();
+                    }
+                  }).toList(),
+                );
+              } else {
+                return Container();
+              }
 
-              }),
-        ),
+            }),
       ],
     );
   }
