@@ -81,7 +81,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
 
-        TabBar(controller: _controller, tabs: const [Tab(text: "1",), Tab(text: "2",)]),
+        TabBar(controller: _controller, tabs: const [Tab(text: "Uge",), Tab(text: "Måned",)]),
 
         StreamBuilder(
             stream: shift.snapshots() ,
