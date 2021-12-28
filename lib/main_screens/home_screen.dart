@@ -19,6 +19,7 @@ class _State extends State<HomeScreen> {
     return ListView(
       //physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
+      shrinkWrap: true,
       children: [
         Container(
           color: Colors.blue,
