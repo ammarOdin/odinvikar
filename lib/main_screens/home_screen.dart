@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:week_of_year/week_of_year.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,6 +22,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
       /*if (kDebugMode) {
         print('my index is '+ _controller.index.toString());
       }*/
+      setState(() {
+      });
     });
     super.initState();
   }
@@ -80,9 +80,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-
-        TabBar(controller: _controller, tabs: const [Tab(text: "Uge",), Tab(text: "Måned",)]),
-
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "Uge",), Tab(text: "Måned",)])),
         StreamBuilder(
             stream: shift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -120,14 +118,11 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               } else {
                 return Container();
               }
-
             }),
       ],
     );
   }
-
 }
-
 class CardFb2 extends StatelessWidget {
   final String text;
   final String imageUrl;

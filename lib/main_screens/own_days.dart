@@ -126,6 +126,7 @@ class _State extends State<OwnDaysScreen> {
                   lastDate: DateTime.now().add(const Duration(days: 32))))!;
 
                   var pickedDate = DateFormat.yMMMd().format(_pickedDay);
+                  //var pickedDatee = DateFormat.;
                   var pickedMonth = _pickedDay.month;
                   var pickedWeek = _pickedDay.weekOfYear;
                   await saveShift.add({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
