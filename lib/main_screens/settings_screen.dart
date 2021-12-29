@@ -98,8 +98,9 @@ class _State extends State<SettingsScreen> {
       primary: false,
       children: [
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Kontakt oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Telefon nummer: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Telefon nummer: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("E-mail: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
+        Container(padding: const EdgeInsets.all(10),),
         //Container(margin: const EdgeInsets.only(left: 10, right: 10), child: ElevatedButton(style: ElevatedButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 1)), onPressed: () => Navigator.of(context).pop(), child: const Text("Close")))
       ],
     ),
