@@ -70,7 +70,7 @@ class _HomescreenState extends State<Dashboard> {
           ),
           BottomNavigationBarItem(
               label: 'Profil',
-              icon: Icon(Icons.settings)
+              icon: Icon(Icons.account_box)
           ),
         ],
       ),
