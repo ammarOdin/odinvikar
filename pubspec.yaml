@@ -40,7 +40,8 @@ dependencies:
     sdk: flutter
 
   sliding_sheet: ^0.5.2
-  table_calendar: ^3.0.3
+  syncfusion_flutter_calendar: ^19.4.40
+  syncfusion_localizations: ^19.4.40
   week_of_year: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.

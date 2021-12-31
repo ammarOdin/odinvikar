@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
     localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate
+        GlobalMaterialLocalizations.delegate,
+        SfGlobalLocalizations.delegate
       ],
       supportedLocales: const [
         Locale('en'),
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
         ),
         home: const Dashboard(),
+      locale: const Locale('da'),
 
     );
   }

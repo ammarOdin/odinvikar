@@ -46,7 +46,7 @@ class _State extends State<SettingsScreen> {
                         .height / 30),
                 child: const Center(
                     child: Text(
-                      "Ammar Muhsin",
+                      "NAVN",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
               ),
@@ -61,7 +61,7 @@ class _State extends State<SettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {showContactInfo();}, icon: const Icon(Icons.contact_page, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Kontakt oplysninger", style: TextStyle(color: Colors.white),)),),),
+          child: ElevatedButton.icon(onPressed: () {showContactInfo();}, icon: const Icon(Icons.contact_page, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Kontaktoplysninger", style: TextStyle(color: Colors.white),)),),),
 
         Container(
           height: 50,
@@ -97,8 +97,8 @@ class _State extends State<SettingsScreen> {
       shrinkWrap: true,
       primary: false,
       children: [
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Kontakt oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Telefon nummer: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Kontaktoplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Telefonnummer: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("E-mail: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
         Container(padding: const EdgeInsets.all(10),),
         //Container(margin: const EdgeInsets.only(left: 10, right: 10), child: ElevatedButton(style: ElevatedButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 1)), onPressed: () => Navigator.of(context).pop(), child: const Text("Close")))
