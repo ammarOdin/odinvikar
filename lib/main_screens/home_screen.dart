@@ -11,9 +11,8 @@ class HomeScreen extends StatefulWidget {
 
 class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
-  get shift => FirebaseFirestore.instance.collection('shift').orderBy('date', descending: false);
+  get shift => FirebaseFirestore.instance.collection('shift').orderBy('month', descending: false).orderBy('date', descending: false);
   late TabController _controller;
-
 
   @override
   void initState() {
