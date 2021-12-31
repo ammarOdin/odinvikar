@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
@@ -9,6 +10,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _State extends State<SettingsScreen> {
+
+  get getUserInfo => FirebaseFirestore.instance.collection('user');
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +48,26 @@ class _State extends State<SettingsScreen> {
                         .of(context)
                         .size
                         .height / 30),
-                child: const Center(
-                    child: Text(
-                      "NAVN",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    )),
+                child: Center(
+                    child: StreamBuilder(
+                        stream: getUserInfo.snapshots(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData){
+                            return const Center(child: CircularProgressIndicator(),);
+                          } else if (snapshot.data!.docs.isEmpty){
+                            return const Center(child: Text(
+                              "Ukendt",
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                            ),);
+                          } else {return Center(
+                              child: snapshot.data!.docs.map((document){
+                                return Text(
+                                  document['name'],
+                                  style: const TextStyle(color: Colors.white, fontSize: 26),
+                                );
+                              }).first);}
+                        }
+                    ),),
               ),
             ],
           ),
@@ -98,8 +117,54 @@ class _State extends State<SettingsScreen> {
       primary: false,
       children: [
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Kontaktoplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Telefonnummer: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("E-mail: ", style: const TextStyle(fontWeight: FontWeight.bold),),),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Row(
+          children: [
+            const Text("Telefonnummer: ", style: TextStyle(fontWeight: FontWeight.bold),),
+            StreamBuilder(
+                stream: getUserInfo.snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData){
+                    return const Center(child: CircularProgressIndicator(),);
+                  } else if (snapshot.data!.docs.isEmpty){
+                    return const Center(child: Text(
+                      "Ukendt",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),);
+                  } else {return Center(
+                      child: snapshot.data!.docs.map((document){
+                        return Text(
+                          document['phone'],
+                          style: const TextStyle(color: Colors.black),
+                        );
+                      }).first);}
+                }
+            ),
+          ],
+        ),),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Row(
+          children: [
+            const Text("E-mail: ", style: TextStyle(fontWeight: FontWeight.bold),),
+            StreamBuilder(
+                stream: getUserInfo.snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData){
+                    return const Center(child: CircularProgressIndicator(),);
+                  } else if (snapshot.data!.docs.isEmpty){
+                    return const Center(child: Text(
+                      "Ukendt",
+                      style: TextStyle(color: Colors.black),
+                    ),);
+                  } else {return Center(
+                      child: snapshot.data!.docs.map((document){
+                        return Text(
+                          document['email'],
+                          style: const TextStyle(color: Colors.black),
+                        );
+                      }).first);}
+                }
+            ),
+          ],
+        ),),),
         Container(padding: const EdgeInsets.all(10),),
         //Container(margin: const EdgeInsets.only(left: 10, right: 10), child: ElevatedButton(style: ElevatedButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 1)), onPressed: () => Navigator.of(context).pop(), child: const Text("Close")))
       ],
