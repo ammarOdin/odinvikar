@@ -94,7 +94,7 @@ class _State extends State<OwnDaysScreen> {
           Container(
             height: 45,
             width: 150,
-            margin: const EdgeInsets.only(bottom: 20, left: 5, right: 5),
+            margin: const EdgeInsets.only(bottom: 20, left: 5, right: 5, top: 10),
             child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
           const Divider(thickness: 1, height: 4),
           Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Vagter", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
