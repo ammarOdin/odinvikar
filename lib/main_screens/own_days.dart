@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'home_screen.dart';
@@ -20,16 +21,22 @@ class _State extends State<OwnDaysScreen> {
 
   get shift => FirebaseFirestore.instance.collection('shift').orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection('shift');
+  final databaseReference = FirebaseFirestore.instance;
+  MeetingDataSource? events;
+
 
   @override
   void initState() {
+    getFirestoreShift().then((results) {
+      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+        setState(() {});
+      });
+    });
     super.initState();
-
   }
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -41,6 +48,15 @@ class _State extends State<OwnDaysScreen> {
     } else {
       return DateTime.now();
     }
+  }
+
+  Future<void> getFirestoreShift() async {
+    var snapShotsValue = await databaseReference.collection("shift").get();
+
+    List<Meeting> list = snapShotsValue.docs.map((e)=> Meeting(eventName: "Vagt", from: DateFormat('dd/MM/yyyy').parse(e.data()['date']), to: DateFormat('dd/MM/yyyy').parse(e.data()['date']) , background: Colors.blue, isAllDay: true)).toList();
+    setState(() {
+      events = MeetingDataSource(list);
+    });
   }
 
   @override
@@ -62,6 +78,8 @@ class _State extends State<OwnDaysScreen> {
                   endHour: 19,
                   nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
                 monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 120,),
+                dataSource: events,
+
               ),
             ),
 
@@ -80,7 +98,7 @@ class _State extends State<OwnDaysScreen> {
                     cancelText: "Annuller",
                     initialDate: initialDate(),
                     firstDate: initialDate(),
-                    lastDate: DateTime.now().add(const Duration(days: 32))))!;
+                    lastDate: DateTime.now().add(const Duration(days: 60))))!;
 
                     final f = DateFormat('dd/MM/yyyy');
 
@@ -121,7 +139,7 @@ class _State extends State<OwnDaysScreen> {
                   }
                   return Column(
                     children: snapshot.data!.docs.map((document){
-                      return CardFb2(text: "Vikar - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
+                      return CardFb2(text: "Vagt - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
                     }).toList(),
                   );
                 }),
@@ -180,4 +198,48 @@ class _State extends State<OwnDaysScreen> {
       ],
     ),
   );
+
+}
+
+// Calendar content class (syncfusion)
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Meeting> source){
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return appointments![index].from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return appointments![index].to;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments![index].eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    return appointments![index].background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return appointments![index].isAllDay;
+  }
+}
+
+class Meeting {
+
+  String? eventName;
+  DateTime? from;
+  DateTime? to;
+  Color? background;
+  bool? isAllDay;
+
+  Meeting({this.eventName, this.from, this.to, this.background, this.isAllDay});
 }
