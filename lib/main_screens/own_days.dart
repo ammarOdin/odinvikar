@@ -64,6 +64,10 @@ class _State extends State<OwnDaysScreen> {
     });
   }
 
+  void _showSnackBar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -120,37 +124,13 @@ class _State extends State<OwnDaysScreen> {
 
                   saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
                     if (documentSnapshot.exists) {
-                      const SnackBar(
-                        content: Text('Vagt eksisterer allerede!'),
-                      );
+                      _showSnackBar(context, "Vagten findes allerede!");
                     } else if (!documentSnapshot.exists){
                       await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
-                      const SnackBar(
-                        content: Text('Vagt Tilføjet'),
-                      );
+                      _showSnackBar(context, "Vagt Tilføjet");
                     }
+
                   });
-
-
-
-
-                      /*saveShift.snapshots().listen((datasnapshot) async {
-                        if (!datasnapshot.exists()){
-                          await saveShift.add({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Vagt tilføjet'),
-                            ),);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Fejl'),
-                            ),);
-                        }
-                      });*/
-
-
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")),),
               ),
               Container(
