@@ -21,7 +21,7 @@ class _LoginState extends State<LoginScreen> {
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
       return "Indsæt e-mail";
-    } else if (!email.contains("@")){
+    } else if (!email.contains("@") || !email.contains(".")){
       return "Ugyldig e-mail";
     }
   }
