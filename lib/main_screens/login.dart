@@ -20,9 +20,9 @@ class _LoginState extends State<LoginScreen> {
 
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
-      return "Indsæt E-mail";
+      return "Indsæt e-mail";
     } else if (!email.contains("@")){
-      return "Indsæt E-mail format";
+      return "Ugyldig e-mail";
     }
   }
 
@@ -73,7 +73,7 @@ class _LoginState extends State<LoginScreen> {
                 Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-                  child: ElevatedButton.icon(onPressed: () async { if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet");} else {_showSnackBar(context, "E-mail eller adgangskode er forkert");}}} setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+                  child: ElevatedButton.icon(onPressed: () async { if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet");} else {_showSnackBar(context, "Forkert e-mail eller adgangskode");}}} setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
               ],
             ),
           ),
