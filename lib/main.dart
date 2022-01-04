@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odinvikar/main_screens/login.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF3EBACE),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
         ),
-        home: const Dashboard(),
+        //home: const Dashboard(),
+      home: const LoginScreen(),
       locale: const Locale('da'),
 
     );

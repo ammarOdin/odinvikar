@@ -17,9 +17,26 @@ class _LoginState extends State<LoginScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: ListView(children: [
-        Container(padding: const EdgeInsets.only(left: 20), child: const Align(alignment: Alignment.centerLeft, child: Text("OdinVikar Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),))),
-      ],),
+      body: ListView(
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.only(top: 0),
+        shrinkWrap: true,
+        children: [
+          Container(
+            color: Colors.blue,
+            height: MediaQuery.of(context).size.height / 3,
+            child: ListView(
+              children: [
+                Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 30),
+                    child: Image(image: NetworkImage("")) ),
+              ],
+            ),
+          ),
+
+        ],
+      ),
     );
     //return ListView(padding: EdgeInsets.zero, children: [Text("Login"), Text("Yes")],);
   }

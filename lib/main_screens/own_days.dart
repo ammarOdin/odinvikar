@@ -78,7 +78,6 @@ class _State extends State<OwnDaysScreen> {
       edgeOffset: 0,
       child: Scaffold(
         body: SizedBox(
-          //height: MediaQuery.of(context).size.height / 1.5,
           child: ListView(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
             children: [
@@ -158,7 +157,6 @@ class _State extends State<OwnDaysScreen> {
                     }
                     return Column(
                       children: snapshot.data!.docs.map((document){
-                        // append to a list, if duplicates -> remove?
                         return CardFb2(text: "Vagt - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
                       }).toList(),
                     );
@@ -210,7 +208,7 @@ class _State extends State<OwnDaysScreen> {
                   return Column(children: [
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Mulige vagt: " + document['date'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
-                    Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
+                    //Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
                     Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Vagt Slettet'),),);}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
                   ],);
                 }).toList(),
@@ -255,7 +253,6 @@ class MeetingDataSource extends CalendarDataSource {
 }
 
 class Meeting {
-
   String? eventName;
   DateTime? from;
   DateTime? to;
