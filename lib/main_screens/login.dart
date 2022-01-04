@@ -12,7 +12,25 @@ class _LoginState extends State<LoginScreen> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
+  void _showSnackBar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  String? validateEmail(String? email){
+    if (email == null || email.isEmpty){
+      return "Indsæt E-mail";
+    } else if (!email.contains("@")){
+      return "Indsæt E-mail format";
+    }
+  }
+
+  String? validatePassword(String? password){
+    if (password == null || password.isEmpty){
+      return "Indsæt password";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +64,19 @@ class _LoginState extends State<LoginScreen> {
             ),
           ),
 
-          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), margin: const EdgeInsets.only(top: 10), child: TextFormField(controller: emailController, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'E-mail',),)),
-          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), child: TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'Adgangskode',),)),
-          Container(
-            height: 45,
-            width: 150,
-            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-            child: ElevatedButton.icon(onPressed: () async {await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+          Form(
+            key: _key,
+            child: Column(
+              children: [
+                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), margin: const EdgeInsets.only(top: 10), child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'E-mail',),)),
+                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), child: TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'Adgangskode',),)),
+                Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
+                  child: ElevatedButton.icon(onPressed: () async { if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet");} else {_showSnackBar(context, "E-mail eller adgangskode er forkert");}}} setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+              ],
+            ),
+          ),
         ],
       ),
     );
