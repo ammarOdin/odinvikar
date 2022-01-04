@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:odinvikar/main_screens/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -73,7 +74,7 @@ class _LoginState extends State<LoginScreen> {
                 Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-                  child: ElevatedButton.icon(onPressed: () async { if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet");} else {_showSnackBar(context, "Forkert e-mail eller adgangskode");}}} setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+                  child: ElevatedButton.icon(onPressed: () async { if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet");} else {_showSnackBar(context, "Forkert e-mail eller adgangskode");}}} }, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
               ],
             ),
           ),
