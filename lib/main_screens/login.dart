@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,6 +9,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginScreen> {
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +46,15 @@ class _LoginState extends State<LoginScreen> {
             ),
           ),
 
-          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), margin: const EdgeInsets.only(top: 10), child: TextFormField(decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'E-mail',),)),
-          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), child: TextFormField(decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'Adgangskode',),)),
+          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), margin: const EdgeInsets.only(top: 10), child: TextFormField(controller: emailController, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'E-mail',),)),
+          Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), child: TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'Adgangskode',),)),
           Container(
             height: 45,
             width: 150,
             margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-            child: ElevatedButton.icon(onPressed: (){}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+            child: ElevatedButton.icon(onPressed: () async {await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); setState(() {});}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
         ],
       ),
     );
-    //return ListView(padding: EdgeInsets.zero, children: [Text("Login"), Text("Yes")],);
   }
 }

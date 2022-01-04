@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'main_screens/dashboard.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     return MaterialApp(
     localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
         ),
         //home: const Dashboard(),
-      home: const LoginScreen(),
+      home: user == null? const LoginScreen() : const Dashboard(),
       locale: const Locale('da'),
 
     );
