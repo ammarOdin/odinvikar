@@ -58,12 +58,12 @@ class _State extends State<SettingsScreen> {
                     child: StreamBuilder(
                         stream: getUserInfo.snapshots(),
                         builder: (context, snapshot) {
-                          var name = snapshot.data as DocumentSnapshot;
-                          if (!snapshot.hasData){
-                            return const Center(child: CircularProgressIndicator(),);
-                          }  else {
+                          if (snapshot.hasData){
+                            var name = snapshot.data as DocumentSnapshot;
                             return Center(
-                              child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));}
+                                child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
+                          }
+                          return const CircularProgressIndicator();
                         }
                     ),),
               ),
@@ -121,12 +121,12 @@ class _State extends State<SettingsScreen> {
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
-                  var name = snapshot.data as DocumentSnapshot;
-                  if (!snapshot.hasData){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }  else {
+                  if (snapshot.hasData){
+                    var name = snapshot.data as DocumentSnapshot;
                     return Center(
-                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));}
+                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
+                  }
+                  return const CircularProgressIndicator();
                 }
             ),
           ],
@@ -137,12 +137,12 @@ class _State extends State<SettingsScreen> {
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
-                  var name = snapshot.data as DocumentSnapshot;
-                  if (!snapshot.hasData){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }  else {
+                  if (snapshot.hasData){
+                    var name = snapshot.data as DocumentSnapshot;
                     return Center(
-                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));}
+                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
+                  }
+                  return const CircularProgressIndicator();
                 }
             ),
           ],
