@@ -69,8 +69,8 @@ class _LoginState extends State<LoginScreen> {
             key: _key,
             child: Column(
               children: [
-                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), margin: const EdgeInsets.only(top: 10), child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'E-mail',),)),
-                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10), child: TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))), labelText: 'Adgangskode',),)),
+                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15), margin: const EdgeInsets.only(top: 10), child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'E-mail',),)),
+                Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15), child: TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Adgangskode',),)),
                 Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
