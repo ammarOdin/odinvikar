@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -18,8 +19,11 @@ class _State extends State<OwnDaysScreen> {
 
   late DateTime _pickedDay;
 
-  get shift => FirebaseFirestore.instance.collection('shift').orderBy('month', descending: false).orderBy('date', descending: false);
-  get saveShift => FirebaseFirestore.instance.collection('shift');
+  User? user = FirebaseAuth.instance.currentUser;
+
+ // get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
+  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('date', descending: false);
+  get saveShift => FirebaseFirestore.instance.collection(user!.uid);
 
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
@@ -51,7 +55,7 @@ class _State extends State<OwnDaysScreen> {
   }
 
   Future<void> getFirestoreShift() async {
-    var snapShotsValue = await databaseReference.collection("shift").get();
+    var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
     List<Meeting> list = snapShotsValue.docs.map((e)=> Meeting(eventName: "Vagt",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
