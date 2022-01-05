@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:week_of_year/week_of_year.dart';
 
@@ -11,7 +12,8 @@ class HomeScreen extends StatefulWidget {
 
 class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
-  get shift => FirebaseFirestore.instance.collection('shift').orderBy('month', descending: false).orderBy('date', descending: false);
+  User? user = FirebaseAuth.instance.currentUser;
+  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   late TabController _controller;
 
   @override

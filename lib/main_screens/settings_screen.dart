@@ -13,7 +13,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _State extends State<SettingsScreen> {
 
-  get getUserInfo => FirebaseFirestore.instance.collection('user');
+  get getUserInfo => FirebaseFirestore.instance.collection('user').doc(user!.uid);
+  User? user = FirebaseAuth.instance.currentUser;
 
   void _showSnackBar(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
@@ -56,21 +57,13 @@ class _State extends State<SettingsScreen> {
                 child: Center(
                     child: StreamBuilder(
                         stream: getUserInfo.snapshots(),
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        builder: (context, snapshot) {
+                          var name = snapshot.data as DocumentSnapshot;
                           if (!snapshot.hasData){
                             return const Center(child: CircularProgressIndicator(),);
-                          } else if (snapshot.data!.docs.isEmpty){
-                            return const Center(child: Text(
-                              "Ukendt",
-                              style: TextStyle(color: Colors.white, fontSize: 18),
-                            ),);
-                          } else {return Center(
-                              child: snapshot.data!.docs.map((document){
-                                return Text(
-                                  document['name'],
-                                  style: const TextStyle(color: Colors.white, fontSize: 26),
-                                );
-                              }).first);}
+                          }  else {
+                            return Center(
+                              child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));}
                         }
                     ),),
               ),
@@ -127,21 +120,13 @@ class _State extends State<SettingsScreen> {
             const Text("Telefonnummer: ", style: TextStyle(fontWeight: FontWeight.bold),),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (context, snapshot) {
+                  var name = snapshot.data as DocumentSnapshot;
                   if (!snapshot.hasData){
                     return const Center(child: CircularProgressIndicator(),);
-                  } else if (snapshot.data!.docs.isEmpty){
-                    return const Center(child: Text(
-                      "Ukendt",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),);
-                  } else {return Center(
-                      child: snapshot.data!.docs.map((document){
-                        return Text(
-                          document['phone'],
-                          style: const TextStyle(color: Colors.black),
-                        );
-                      }).first);}
+                  }  else {
+                    return Center(
+                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));}
                 }
             ),
           ],
@@ -151,21 +136,13 @@ class _State extends State<SettingsScreen> {
             const Text("E-mail: ", style: TextStyle(fontWeight: FontWeight.bold),),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (context, snapshot) {
+                  var name = snapshot.data as DocumentSnapshot;
                   if (!snapshot.hasData){
                     return const Center(child: CircularProgressIndicator(),);
-                  } else if (snapshot.data!.docs.isEmpty){
-                    return const Center(child: Text(
-                      "Ukendt",
-                      style: TextStyle(color: Colors.black),
-                    ),);
-                  } else {return Center(
-                      child: snapshot.data!.docs.map((document){
-                        return Text(
-                          document['email'],
-                          style: const TextStyle(color: Colors.black),
-                        );
-                      }).first);}
+                  }  else {
+                    return Center(
+                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));}
                 }
             ),
           ],

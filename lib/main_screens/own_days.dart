@@ -21,8 +21,7 @@ class _State extends State<OwnDaysScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
 
- // get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
-  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('date', descending: false);
+  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
 
   final databaseReference = FirebaseFirestore.instance;
