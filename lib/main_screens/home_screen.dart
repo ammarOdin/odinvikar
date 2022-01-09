@@ -62,7 +62,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   stream: shift.snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData){
-                      return const Center(child: CircularProgressIndicator(),);
+                      return const Center(child: CircularProgressIndicator.adaptive(),);
                     } else if (snapshot.data!.docs.isEmpty){
                       return const Center(child: Text(
                         "Ingen Tilgængelige",
@@ -86,7 +86,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             stream: shift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return const Center(child: CircularProgressIndicator(),);
+                return const Center(child: CircularProgressIndicator.adaptive(),);
               }else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.all(50),

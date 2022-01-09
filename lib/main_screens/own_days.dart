@@ -198,7 +198,7 @@ class _State extends State<OwnDaysScreen> {
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return const Center(child: CircularProgressIndicator(),);
+                return const Center(child: CircularProgressIndicator.adaptive(),);
               } else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),

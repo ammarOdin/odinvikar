@@ -63,7 +63,7 @@ class _State extends State<SettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return const CircularProgressIndicator();
+                          return const CircularProgressIndicator.adaptive();
                         }
                     ),),
               ),
@@ -126,7 +126,7 @@ class _State extends State<SettingsScreen> {
                     return Center(
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return const CircularProgressIndicator();
+                  return const CircularProgressIndicator.adaptive();
                 }
             ),
           ],
@@ -142,7 +142,7 @@ class _State extends State<SettingsScreen> {
                     return Center(
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return const CircularProgressIndicator();
+                  return const CircularProgressIndicator.adaptive();
                 }
             ),
           ],
