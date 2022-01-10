@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -36,10 +39,35 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF3EBACE),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
         ),
-        //home: const Dashboard(),
-      home: user == null? const LoginScreen() : const Dashboard(),
+      //home: user == null? const LoginScreen() : isAdmin(),
+      home: user == null? const LoginScreen() : const AuthenticationWrapper(),
+      //home: const AuthenticationWrapper(),
       locale: const Locale('da'),
 
     );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
+
+  isAdmin() async {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot){
+      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+        return true;
+      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
+        return false;
+      } else {
+        return false;
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context)  {
+    return FutureBuilder(builder: (context, snapshot) => isAdmin() == true? const Dashboard(): const AdminDashboard());
   }
 }

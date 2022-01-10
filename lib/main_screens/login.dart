@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -32,6 +34,22 @@ class _LoginState extends State<LoginScreen> {
     if (password == null || password.isEmpty){
       return "Indsæt password";
     }
+  }
+
+  isAdmin() async {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot){
+      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+        return true;
+      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
+        return false;
+      } else {
+        return false;
+      }
+    });
   }
 
   @override
@@ -75,7 +93,7 @@ class _LoginState extends State<LoginScreen> {
                 Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-                  child: ElevatedButton.icon(onPressed: () async {if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); _showSnackBar(context, "Logget Ind", Colors.green);  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet", Colors.red);} else {_showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}}} }, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+                  child: ElevatedButton.icon(onPressed: () async {if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); _showSnackBar(context, "Logget Ind", Colors.green);  if(isAdmin() == true){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AdminDashboard()));} else {Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));}} on FirebaseAuthException catch(e){if(e.message == "user-not-found"){_showSnackBar(context, "Bruger ikke fundet", Colors.red);} else {_showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}}} }, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
               ],
             ),
           ),
