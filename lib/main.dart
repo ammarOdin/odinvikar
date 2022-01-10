@@ -53,21 +53,14 @@ class AuthenticationWrapper extends StatelessWidget {
 
   isAdmin(context)  async  {
     var admin = await
-
     FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot){
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        if (kDebugMode) {
-          print('ADMIN main.dart');
-        }
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        if (kDebugMode) {
-          print('NOT ADMIN main.dart');
-        }
         return false;
       }
     });
