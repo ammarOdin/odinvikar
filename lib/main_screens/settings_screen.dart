@@ -17,7 +17,7 @@ class _State extends State<SettingsScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   void _showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: Colors.blue,));
   }
 
   @override
