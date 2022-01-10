@@ -51,23 +51,30 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
 
-  isAdmin() async {
-    await FirebaseFirestore.instance
+  isAdmin(context)  async  {
+    var admin = await
+
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot){
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+        if (kDebugMode) {
+          print('ADMIN main.dart');
+        }
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        return false;
-      } else {
+        if (kDebugMode) {
+          print('NOT ADMIN main.dart');
+        }
         return false;
       }
     });
+    return admin;
   }
   @override
   Widget build(BuildContext context)  {
-    return FutureBuilder(builder: (context, snapshot) => isAdmin() == true? const Dashboard(): const AdminDashboard());
+    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.hasData == true? const AdminDashboard(): const Dashboard());
   }
 }
