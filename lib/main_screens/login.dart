@@ -108,25 +108,29 @@ class _LoginState extends State<LoginScreen> {
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
 
-  isAdmin(context)  async  {
-    var admin = await
-    FirebaseFirestore.instance
+  isAdmin() async {
+    var login = await
+    await FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot){
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-
+        if (kDebugMode) {
+          print('ADMIN login.dart');
+        }
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-
+        if (kDebugMode) {
+          print('NOT ADMIN login.dart');
+        }
         return false;
       }
     });
-    return admin;
+    return login;
   }
   @override
   Widget build(BuildContext context)  {
-    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.hasData == true? const AdminDashboard(): const Dashboard());
+    return FutureBuilder(future: isAdmin(), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
   }
 }
