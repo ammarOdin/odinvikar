@@ -79,7 +79,7 @@ class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context)  {
     //return isAdmin() == true? const AdminDashboard(): const Dashboard();
-    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.hasData == true? const AdminDashboard(): const Dashboard());
+    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     /*return FutureBuilder(builder: (context, snapshot) => isAdmin(context).then((value){
       value == true ? const AdminDashboard(): const Dashboard();
     }));*/
