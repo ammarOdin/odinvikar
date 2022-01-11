@@ -39,11 +39,8 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF3EBACE),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
         ),
-      //home: user == null? const LoginScreen() : isAdmin(),
       home: user == null? const LoginScreen() : const AuthenticationWrapper(),
-      //home: const AuthenticationWrapper(),
       locale: const Locale('da'),
-
     );
   }
 }
@@ -64,24 +61,19 @@ class AuthenticationWrapper extends StatelessWidget {
         if (kDebugMode) {
           print('ADMIN main.dart');
         }
-        //return FutureBuilder(builder: (context, snapshot) => const AdminDashboard());
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
         if (kDebugMode) {
           print('NOT ADMIN main.dart');
         }
         return false;
-        //return FutureBuilder(builder: (context, snapshot) => const Dashboard());
       }
     });
     return admin;
   }
   @override
   Widget build(BuildContext context)  {
-    //return isAdmin() == true? const AdminDashboard(): const Dashboard();
     return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
-    /*return FutureBuilder(builder: (context, snapshot) => isAdmin(context).then((value){
-      value == true ? const AdminDashboard(): const Dashboard();
-    }));*/
+
   }
 }
