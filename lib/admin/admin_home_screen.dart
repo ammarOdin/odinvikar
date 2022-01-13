@@ -52,10 +52,10 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       top: MediaQuery.of(context).size.height / 30),
                   child: const Center(
                       child: Text(
-                        "Administrator Skærm",
+                        "Vikar Oversigt",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
-              Container(
+              /*Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 40),
                 child: StreamBuilder(
@@ -77,11 +77,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         }).first);}
                   }
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "Uge",), Tab(text: "Måned",)])),
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
         StreamBuilder(
             stream: shift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -91,7 +91,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 return Container(
                   padding: const EdgeInsets.all(50),
                   child: const Center(child: Text(
-                    "Ingen Vagter",
+                    "Ingen Vikarer",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),),
                 );

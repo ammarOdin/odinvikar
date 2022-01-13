@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:odinvikar/main_screens/settings_screen.dart';
-import '../main_screens/own_days.dart';
+import 'package:odinvikar/admin/admin_calendar.dart';
 import 'admin_home_screen.dart';
+import 'admin_settings_screen.dart';
 
 
 
@@ -46,8 +46,8 @@ class _HomescreenState extends State<AdminDashboard> {
           },
           children: const <Widget>[
             AdminHomeScreen(),
-            OwnDaysScreen(),
-            SettingsScreen(),
+            AdminCalendar(),
+            AdminSettingsScreen(),
           ],
         ),
       ),
@@ -65,11 +65,11 @@ class _HomescreenState extends State<AdminDashboard> {
               icon: Icon(Icons.home)
           ),
           BottomNavigationBarItem(
-              label: 'Vikarer',
+              label: 'Kalender',
               icon: Icon(Icons.apps)
           ),
           BottomNavigationBarItem(
-              label: 'Profil',
+              label: 'Indstillinger',
               icon: Icon(Icons.account_box)
           ),
         ],
