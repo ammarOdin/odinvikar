@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -7,7 +6,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:week_of_year/week_of_year.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminCalendar extends StatefulWidget {
   const AdminCalendar({Key? key}) : super(key: key);
@@ -19,8 +18,8 @@ class AdminCalendar extends StatefulWidget {
 class _State extends State<AdminCalendar> {
 
   User? user = FirebaseAuth.instance.currentUser;
-  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
-  get saveShift => FirebaseFirestore.instance.collection(user!.uid);
+  get sub => FirebaseFirestore.instance.collection('user');
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
 
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
@@ -74,6 +73,17 @@ class _State extends State<AdminCalendar> {
     });
   }
 
+  Future<List> getInfo() async {
+    List<String> phoneNr = [];
+    QuerySnapshot usersSnapshot = await usersRef.get();
+    for (var users in usersSnapshot.docs){
+      if(users.get(FieldPath(const ['isAdmin']))==false){
+        phoneNr.add(users.get(FieldPath(const['phone']))+users.get(FieldPath(const['name'])));
+      }
+    }
+    return phoneNr;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -109,74 +119,6 @@ class _State extends State<AdminCalendar> {
                 width: 150,
                 margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.contact_phone), label: const Align(alignment: Alignment.centerLeft, child: Text("Telefonliste")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
-
-
-
-              /*Container(
-                height: 45,
-                width: 150,
-                margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: () async {
-                  _pickedDay = (await showDatePicker(
-                      locale : const Locale("da","DA"),
-                      selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
-                      context: context,
-                      confirmText: "Vælg dag",
-                      cancelText: "Annuller",
-                      initialDate: initialDate(),
-                      firstDate: initialDate(),
-                      lastDate: DateTime.now().add(const Duration(days: 60))))!;
-
-                      final f = DateFormat('dd-MM-yyyy');
-
-                      //var pickedDate = DateFormat.yMMMd().format(_pickedDay);
-                      var pickedDate = f.format(_pickedDay);
-                      var pickedMonth = _pickedDay.month;
-                      var pickedWeek = _pickedDay.weekOfYear;
-
-
-                  saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
-                    if (documentSnapshot.exists) {
-                      _showSnackBar(context, "Vagten findes allerede!", Colors.red);
-                    } else if (!documentSnapshot.exists){
-                      await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
-                      _showSnackBar(context, "Vagt Tilføjet", Colors.green);
-                      setState(() {
-                      });
-                    }
-
-                  });
-                  }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")),),
-              ),
-              Container(
-                height: 45,
-                width: 150,
-                margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),*/
-
-              /* const Divider(thickness: 1, height: 4),
-              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Vagter", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-              // one card, make foreach from db within current user
-              StreamBuilder(
-                  stream: shift.snapshots() ,
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    if (!snapshot.hasData){
-                      return const Center(child: CircularProgressIndicator(),);
-                    } else if (snapshot.data!.docs.isEmpty){
-                      return Container(
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: const Center(child: Text(
-                          "Ingen Vagter",
-                          style: TextStyle(color: Colors.blue, fontSize: 18),
-                        ),),
-                      );
-                    }
-                    return Column(
-                      children: snapshot.data!.docs.map((document){
-                        return CardFb2(text: "Vagt - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
-                      }).toList(),
-                    );
-                  }),*/
             ],
           ),
         ),
@@ -198,38 +140,32 @@ class _State extends State<AdminCalendar> {
     ),
   );
 
-  //Widget buildHeader(BuildContext context, SheetState state) => Material(child: Stack(children: <Widget>[Container(height: MediaQuery.of(context).size.height / 3 , color: Colors.blue,),Positioned(bottom: 20, child: SizedBox(width: MediaQuery.of(context).size.width, height: 40, child: Image.network("https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", height: 59, fit: BoxFit.contain)))],),);
-
   Widget showJob(context, state) => Material(
   child: ListView(
       shrinkWrap: true,
       primary: false,
       children: [
-        StreamBuilder(
-            stream: shift.snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
-              } else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.only(top: 10, bottom: 30),
-                  child: const Center(child: Text(
-                    "Ingen Vikarer",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }
-                return Column(
-                children: snapshot.data!.docs.map((document){
-                  return Column(children: [
-                    Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-                    Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Valgt dag: " + document['date'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
-                    //Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
-                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {}, child: const Text("Opkald"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Opkald", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.call, color: Colors.green,))]),)) ,),
-                  ],);
-                }).toList(),
-              );
-            }),
+        FutureBuilder(future: getInfo(), builder: (context, AsyncSnapshot<List> snapshot){
+          if (!snapshot.hasData){
+            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+          } else if (snapshot.data!.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.all(50),
+              child: const Center(child: Text(
+                "Ingen Vikarer",
+                style: TextStyle(color: Colors.blue, fontSize: 18),
+              ),),
+            );
+          }
+          return Column(
+            children: snapshot.data!.map<Widget>((document){
+              return Column(children: [
+                Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text(document.substring(8), style: const TextStyle(fontWeight: FontWeight.bold),),),),
+                Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {launch("tel://" + document.substring(0,8));}, child: const Text("Opkald"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Opkald", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.call, color: Colors.green,))]),)) ,),
+              ],);
+            }).toList(),
+          );
+        }),
       ],
     ),
   );

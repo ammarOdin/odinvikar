@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/main_screens/home_screen.dart';
@@ -48,14 +47,10 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       for (var shifts in shiftSnapshot.docs){
         if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
           userID.add(users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-          if (kDebugMode) {
-            print(userID.toString());
-          }
         } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
           userID2.add(users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
         }
       }
-
     }
     if (_controller.index == 0){
       return userID;
@@ -63,10 +58,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       return userID2;
     }
     return [];
-  }
-
-  Future<void> callNumber() async{
-    launch("tel://12121212");
   }
 
   @override
@@ -103,7 +94,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         ),
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
 
-        // nested futurebuilder?
         FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
           if (!snapshot.hasData){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
@@ -118,7 +108,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           } else if (snapshot.connectionState == ConnectionState.waiting){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
           }
-          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Tryk for at ringe", onPressed: () {launch("tel://" + e.substring(0,8));}),
+          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Tryk for at ringe", onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {launch("tel://" + e.substring(0,8));}, child: const Text("Opkald"))],);});}),
           ).toList());
         }),
       ],
