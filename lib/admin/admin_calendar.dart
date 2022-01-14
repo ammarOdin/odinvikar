@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -17,10 +18,7 @@ class AdminCalendar extends StatefulWidget {
 
 class _State extends State<AdminCalendar> {
 
-  late DateTime _pickedDay;
-
   User? user = FirebaseAuth.instance.currentUser;
-
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
 
@@ -54,11 +52,20 @@ class _State extends State<AdminCalendar> {
   }
 
   Future<void> getFirestoreShift() async {
-    var snapShotsValue = await databaseReference.collection(user!.uid).get();
+    var userRef = await databaseReference.collection('user').get();
+    List<String> shiftList = [];
 
-    List<Meeting> list = snapShotsValue.docs.map((e)=> Meeting(eventName: "Vagt",
-        from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
-        to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
+    for (var users in userRef.docs){
+      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
+      QuerySnapshot shiftSnapshot = await shiftRef.get();
+      for (var shifts in shiftSnapshot.docs){
+        shiftList.add(shifts.id+users.get(FieldPath(const ['name'])));
+      }
+    }
+
+    List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(10),
+        from: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
+        to: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
         background: Colors.blue,
         isAllDay: true)).toList();
 
