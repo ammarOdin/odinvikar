@@ -24,21 +24,6 @@ class _State extends State<AdminSettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
-  Future<void> getData() async {
-    QuerySnapshot usersSnapshot = await usersRef.get();
-    for (var users in usersSnapshot.docs){
-      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
-      QuerySnapshot shiftSnapshot = await shiftRef.get();
-      for (var shifts in shiftSnapshot.docs){
-        if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-          if (kDebugMode) {
-            print([shifts.data()]+[users.id]);
-          }
-        }
-      }
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +68,7 @@ class _State extends State<AdminSettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                          return const CircularProgressIndicator.adaptive();
                         }
                     ),),
               ),
@@ -105,7 +90,7 @@ class _State extends State<AdminSettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {getData();}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Vikarer", style: TextStyle(color: Colors.white),)),),),
+          child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Vikarer", style: TextStyle(color: Colors.white),)),),),
 
 
         Container(
@@ -154,7 +139,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
             ),
           ],
@@ -170,7 +155,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
             ),
           ],

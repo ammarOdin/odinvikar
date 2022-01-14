@@ -46,9 +46,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       QuerySnapshot shiftSnapshot = await shiftRef.get();
       for (var shifts in shiftSnapshot.docs){
         if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-          if (kDebugMode) {
-            print([shifts.data()]+[users.id]);
-          }
           userID.add(users.get(FieldPath(const ['name'])));
         } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
           userID2.add(users.get(FieldPath(const ['name'])));
