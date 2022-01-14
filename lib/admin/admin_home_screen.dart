@@ -113,7 +113,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             );
           } else if (snapshot.connectionState == ConnectionState.waiting){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
-
           }
           return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e, imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {}),
           ).toList());

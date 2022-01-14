@@ -198,7 +198,7 @@ class _State extends State<AdminCalendar> {
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return const Center(child: CircularProgressIndicator.adaptive(),);
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
               } else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
