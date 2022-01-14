@@ -37,7 +37,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List> getData() async {
+  Future<List> getNames() async {
     List<String> userID = [];
     List<String> userID2 = [];
     QuerySnapshot usersSnapshot = await usersRef.get();
@@ -97,7 +97,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         ),
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
 
-        FutureBuilder(future: getData(), builder: (context, AsyncSnapshot<List> snapshot){
+        FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
           if (!snapshot.hasData){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
           } else if (snapshot.data!.isEmpty) {
