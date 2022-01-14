@@ -67,10 +67,6 @@ class _State extends State<AdminCalendar> {
     });
   }
 
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -99,7 +95,15 @@ class _State extends State<AdminCalendar> {
                 ),
               ),
 
-             // const Divider(thickness: 1, height: 4),
+              const Divider(thickness: 1, height: 4),
+
+              Container(
+                height: 50,
+                width: 150,
+                margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.contact_phone), label: const Align(alignment: Alignment.centerLeft, child: Text("Telefonliste")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+
+
 
               /*Container(
                 height: 45,
@@ -203,7 +207,7 @@ class _State extends State<AdminCalendar> {
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
                   child: const Center(child: Text(
-                    "Ingen Vagter",
+                    "Ingen Vikarer",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),),
                 );
@@ -214,7 +218,7 @@ class _State extends State<AdminCalendar> {
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vagt Detaljer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
                     Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text("Valgt dag: " + document['date'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
                     //Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: const Align(alignment: Alignment.centerLeft, child: Text("Du vil blive ringet op på dagen, hvis du får vagten. Kontakt IKKE vagt-telefonen."),) ,),
-                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Slet", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {}, child: const Text("Opkald"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Opkald", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.call, color: Colors.green,))]),)) ,),
                   ],);
                 }).toList(),
               );

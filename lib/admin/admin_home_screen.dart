@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:odinvikar/main_screens/home_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class AdminHomeScreen extends StatefulWidget {
@@ -60,12 +60,13 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     return [];
   }
 
-
+  Future<void> callNumber() async{
+    launch("tel://12121212");
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      //physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       children: [
@@ -118,65 +119,4 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     );
   }
 }
-class CardFb2 extends StatelessWidget {
-  final String text;
-  final String imageUrl;
-  final String subtitle;
-  final Function() onPressed;
 
-  const CardFb2(
-      {required this.text,
-        required this.imageUrl,
-        required this.subtitle,
-        required this.onPressed,
-        Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 75,
-        padding: const EdgeInsets.all(15.0),
-        margin: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.5),
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(10, 20),
-                blurRadius: 10,
-                spreadRadius: 0,
-                color: Colors.grey.withOpacity(.05)),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 60, height: 40, child: Image.network(imageUrl, height: 59, fit: BoxFit.cover))),
-            const SizedBox(
-              width: 15,
-            ),
-            Text(text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                )),
-            const Spacer(),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
