@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
 class AdminHomeScreen extends StatefulWidget {
@@ -38,6 +39,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
   Future<List> getData() async {
     List<String> userID = [];
+    List<String> userID2 = [];
     QuerySnapshot usersSnapshot = await usersRef.get();
     for (var users in usersSnapshot.docs){
       CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
@@ -47,11 +49,18 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           if (kDebugMode) {
             print([shifts.data()]+[users.id]);
           }
-          userID.add(shifts.data().toString());
+          userID.add(users.get(FieldPath(const ['name'])));
+        } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
+          userID2.add(users.get(FieldPath(const ['name'])));
         }
       }
     }
-    return userID;
+    if (_controller.index == 0){
+      return userID;
+    } else if (_controller.index == 1){
+      return userID2;
+    }
+    return [];
   }
 
 
@@ -92,15 +101,22 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
 
         FutureBuilder(future: getData(), builder: (context, AsyncSnapshot<List> snapshot){
-          List<String> userID = [];
-          snapshot.data?.forEach((element) {
-            userID.add(element);
-          });
-          if (_controller.index == 0 && snapshot.hasData){
-            return Column(children: snapshot.data!.map<Widget>((e) => Text(e)).toList());
-          } else {
-            return  Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+          if (!snapshot.hasData){
+            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+          } else if (snapshot.data!.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.all(50),
+              child: const Center(child: Text(
+                "Ingen Vikarer",
+                style: TextStyle(color: Colors.blue, fontSize: 18),
+              ),),
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting){
+            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+
           }
+          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e, imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {}),
+          ).toList());
         }),
       ],
     );
