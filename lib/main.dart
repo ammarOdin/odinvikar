@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/login.dart';
@@ -49,23 +48,15 @@ class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
 
   isAdmin(context)  async  {
-    //return true;
     var admin = await
-
     FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot){
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        if (kDebugMode) {
-          print('ADMIN main.dart');
-        }
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        if (kDebugMode) {
-          print('NOT ADMIN main.dart');
-        }
         return false;
       }
     });

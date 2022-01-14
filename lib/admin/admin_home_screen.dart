@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:week_of_year/week_of_year.dart';
+import 'package:intl/intl.dart';
+
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -12,8 +13,8 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
-  User? user = FirebaseAuth.instance.currentUser;
-  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
+  get users => FirebaseFirestore.instance.collection('user');
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
   late TabController _controller;
 
   @override
@@ -35,6 +36,26 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  Future<List> getData() async {
+    List<String> userID = [];
+    QuerySnapshot usersSnapshot = await usersRef.get();
+    for (var users in usersSnapshot.docs){
+      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
+      QuerySnapshot shiftSnapshot = await shiftRef.get();
+      for (var shifts in shiftSnapshot.docs){
+        if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
+          if (kDebugMode) {
+            print([shifts.data()]+[users.id]);
+          }
+          userID.add(shifts.data().toString());
+        }
+      }
+    }
+    return userID;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -55,71 +76,32 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         "Vikar Oversigt",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
-              /*Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 40),
-                child: StreamBuilder(
-                  stream: shift.snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData){
-                      return const Center(child: CircularProgressIndicator.adaptive(),);
-                    } else if (snapshot.data!.docs.isEmpty){
-                      return const Center(child: Text(
-                        "Ingen Tilgængelige",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),);
-                    } else {return Center(
-                        child: snapshot.data!.docs.map((document){
-                          return Text(
-                            document['date'],
-                            style: const TextStyle(color: Colors.white, fontSize: 26),
-                          );
-                        }).first);}
-                  }
+              Center(
+                child: Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 40),
+                  child: Text(
+                    DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                    style: const TextStyle(color: Colors.white, fontSize: 26),
+                  )
                 ),
-              ),*/
+              ),
             ],
           ),
         ),
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
-        StreamBuilder(
-            stream: shift.snapshots() ,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return const Center(child: CircularProgressIndicator.adaptive(),);
-              }else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen Vikarer",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }
-              if (_controller.index == 0){
-                return Column(
-                  children: snapshot.data!.docs.map((document){
-                    if (document['week'] == DateTime.now().weekOfYear) {
-                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
-                    } else {
-                      return Container();
-                    }
-                  }).toList(),
-                );
-              } else if (_controller.index == 1){
-                return Column(
-                  children: snapshot.data!.docs.map((document){
-                    if (document['month'] == DateTime.now().month) {
-                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
-                    } else {
-                      return Container();
-                    }
-                  }).toList(),
-                );
-              } else {
-                return Container();
-              }
-            }),
+
+        FutureBuilder(future: getData(), builder: (context, AsyncSnapshot<List> snapshot){
+          List<String> userID = [];
+          snapshot.data?.forEach((element) {
+            userID.add(element);
+          });
+          if (_controller.index == 0 && snapshot.hasData){
+            return Column(children: snapshot.data!.map<Widget>((e) => Text(e)).toList());
+          } else {
+            return  Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+          }
+        }),
       ],
     );
   }
