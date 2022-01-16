@@ -21,6 +21,19 @@ class _State extends State<AdminSettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
+  editUser(){
+
+    /*showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(title: const Text("Rediger Bruger"),
+        content: const Text("Rediger valgte brugers oplysninger"),
+        actions: [TextFormField(),TextFormField(), TextFormField(),
+          Row(
+            children: [
+              TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")),TextButton(onPressed: () {Navigator.pop(context); }, child: const Text("SLET", style: TextStyle(color: Colors.red),)) , TextButton(onPressed: () {Navigator.pop(context); }, child: const Text("Gem")),
+            ],
+          )],);});*/
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +213,16 @@ class _State extends State<AdminSettingsScreen> {
                     return SizedBox(
                       height: 60,
                       width: MediaQuery.of(context).size.width,
-                      child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.green,))]),)) ,),
+                      child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return SimpleDialog(title: const Center(child: Text("Rediger Bruger")),
+                            children: [
+                              SimpleDialogOption(onPressed: (){
+
+                              }, child: const Center(child: Text("Rediger Oplysninger"))),
+                              SimpleDialogOption(onPressed: (){
+
+                              }, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.green,))]),)) ,),
                     );
                   }).toList(),);
                 }
