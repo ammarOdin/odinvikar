@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -88,7 +87,7 @@ class _State extends State<AdminSettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {showSubInfo();}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Vikarer", style: TextStyle(color: Colors.white),)),),),
+          child: ElevatedButton.icon(onPressed: () {showSubInfo();}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Brugere", style: TextStyle(color: Colors.white),)),),),
 
 
         Container(
@@ -181,22 +180,32 @@ class _State extends State<AdminSettingsScreen> {
       shrinkWrap: true,
       primary: false,
       children: [
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Vikar Oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Row(
-          children: [
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Brugeroplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
+          Column (children: [
             StreamBuilder(
                 stream: usersRef.snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    return Column(children: snapshot.data!.docs.map((e) {
-                      return Column(children: [
-                        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(fontWeight: FontWeight.bold),),),),
-                        //Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.white10), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {launch("tel://" + document.substring(0,8));}, child: const Text("Opkald"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Opkald", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.call, color: Colors.green,))]),)) ,),
-                      ],);
-                    }).toList(),);
+                  if (!snapshot.hasData){
+                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                  } else if (snapshot.data!.docs.isEmpty){
+                    return Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 30),
+                      child: const Center(child: Text(
+                        "Ingen Vikarer",
+                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                      ),),
+                    );
+                  }
+                  return Column(children: snapshot.data!.docs.map((e) {
+                    return SizedBox(
+                      height: 60,
+                      width: MediaQuery.of(context).size.width,
+                      child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.green,))]),)) ,),
+                    );
+                  }).toList(),);
                 }
             ),
-          ],
-        ),),),
+          ],),
         Container(padding: const EdgeInsets.all(10),),
         //Container(margin: const EdgeInsets.only(left: 10, right: 10), child: ElevatedButton(style: ElevatedButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 1)), onPressed: () => Navigator.of(context).pop(), child: const Text("Close")))
       ],
