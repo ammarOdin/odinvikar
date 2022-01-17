@@ -222,7 +222,7 @@ class _State extends State<AdminSettingsScreen> {
                               }, child: const Center(child: Text("Rediger Oplysninger"))),
                               SimpleDialogOption(onPressed: (){
 
-                              }, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.green,))]),)) ,),
+                              }, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
                     );
                   }).toList(),);
                 }
