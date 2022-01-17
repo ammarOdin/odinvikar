@@ -108,7 +108,7 @@ class _State extends State<AdminSettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); _showSnackBar(context, "Logget Ud", Colors.grey); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log Ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log Ud", style: TextStyle(color: Colors.white),)),),),
+          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); _showSnackBar(context, "Logget Ud", Colors.grey); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log Ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log Ud", style: TextStyle(color: Colors.white),)),),),
 
 
 
@@ -217,19 +217,15 @@ class _State extends State<AdminSettingsScreen> {
                         showDialog(context: context, builder: (BuildContext context){
                           return SimpleDialog(title: const Center(child: Text("Rediger Bruger")),
                             children: [
-                              SimpleDialogOption(onPressed: (){
-
-                              }, child: const Center(child: Text("Rediger Oplysninger"))),
-                              SimpleDialogOption(onPressed: (){
-
-                              }, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                              SimpleDialogOption(onPressed: (){}, child: const Center(child: Text("Rediger Oplysninger"))),
+                              SimpleDialogOption(onPressed: (){}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
                     );
                   }).toList(),);
                 }
             ),
           ],),
         Container(padding: const EdgeInsets.all(10),),
-        Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 20), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),
+        Container(margin: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 25), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),
       ],
     ),
   );
