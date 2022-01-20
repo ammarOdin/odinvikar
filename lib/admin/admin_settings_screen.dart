@@ -23,15 +23,11 @@ class _State extends State<AdminSettingsScreen> {
 
   editUser(){
 
-    /*showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(title: const Text("Rediger Bruger"),
-        content: const Text("Rediger valgte brugers oplysninger"),
-        actions: [TextFormField(),TextFormField(), TextFormField(),
-          Row(
-            children: [
-              TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")),TextButton(onPressed: () {Navigator.pop(context); }, child: const Text("SLET", style: TextStyle(color: Colors.red),)) , TextButton(onPressed: () {Navigator.pop(context); }, child: const Text("Gem")),
-            ],
-          )],);});*/
+
+  }
+
+  removeUser(){
+
   }
 
 
@@ -169,7 +165,6 @@ class _State extends State<AdminSettingsScreen> {
           ],
         ),),),
         Container(padding: const EdgeInsets.all(10),),
-        //Container(margin: const EdgeInsets.only(left: 10, right: 10), child: ElevatedButton(style: ElevatedButton.styleFrom(shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 1)), onPressed: () => Navigator.of(context).pop(), child: const Text("Close")))
       ],
     ),
   );
@@ -217,8 +212,19 @@ class _State extends State<AdminSettingsScreen> {
                         showDialog(context: context, builder: (BuildContext context){
                           return SimpleDialog(title: const Center(child: Text("Rediger Bruger")),
                             children: [
-                              SimpleDialogOption(onPressed: (){}, child: const Center(child: Text("Rediger Oplysninger"))),
-                              SimpleDialogOption(onPressed: (){}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                              SimpleDialogOption(onPressed: (){
+                                Navigator.pop(context);
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return AlertDialog(title: const Text("Rediger Bruger"),
+                                    actions: [TextFormField(decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),),TextFormField(decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),), TextFormField(decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefonnummer", hintMaxLines: 10),),
+                                      Row(
+                                        children: [
+                                          const Spacer(),
+                                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")),TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Gem")),
+                                        ],
+                                      )],);});
+                              }, child: const Center(child: Text("Rediger Oplysninger"))),
+                              SimpleDialogOption(onPressed: (){Navigator.pop(context);}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
                     );
                   }).toList(),);
                 }
