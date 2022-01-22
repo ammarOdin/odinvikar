@@ -237,19 +237,23 @@ class _State extends State<AdminSettingsScreen> {
           ],),
         Container(padding: const EdgeInsets.all(10),),
         Container(margin: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 25), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {
-          showDialog(context: context, builder: (BuildContext context){
-            return AlertDialog(title: const Text("Tilføj Bruger"),
-              actions: [TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),),TextFormField(controller: passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Password", hintMaxLines: 10),), TextFormField(controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefonnummer", hintMaxLines: 10),),TextFormField(controller: nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 24),),
-                Row(
-                  children: [
-                    const Spacer(),
-                    TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")),TextButton(onPressed: () async {
-                      //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                      //usersRef.add({'name':nameController.text,'email':emailController.text,'phone':phoneController.text});
-                      Navigator.pop(context);}, child: const Text("Tilføj")),
-                  ],
-                )],);
-          });
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Scaffold(appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: const BackButton(color: Colors.black),
+          ),
+          body: Column(
+            children: [
+              const Align(alignment: Alignment.topCenter, child: Text('Tilføj Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
+              Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
+              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Password", hintMaxLines: 10),) ,)),
+              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
+              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
+              Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj", style: TextStyle(color: Colors.white),)),),),
+            ],
+          ),)));
+
         }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),
       ],
     ),
