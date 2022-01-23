@@ -89,6 +89,7 @@ class _State extends State<OwnDaysScreen> {
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
                   view: CalendarView.month,
+                  firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,

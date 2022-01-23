@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:validators/validators.dart';
 
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({Key? key}) : super(key: key);
@@ -22,18 +23,48 @@ class _State extends State<AdminSettingsScreen> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
 
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  //final List<GlobalObjectKey<FormState>> formKeyList = List.generate(10, (index) => GlobalObjectKey<FormState>(index));
+
+
+
+  @override
+  void  initState() {
+    super.initState();
+  }
+
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
-  editUser(){
-
+  String? validateName(String? name){
+    if (name == null || name.isEmpty || name == ""){
+      return "Indsæt navn";
+    }
+  }
+  String? validateEmail(String? email){
+    if (email == null || email.isEmpty){
+      return "Indsæt e-mail";
+    } else if (!email.contains("@") || !email.contains(".")){
+      return "Ugyldig e-mail";
+    }
+  }
+  String? validatePassword(String? password){
+    if (password == null || password.isEmpty || password == ""){
+      return "Ugyldig password";
+    } else if (password.length < 6){
+      return "Password skal indeholde mindst 6 tegn!";
+    }
 
   }
-
-  removeUser(){
-
+  String? validatePhone(String? number){
+    if (isNumeric(number!) == false || number == "" || number.isEmpty){
+      return "Telefon skal kun indeholde numre!";
+    } else if (number.length < 8){
+      return "Nummeret skal være 8 cifre langt!";
+    }
   }
+
 
 
   @override
@@ -209,33 +240,37 @@ class _State extends State<AdminSettingsScreen> {
                       ),),
                     );
                   }
+
                   return Column(children: snapshot.data!.docs.map((e) {
-                    return SizedBox(
-                      height: 60,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return SimpleDialog(title: const Center(child: Text("Rediger Bruger")),
-                            children: [
-                              SimpleDialogOption(onPressed: (){
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => Scaffold(appBar: AppBar(
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  leading: const BackButton(color: Colors.black),
-                                ),
-                                  body: Column(
-                                    children: [
-                                      const Align(alignment: Alignment.topCenter, child: Text('Rediger Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
-                                      Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
-                                      Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
-                                      Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
-                                      Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
-                                    ],
-                                  ),)));
-                              }, child: const Center(child: Text("Rediger Oplysninger"))),
-                              SimpleDialogOption(onPressed: (){Navigator.pop(context);}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                    return Form(
+                      key: _key,
+                      child: SizedBox(
+                        height: 60,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+                          showDialog(context: context, builder: (BuildContext context){
+                            return SimpleDialog(title: const Center(child: Text("Rediger Bruger")),
+                              children: [
+                                SimpleDialogOption(onPressed: (){
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context, MaterialPageRoute(builder: (context) => Scaffold(appBar: AppBar(
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    leading: const BackButton(color: Colors.black),
+                                  ),
+                                    body: Column(
+                                      children: [
+                                        const Align(alignment: Alignment.topCenter, child: Text('Rediger Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
+                                        //Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
+                                        Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateName, controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
+                                        Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePhone, controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
+                                        Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (_key.currentState!.validate()){try {usersRef.doc(e.id).set({'name':nameController.text, 'phone': phoneController.text}); _showSnackBar(context, "Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                                      ],
+                                    ),)));
+                                }, child: const Center(child: Text("Rediger Oplysninger"))),
+                                SimpleDialogOption(onPressed: (){Navigator.pop(context);}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                      ),
                     );
                   }).toList(),);
                 }
@@ -244,7 +279,7 @@ class _State extends State<AdminSettingsScreen> {
         Container(padding: const EdgeInsets.all(10),),
         Container(margin: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 25), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Scaffold(appBar: AppBar(
+              context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: const BackButton(color: Colors.black),

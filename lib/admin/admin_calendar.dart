@@ -102,7 +102,7 @@ class _State extends State<AdminCalendar> {
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
                   view: CalendarView.month,
-                  showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
+                  showCurrentTimeIndicator: true, firstDayOfWeek: 1, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
