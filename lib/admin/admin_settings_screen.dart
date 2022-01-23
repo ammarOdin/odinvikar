@@ -18,6 +18,9 @@ class _State extends State<AdminSettingsScreen> {
   get getUserInfo => FirebaseFirestore.instance.collection('user').doc(user!.uid);
   User? user = FirebaseAuth.instance.currentUser;
 
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
@@ -283,15 +286,21 @@ class _State extends State<AdminSettingsScreen> {
             elevation: 0,
             leading: const BackButton(color: Colors.black),
           ),
-          body: Column(
-            children: [
-              const Align(alignment: Alignment.topCenter, child: Text('Tilføj Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
-              Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
-              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Password", hintMaxLines: 10),) ,)),
-              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
-              Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
-              Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.white),)),),),
-            ],
+          body: Form(
+            key: _key,
+            child: Column(
+              children: [
+                const Align(alignment: Alignment.topCenter, child: Text('Tilføj Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
+                Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateEmail, controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
+                Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateEmail, controller:passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Password", hintMaxLines: 10),) ,)),
+                Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateName, controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
+                Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePhone, controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
+                Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if(_key.currentState!.validate()){try{
+                  FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+
+                }catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.white),)),),),
+              ],
+            ),
           ),)));
 
         }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),
