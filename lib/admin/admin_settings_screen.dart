@@ -22,11 +22,8 @@ class _State extends State<AdminSettingsScreen> {
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
-
-  final _key = GlobalKey<FormState>();
-  //final List<GlobalObjectKey<FormState>> formKeyList = List.generate(10, (index) => GlobalObjectKey<FormState>(index));
-
-
+  bool validName = false;
+  bool validPhone = false;
 
   @override
   void  initState() {
@@ -40,7 +37,10 @@ class _State extends State<AdminSettingsScreen> {
   String? validateName(String? name){
     if (name == null || name.isEmpty || name == ""){
       return "Indsæt navn";
+    } else {
+      validName = true;
     }
+
   }
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
@@ -60,9 +60,12 @@ class _State extends State<AdminSettingsScreen> {
   String? validatePhone(String? number){
     if (isNumeric(number!) == false || number == "" || number.isEmpty){
       return "Telefon skal kun indeholde numre!";
-    } else if (number.length < 8){
+    } else if (number.length < 8 || number.length > 8){
       return "Nummeret skal være 8 cifre langt!";
+    } else {
+      validPhone = true;
     }
+
   }
 
   @override
@@ -240,9 +243,7 @@ class _State extends State<AdminSettingsScreen> {
                   }
 
                   return Column(children: snapshot.data!.docs.map((e) {
-                      return Form(
-                        key: _key,
-                        child: SizedBox(
+                        return SizedBox(
                           height: 60,
                           width: MediaQuery.of(context).size.width,
                           child: Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
@@ -252,7 +253,7 @@ class _State extends State<AdminSettingsScreen> {
                                   SimpleDialogOption(onPressed: (){
                                     Navigator.pop(context);
                                     Navigator.push(
-                                        context, MaterialPageRoute(builder: (context) => Scaffold(appBar: AppBar(
+                                        context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
                                       backgroundColor: Colors.transparent,
                                       elevation: 0,
                                       leading: const BackButton(color: Colors.black),
@@ -261,15 +262,14 @@ class _State extends State<AdminSettingsScreen> {
                                         children: [
                                           const Align(alignment: Alignment.topCenter, child: Text('Rediger Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
                                           //Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
-                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateName, controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
-                                          Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePhone, controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
-                                          Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (_key.currentState!.validate()){try {usersRef.doc(e.id).set({'name':nameController.text, 'phone': phoneController.text}); _showSnackBar(context, "Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration:  InputDecoration(icon: const Icon(Icons.drive_file_rename_outline), labelText: e['name'], errorText: validateName(nameController.text),)) ,)),
+                                          Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: InputDecoration(icon: const Icon(Icons.phone), labelText: e['phone'], errorText: validatePhone(phoneController.text),)) ,)),
+                                          Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (validName && validPhone == true){try {usersRef.doc(e.id).set({'name':nameController.text, 'phone': phoneController.text}); _showSnackBar(context, "Bruger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
                                         ],
                                       ),)));
                                   }, child: const Center(child: Text("Rediger Oplysninger"))),
                                   SimpleDialogOption(onPressed: (){Navigator.pop(context);}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
-                        ),
-                      );
+                        );
 
                   }).toList(),);
                 }
