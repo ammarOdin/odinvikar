@@ -44,6 +44,7 @@ dependencies:
   week_of_year: ^2.0.0
   url_launcher: ^6.0.18
   validators: ^3.0.0
+  #firebase_admin: ^0.1.4
   #provider: ^6.0.2
   #animations: ^2.0.2
 

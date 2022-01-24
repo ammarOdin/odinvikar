@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({Key? key}) : super(key: key);
@@ -35,6 +38,38 @@ class _State extends State<AdminSettingsScreen> {
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  Future<UserCredential> register(String email, String password) async {
+    FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instanceFor(app: app).createUserWithEmailAndPassword(email: email, password: password);
+
+      usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
+        if (documentSnapshot.exists){
+          _showSnackBar(context, "Bruger findes allerede!", Colors.red);
+        } else if (!documentSnapshot.exists){
+          await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
+          _showSnackBar(context, "Bruger oprettet!", Colors.green);
+          emailController.clear();
+          passwordController.clear();
+          nameController.clear();
+          phoneController.clear();
+        }
+      });
+
+      await app.delete();
+      return Future.sync(() => userCredential);
+    }
+    on FirebaseAuthException catch (e) {
+      _showSnackBar(context, "Bruger kunne ikke oprettes", Colors.red);
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+
+    await app.delete();
+    return FirebaseAuth.instance.currentUser as UserCredential;
   }
 
   String? validateName(String? name){
@@ -296,16 +331,10 @@ class _State extends State<AdminSettingsScreen> {
                 Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateName, controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
                 Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePhone, controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
                 Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if(_key.currentState!.validate()){try{
-                  FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                  usersRef.doc().get().then((DocumentSnapshot documentSnapshot) async {
-                    if (documentSnapshot.exists){
-                      _showSnackBar(context, "Bruger findes allerede!", Colors.red);
-                    } else if (!documentSnapshot.exists){
-                      await usersRef.doc().set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
-                      _showSnackBar(context, "Bruger oprettet!", Colors.green);
-                    }
-                  });
-                }catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.white),)),),),
+                  register(emailController.text, passwordController.text);
+                }catch(e){_showSnackBar(context, "Fejl", Colors.red);  if (kDebugMode) {
+                  print(e.toString());
+                }}}}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Bruger", style: TextStyle(color: Colors.white),)),),),
               ],
             ),
           ),)));
