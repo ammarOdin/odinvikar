@@ -73,6 +73,16 @@ class _State extends State<AdminSettingsScreen> {
     return FirebaseAuth.instance.currentUser as UserCredential;
   }
 
+  Future<void> deleteAuthUser(String uid) async{
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteUser');
+    await callable.call(<String, String>{
+      'user': uid,
+    });
+    if (kDebugMode) {
+      print(uid);
+    }
+  }
+
   String? validateName(String? name){
     if (name == null || name.isEmpty || name == ""){
       return "Indsæt navn";
@@ -310,7 +320,7 @@ class _State extends State<AdminSettingsScreen> {
                                   SimpleDialogOption(onPressed: (){showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Bruger"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette brugeren? Handlingen kan ikke fortrydes."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
                                     usersRef.doc(e.id).delete();
                                     FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
-                                    
+                                    deleteAuthUser(e.id);
                                     Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
                                     _showSnackBar(context, "Bruger slettet!", Colors.green);},
                                       child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
