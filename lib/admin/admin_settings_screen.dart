@@ -7,6 +7,7 @@ import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({Key? key}) : super(key: key);
@@ -306,7 +307,13 @@ class _State extends State<AdminSettingsScreen> {
                                         ],
                                       ),)));
                                   }, child: const Center(child: Text("Rediger Oplysninger"))),
-                                  SimpleDialogOption(onPressed: (){showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Bruger"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette brugeren? Handlingen kan ikke fortrydes."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {usersRef.doc(e.id).delete(); Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Bruger slettet!", Colors.green);}, child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                                  SimpleDialogOption(onPressed: (){showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Bruger"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette brugeren? Handlingen kan ikke fortrydes."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
+                                    usersRef.doc(e.id).delete();
+                                    FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
+                                    
+                                    Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
+                                    _showSnackBar(context, "Bruger slettet!", Colors.green);},
+                                      child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
                         );
 
                   }).toList(),);
