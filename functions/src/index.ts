@@ -19,3 +19,25 @@ export const deleteUser = functions.https.onCall(async (data, context)=>{
             {structuredData: true});
       });
 });
+
+export const updateUser = functions.https.onCall(async (data, context)=>{
+  const user = data.user;
+  const email = data.email;
+  const password = data.password;
+  await admin.auth().getUser(user).then((userRecord) => {
+    functions.logger.info("User Found!", {structuredData: true});
+    const uid = userRecord.uid;
+    return admin.auth().updateUser(uid, {
+      email: email,
+      password: password,
+    });
+  })
+      .then(() => {
+        functions.logger.info("User Updated!", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on updating user!", error,
+            {structuredData: true});
+      });
+});
+

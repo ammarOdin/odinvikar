@@ -31,6 +31,8 @@ class _State extends State<AdminSettingsScreen> {
   final phoneController = TextEditingController();
   bool validName = false;
   bool validPhone = false;
+  bool validEmail = false;
+  bool validPassword = false;
 
   @override
   void  initState() {
@@ -73,10 +75,19 @@ class _State extends State<AdminSettingsScreen> {
     return FirebaseAuth.instance.currentUser as UserCredential;
   }
 
-  Future<void> deleteUser(String uid) async{
+  Future<void> deleteUser(String uid) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteUser');
     await callable.call(<String, dynamic>{
       'user': uid,
+    });
+  }
+
+  Future<void> updateUser(String uid, String email, String password) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUser');
+    await callable.call(<String, dynamic>{
+      'user': uid,
+      'email': email,
+      'password': password,
     });
   }
 
@@ -93,6 +104,8 @@ class _State extends State<AdminSettingsScreen> {
       return "Indsæt e-mail";
     } else if (!email.contains("@") || !email.contains(".")){
       return "Ugyldig e-mail";
+    } else {
+      validEmail = true;
     }
   }
   String? validatePassword(String? password){
@@ -100,6 +113,8 @@ class _State extends State<AdminSettingsScreen> {
       return "Ugyldig password";
     } else if (password.length < 6){
       return "Password skal indeholde mindst 6 tegn!";
+    } else {
+      validPassword = true;
     }
 
   }
@@ -307,10 +322,11 @@ class _State extends State<AdminSettingsScreen> {
                                       body: Column(
                                         children: [
                                           const Align(alignment: Alignment.topCenter, child: Text('Rediger Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
-                                          //Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
+                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration:  InputDecoration(icon: const Icon(Icons.email), hintText: e['email'], hintMaxLines: 10, errorText: validateEmail(emailController.text)),) ,)),
+                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:passwordController, decoration: InputDecoration(icon: const Icon(Icons.password), hintText: "Password", hintMaxLines: 10, errorText: validatePassword(passwordController.text),),) ,)),
                                           Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration:  InputDecoration(icon: const Icon(Icons.drive_file_rename_outline), labelText: e['name'], errorText: validateName(nameController.text),)) ,)),
                                           Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: InputDecoration(icon: const Icon(Icons.phone), labelText: e['phone'], errorText: validatePhone(phoneController.text),)) ,)),
-                                          Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (validName && validPhone == true){try {usersRef.doc(e.id).set({'email':e['email'], 'isAdmin':false, 'name':nameController.text, 'phone': phoneController.text}); _showSnackBar(context, "Bruger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                                          Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (validName && validPhone && validEmail && validPassword == true){try {usersRef.doc(e.id).set({'email':emailController.text, 'isAdmin':false, 'name':nameController.text, 'phone': phoneController.text}); updateUser(e.id, emailController.text, passwordController.text); _showSnackBar(context, "Bruger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
                                         ],
                                       ),)));
                                   }, child: const Center(child: Text("Rediger Oplysninger"))),
