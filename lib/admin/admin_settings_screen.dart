@@ -127,14 +127,6 @@ class _State extends State<AdminSettingsScreen> {
   }
 
   // Below methods explain themselves
-  validateEditName(String name){
-    if (name.isEmpty || name == ""){
-      return "Indsæt navn";
-    } else {
-      validName = true;
-    }
-  }
-
   String? validateName(String? name){
     if (name == null || name.isEmpty || name == ""){
       return "Indsæt navn";
@@ -145,16 +137,6 @@ class _State extends State<AdminSettingsScreen> {
   }
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
-      return "Indsæt e-mail";
-    } else if (!email.contains("@") || !email.contains(".")){
-      return "Ugyldig e-mail";
-    } else {
-      validEmail = true;
-    }
-  }
-
-  validateEditEmail(String email){
-    if (email.isEmpty && email == ""){
       return "Indsæt e-mail";
     } else if (!email.contains("@") || !email.contains(".")){
       return "Ugyldig e-mail";
@@ -174,29 +156,8 @@ class _State extends State<AdminSettingsScreen> {
 
   }
 
-  validateEditPassword(String password){
-    if (password.isEmpty || password == ""){
-      return "Ugyldig password";
-    } else if (password.length < 6){
-      return "Password skal indeholde mindst 6 tegn!";
-    } else {
-      validPassword = true;
-    }
-
-  }
-
   String? validatePhone(String? number){
     if (isNumeric(number!) == false || number == "" || number.isEmpty){
-      return "Telefon skal kun indeholde numre!";
-    } else if (number.length < 8 || number.length > 8){
-      return "Nummeret skal være 8 cifre langt!";
-    } else {
-      validPhone = true;
-    }
-  }
-
-  validateEditPhone(String number){
-    if (isNumeric(number) == false || number == "" || number.isEmpty){
       return "Telefon skal kun indeholde numre!";
     } else if (number.length < 8 || number.length > 8){
       return "Nummeret skal være 8 cifre langt!";
