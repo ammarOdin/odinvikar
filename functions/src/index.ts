@@ -20,24 +20,42 @@ export const deleteUser = functions.https.onCall(async (data, context)=>{
       });
 });
 
-export const updateUser = functions.https.onCall(async (data, context)=>{
+export const updateUserEmail = functions.https.onCall(async (data, context)=>{
   const user = data.user;
   const email = data.email;
-  const password = data.password;
   await admin.auth().getUser(user).then((userRecord) => {
     functions.logger.info("User Found!", {structuredData: true});
     const uid = userRecord.uid;
     return admin.auth().updateUser(uid, {
       email: email,
+    });
+  })
+      .then(() => {
+        functions.logger.info("Email Updated!", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on updating user mail!", error,
+            {structuredData: true});
+      });
+});
+
+export const updateUserPass = functions.https.onCall(async (data, context)=>{
+  const user = data.user;
+  const password = data.password;
+  await admin.auth().getUser(user).then((userRecord) => {
+    functions.logger.info("User Found!", {structuredData: true});
+    const uid = userRecord.uid;
+    return admin.auth().updateUser(uid, {
       password: password,
     });
   })
       .then(() => {
-        functions.logger.info("User Updated!", {structuredData: true});
+        functions.logger.info("Password Updated!", {structuredData: true});
       })
       .catch((error) =>{
-        functions.logger.info("Error on updating user!", error,
+        functions.logger.info("Error on updating user password!", error,
             {structuredData: true});
       });
 });
+
 

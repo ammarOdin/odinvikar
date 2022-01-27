@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
@@ -39,10 +40,12 @@ class _State extends State<AdminSettingsScreen> {
     super.initState();
   }
 
+  // Display snackbar with provided details
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
+  // Register user through auth without logging current user out
   Future<UserCredential> register(String email, String password) async {
     FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
     try {
@@ -75,6 +78,7 @@ class _State extends State<AdminSettingsScreen> {
     return FirebaseAuth.instance.currentUser as UserCredential;
   }
 
+  // Delete user with admin sdk cloud function
   Future<void> deleteUser(String uid) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteUser');
     await callable.call(<String, dynamic>{
@@ -82,13 +86,53 @@ class _State extends State<AdminSettingsScreen> {
     });
   }
 
-  Future<void> updateUser(String uid, String email, String password) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUser');
+  Widget updateUserField(String uid, String details, String reference, String field, TextEditingController controller) {
+    return Column(
+      children: [
+        Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: const BackButton(color: Colors.black),
+            ),
+              body: Column(
+                children: [
+                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10),) ,)),
+                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, details); usersRef.doc(uid).update({reference:details});} else if (reference == 'password'){updateUserPassword(uid, details);} else { usersRef.doc(uid).update({reference:details});} _showSnackBar(context, field + " Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                ],
+              ),)));
+          }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
+        ),
+      ],
+    );
+  }
+
+  // Update user email with input details from admin through cloud function
+  Future<void> updateUserEmail(String uid, String email) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserEmail');
     await callable.call(<String, dynamic>{
       'user': uid,
       'email': email,
+    });
+  }
+
+  // Update user password with input details from admin through cloud function
+  Future<void> updateUserPassword(String uid, String password) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('updateUserPass');
+    await callable.call(<String, dynamic>{
+      'user': uid,
       'password': password,
     });
+  }
+
+  // Below methods explain themselves
+  validateEditName(String name){
+    if (name.isEmpty || name == ""){
+      return "Indsæt navn";
+    } else {
+      validName = true;
+    }
   }
 
   String? validateName(String? name){
@@ -108,6 +152,17 @@ class _State extends State<AdminSettingsScreen> {
       validEmail = true;
     }
   }
+
+  validateEditEmail(String email){
+    if (email.isEmpty && email == ""){
+      return "Indsæt e-mail";
+    } else if (!email.contains("@") || !email.contains(".")){
+      return "Ugyldig e-mail";
+    } else {
+      validEmail = true;
+    }
+  }
+
   String? validatePassword(String? password){
     if (password == null || password.isEmpty || password == ""){
       return "Ugyldig password";
@@ -118,6 +173,18 @@ class _State extends State<AdminSettingsScreen> {
     }
 
   }
+
+  validateEditPassword(String password){
+    if (password.isEmpty || password == ""){
+      return "Ugyldig password";
+    } else if (password.length < 6){
+      return "Password skal indeholde mindst 6 tegn!";
+    } else {
+      validPassword = true;
+    }
+
+  }
+
   String? validatePhone(String? number){
     if (isNumeric(number!) == false || number == "" || number.isEmpty){
       return "Telefon skal kun indeholde numre!";
@@ -126,7 +193,16 @@ class _State extends State<AdminSettingsScreen> {
     } else {
       validPhone = true;
     }
+  }
 
+  validateEditPhone(String number){
+    if (isNumeric(number) == false || number == "" || number.isEmpty){
+      return "Telefon skal kun indeholde numre!";
+    } else if (number.length < 8 || number.length > 8){
+      return "Nummeret skal være 8 cifre langt!";
+    } else {
+      validPhone = true;
+    }
   }
 
   @override
@@ -321,13 +397,13 @@ class _State extends State<AdminSettingsScreen> {
                                     ),
                                       body: Column(
                                         children: [
-                                          const Align(alignment: Alignment.topCenter, child: Text('Rediger Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
-                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:emailController, decoration:  InputDecoration(icon: const Icon(Icons.email), hintText: e['email'], hintMaxLines: 10, errorText: validateEmail(emailController.text)),) ,)),
-                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:passwordController, decoration: InputDecoration(icon: const Icon(Icons.password), hintText: "Password", hintMaxLines: 10, errorText: validatePassword(passwordController.text),),) ,)),
-                                          Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:nameController, decoration:  InputDecoration(icon: const Icon(Icons.drive_file_rename_outline), labelText: e['name'], errorText: validateName(nameController.text),)) ,)),
-                                          Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller:phoneController, decoration: InputDecoration(icon: const Icon(Icons.phone), labelText: e['phone'], errorText: validatePhone(phoneController.text),)) ,)),
-                                          Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if (validName && validPhone && validEmail && validPassword == true){try {usersRef.doc(e.id).set({'email':emailController.text, 'isAdmin':false, 'name':nameController.text, 'phone': phoneController.text}); updateUser(e.id, emailController.text, passwordController.text); _showSnackBar(context, "Bruger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
-                                        ],
+                                          Container(padding: const EdgeInsets.only(bottom: 20) , child: const Center(child: Text("Rediger Bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
+                                          updateUserField(e.id, emailController.text, 'email', e['email'], emailController),
+                                          updateUserField(e.id, passwordController.text, 'password', "Adgangskode", passwordController),
+                                          updateUserField(e.id, phoneController.text, 'phone', e['phone'], phoneController),
+                                          updateUserField(e.id, nameController.text, 'name', e['name'], nameController),
+                                          Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
+                                      ],
                                       ),)));
                                   }, child: const Center(child: Text("Rediger Oplysninger"))),
                                   SimpleDialogOption(onPressed: (){showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Bruger"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette brugeren? Handlingen kan ikke fortrydes."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
@@ -336,7 +412,7 @@ class _State extends State<AdminSettingsScreen> {
                                     deleteUser(e.id);
                                     Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
                                     _showSnackBar(context, "Bruger slettet!", Colors.green);},
-                                      child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)) ,),
+                                      child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("FJERN BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)),),
                         );
 
                   }).toList(),);
