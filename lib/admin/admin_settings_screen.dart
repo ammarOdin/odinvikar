@@ -86,7 +86,7 @@ class _State extends State<AdminSettingsScreen> {
     });
   }
 
-  Widget updateUserField(String uid, String details, String reference, String field, TextEditingController controller) {
+  Widget updateUserField(String uid, String reference, String field, TextEditingController controller) {
     return Column(
       children: [
         Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
@@ -99,7 +99,7 @@ class _State extends State<AdminSettingsScreen> {
               body: Column(
                 children: [
                   Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10),) ,)),
-                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, details); usersRef.doc(uid).update({reference:details});} else if (reference == 'password'){updateUserPassword(uid, details);} else { usersRef.doc(uid).update({reference:details});} _showSnackBar(context, field + " Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text});} else if (reference == 'password'){updateUserPassword(uid, controller.text);} else { usersRef.doc(uid).update({reference:controller.text});} _showSnackBar(context, field + " Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
                 ],
               ),)));
           }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
@@ -359,10 +359,10 @@ class _State extends State<AdminSettingsScreen> {
                                       body: Column(
                                         children: [
                                           Container(padding: const EdgeInsets.only(bottom: 20) , child: const Center(child: Text("Rediger Bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
-                                          updateUserField(e.id, emailController.text, 'email', e['email'], emailController),
-                                          updateUserField(e.id, passwordController.text, 'password', "Adgangskode", passwordController),
-                                          updateUserField(e.id, phoneController.text, 'phone', e['phone'], phoneController),
-                                          updateUserField(e.id, nameController.text, 'name', e['name'], nameController),
+                                          updateUserField(e.id, 'email', e['email'], emailController),
+                                          updateUserField(e.id, 'password', "Adgangskode", passwordController),
+                                          updateUserField(e.id, 'phone', e['phone'], phoneController),
+                                          updateUserField(e.id, 'name', e['name'], nameController),
                                           Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
                                       ],
                                       ),)));
