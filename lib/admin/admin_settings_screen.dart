@@ -98,8 +98,8 @@ class _State extends State<AdminSettingsScreen> {
             ),
               body: Column(
                 children: [
-                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10),) ,)),
-                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text});} else if (reference == 'password'){updateUserPassword(uid, controller.text);} else { usersRef.doc(uid).update({reference:controller.text});} _showSnackBar(context, field + " Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10, errorText: validateUpdateField(reference, controller.text)),) ,)),
+                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text});} else if (reference == 'password'){updateUserPassword(uid, controller.text);} else { usersRef.doc(uid).update({reference:controller.text}); } _showSnackBar(context, "Nye oplysninger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
                 ],
               ),)));
           }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
@@ -124,6 +124,36 @@ class _State extends State<AdminSettingsScreen> {
       'user': uid,
       'password': password,
     });
+  }
+
+  String? validateUpdateField(String reference , String? input){
+    if (reference == "name"){
+      if (input == null || input.isEmpty || input == ""){
+        return "Indsæt navn";
+      } else {
+      }
+    } else if (reference == "email"){
+      if (input == null || input.isEmpty){
+        return "Indsæt e-mail";
+      } else if (!input.contains("@") || !input.contains(".")){
+        return "Ugyldig e-mail";
+      } else {
+      }
+    } else if (reference == "password"){
+      if (input == null || input.isEmpty || input == ""){
+        return "Ugyldig password";
+      } else if (input.length < 6){
+        return "Password skal indeholde mindst 6 tegn!";
+      } else {
+      }
+    } else if (reference == "phone"){
+      if (isNumeric(input!) == false || input == "" || input.isEmpty){
+        return "Telefon skal kun indeholde numre!";
+      } else if (input.length < 8 || input.length > 8){
+        return "Nummeret skal være 8 cifre langt!";
+      } else {
+      }
+    }
   }
 
   // Below methods explain themselves
