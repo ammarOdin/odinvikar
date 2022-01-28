@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
@@ -24,6 +23,7 @@ class _State extends State<AdminSettingsScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _updatekey = GlobalKey<FormState>();
 
 
   final emailController = TextEditingController();
@@ -38,6 +38,8 @@ class _State extends State<AdminSettingsScreen> {
   @override
   void  initState() {
     super.initState();
+    setState(() {
+    });
   }
 
   // Display snackbar with provided details
@@ -86,21 +88,49 @@ class _State extends State<AdminSettingsScreen> {
     });
   }
 
-  Widget updateUserField(String uid, String reference, String field, TextEditingController controller) {
+  // update the selected field for a specific user
+  updateUserField(String uid, String reference, String field, TextEditingController controller) {
     return Column(
       children: [
         Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-            Navigator.push(
+          Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
               leading: const BackButton(color: Colors.black),
             ),
-              body: Column(
-                children: [
-                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10, errorText: validateUpdateField(reference, controller.text)),) ,)),
-                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text});} else if (reference == 'password'){updateUserPassword(uid, controller.text);} else { usersRef.doc(uid).update({reference:controller.text}); } _showSnackBar(context, "Nye Oplysninger Gemt", Colors.green); Navigator.pop(context);} on FirebaseAuthException catch(e){_showSnackBar(context, "Fejl", Colors.red);}}, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
-                ],
+              body: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _updatekey,
+                child: Column(
+                  children: [
+                    Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: (input) => validateUpdateField(reference, controller.text), controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10,),) ,)),
+                    Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {
+                      //try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);} else if (reference == 'password'){updateUserPassword(uid, controller.text); _showSnackBar(context, "Ny Adgangskode Gemt", Colors.green); Navigator.pop(context);} else {usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nye Oplysninger Gemt", Colors.green); Navigator.pop(context);} else {_showSnackBar(context, "Fejl", Colors.red);}} on FirebaseAuthException catch(e){_showSnackBar(context, "Databasefejl!", Colors.red);}
+                      final validForm = _updatekey.currentState!.validate();
+                      if (validForm){
+                        switch(reference){
+                        case "email":{
+                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);}on FirebaseAuthException catch(e){_showSnackBar(context, "Databasefejl ved email!", Colors.red);}
+                        }
+                        break;
+                        case "password":{
+                          try{updateUserPassword(uid, controller.text); _showSnackBar(context, "Ny Adgangskode Gemt", Colors.green); Navigator.pop(context);} catch(e){_showSnackBar(context, "Kunne ikke gemme adgangskode!", Colors.red);}
+                        }
+                        break;
+                        case "phone":{
+                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Telefonnummer Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
+                        }
+                        break;
+                        case "name":{
+                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Navn Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme navn!", Colors.red);}
+                        }
+                        break;
+                        }
+                      }
+                    }, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                  ],
+                ),
               ),)));
           }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
         ),
@@ -126,37 +156,52 @@ class _State extends State<AdminSettingsScreen> {
     });
   }
 
+
+
+  // Below explain themselves
   String? validateUpdateField(String reference , String? input){
-    if (reference == "name"){
-      if (input == null || input.isEmpty || input == ""){
-        return "Indsæt navn";
-      } else {
+    switch(reference){
+      case "name": {
+        if (input == null || input.isEmpty || input == ""){
+          return "Indsæt navn";
+        } else {
+          validName == true;
+        }
       }
-    } else if (reference == "email"){
-      if (input == null || input.isEmpty){
-        return "Indsæt e-mail";
-      } else if (!input.contains("@") || !input.contains(".")){
-        return "Ugyldig e-mail";
-      } else {
+      break;
+      case "email": {
+        if (input == null || input.isEmpty){
+          return "Indsæt e-mail";
+        } else if (!input.contains("@") || !input.contains(".")){
+          return "Ugyldig e-mail";
+        } else {
+          validEmail == true;
+        }
       }
-    } else if (reference == "password"){
-      if (input == null || input.isEmpty || input == ""){
-        return "Ugyldig password";
-      } else if (input.length < 6){
-        return "Password skal indeholde mindst 6 tegn!";
-      } else {
+      break;
+      case "password": {
+        if (input == null || input.isEmpty || input == ""){
+          return "Ugyldig password";
+        } else if (input.length < 6){
+          return "Password skal indeholde mindst 6 tegn!";
+        } else {
+          validPassword == true;
+        }
       }
-    } else if (reference == "phone"){
-      if (isNumeric(input!) == false || input == "" || input.isEmpty){
-        return "Telefon skal kun indeholde numre!";
-      } else if (input.length < 8 || input.length > 8){
-        return "Nummeret skal være 8 cifre langt!";
-      } else {
+      break;
+      case "phone": {
+        if (isNumeric(input!) == false || input == "" || input.isEmpty){
+          return "Telefon skal kun indeholde numre!";
+        } else if (input.length < 8 || input.length > 8){
+          return "Nummeret skal være 8 cifre langt!";
+        } else {
+          validPhone == true;
+        }
       }
+      break;
     }
   }
 
-  // Below methods explain themselves
   String? validateName(String? name){
     if (name == null || name.isEmpty || name == ""){
       return "Indsæt navn";
@@ -392,7 +437,7 @@ class _State extends State<AdminSettingsScreen> {
                                           updateUserField(e.id, 'email', e['email'], emailController),
                                           updateUserField(e.id, 'password', "Adgangskode", passwordController),
                                           updateUserField(e.id, 'phone', e['phone'], phoneController),
-                                          updateUserField(e.id, 'name', e['name'], nameController),
+                                          updateUserField(e.id, 'name', e['name'],nameController),
                                           Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
                                       ],
                                       ),)));
