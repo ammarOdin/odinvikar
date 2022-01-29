@@ -79,8 +79,8 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
                   CardFb2(text: document.substring(8), imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Opkald/SMS", onPressed: (){
                     showDialog(context: context, builder: (BuildContext context){
                       return SimpleDialog(title: const Center(child: Text("Kontakt"),), children: [
-                        SimpleDialogOption(onPressed: (){}, child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),
-                        SimpleDialogOption(onPressed: (){}, child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + document.substring(0,8));},), ),),
+                        SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),
+                        SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + document.substring(0,8));},), ),),
                       ],);
                     });
                   }),
