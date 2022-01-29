@@ -429,7 +429,6 @@ class _State extends State<AdminSettingsScreen> {
                                         context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
                                       backgroundColor: Colors.transparent,
                                       elevation: 0,
-                                      leading: const BackButton(color: Colors.black),
                                     ),
                                       body: Column(
                                         children: [

@@ -73,17 +73,6 @@ class _State extends State<AdminCalendar> {
     });
   }
 
-  Future<List> getInfo() async {
-    List<String> phoneNr = [];
-    QuerySnapshot usersSnapshot = await usersRef.get();
-    for (var users in usersSnapshot.docs){
-      if(users.get(FieldPath(const ['isAdmin']))==false){
-        phoneNr.add(users.get(FieldPath(const['phone']))+users.get(FieldPath(const['name'])));
-      }
-    }
-    return phoneNr;
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -112,68 +101,14 @@ class _State extends State<AdminCalendar> {
                 ),
               ),
 
-              const Divider(thickness: 1, height: 4),
-
-              Container(
-                height: 50,
-                width: 150,
-                margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.contact_phone), label: const Align(alignment: Alignment.centerLeft, child: Text("Telefonliste")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
-            ],
+              //const Divider(thickness: 1, height: 4),
+              ],
           ),
         ),
       ),
     );
   }
 
-  Future showJobInfo () => showSlidingBottomSheet(
-    context,
-    builder: (context) => SlidingSheetDialog(
-      duration: const Duration(milliseconds: 450),
-      snapSpec: const SnapSpec(
-          snappings: [0.4, 0.7, 1], initialSnap: 0.4
-      ),
-      builder: showJob,
-      /////headerBuilder: buildHeader,
-      avoidStatusBar: true,
-      cornerRadius: 15,
-    ),
-  );
-
-  Widget showJob(context, state) => Material(
-  child: ListView(
-      shrinkWrap: true,
-      primary: false,
-      children: [
-        FutureBuilder(future: getInfo(), builder: (context, AsyncSnapshot<List> snapshot){
-          if (!snapshot.hasData){
-            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
-          } else if (snapshot.data!.isEmpty) {
-            return Container(
-              padding: const EdgeInsets.all(50),
-              child: const Center(child: Text(
-                "Ingen Vikarer",
-                style: TextStyle(color: Colors.blue, fontSize: 18),
-              ),),
-            );
-          }
-          return Column(
-            children: snapshot.data!.map<Widget>((document){
-              return Column(children: [
-                Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Text(document.substring(8), style: const TextStyle(fontWeight: FontWeight.bold),),),),
-                Row(
-                  children: [
-                    SizedBox(height:50, width:MediaQuery.of(context).size.width/2, child: Container(margin: const EdgeInsets.only(left: 3, right: 3, bottom: 10), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {Navigator.pop(context); launch("tel://" + document.substring(0,8));}, child: const Text("Opkald"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Opkald", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.call, color: Colors.green,))]),)) ,)),
-                    SizedBox(height:50, width:MediaQuery.of(context).size.width/2,child: Container(margin: const EdgeInsets.only(left: 3, right: 3, bottom: 10), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Skriv SMS"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du er ved at sende en besked"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {Navigator.pop(context); launch("sms:" + document.substring(0,8));}, child: const Text("Skriv SMS"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("SMS", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.message, color: Colors.orangeAccent,))]),)) ,)),
-                  ],
-                ),
-              ],);
-            }).toList(),
-          );
-        }),
-      ],
-    ),
-  );
 
 }
 

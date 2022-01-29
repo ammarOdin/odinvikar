@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_calendar.dart';
+import 'package:odinvikar/admin/admin_contact_screen.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
 
@@ -47,6 +48,7 @@ class _HomescreenState extends State<AdminDashboard> {
           children: const <Widget>[
             AdminHomeScreen(),
             AdminCalendar(),
+            AdminContactScreen(),
             AdminSettingsScreen(),
           ],
         ),
@@ -67,6 +69,10 @@ class _HomescreenState extends State<AdminDashboard> {
           BottomNavigationBarItem(
               label: 'Kalender',
               icon: Icon(Icons.apps)
+          ),
+          BottomNavigationBarItem(
+              label: 'Telefonliste',
+              icon: Icon(Icons.phone),
           ),
           BottomNavigationBarItem(
               label: 'Indstillinger',
