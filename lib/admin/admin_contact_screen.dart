@@ -72,7 +72,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
             );
           }
           return Container(
-            padding: EdgeInsets.only(top:20),
+            padding: const EdgeInsets.only(top:20),
             child: Column(
               children: snapshot.data!.map<Widget>((document){
                 return Column(children: [

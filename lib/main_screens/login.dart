@@ -115,14 +115,8 @@ class AuthenticationWrapper extends StatelessWidget {
         .get()
         .then((DocumentSnapshot documentSnapshot){
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        if (kDebugMode) {
-          print('ADMIN login.dart');
-        }
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        if (kDebugMode) {
-          print('NOT ADMIN login.dart');
-        }
         return false;
       }
     });

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:intl/intl.dart';
+
 import 'package:week_of_year/week_of_year.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,6 +38,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -52,10 +56,20 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       top: MediaQuery.of(context).size.height / 30),
                   child: const Center(
                       child: Text(
-                        "Næste mulige vagt",
+                        "Vagt Oversigt",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
               Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 40),
+                  child: Center(
+                    child: Text(
+                      DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                      style: const TextStyle(color: Colors.white, fontSize: 26),
+                    ),
+                  )
+              ),
+              /*Container(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 40),
                 child: StreamBuilder(
@@ -77,7 +91,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         }).first);}
                   }
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
@@ -100,7 +114,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                 return Column(
                   children: snapshot.data!.docs.map((document){
                     if (document['week'] == DateTime.now().weekOfYear) {
-                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: " Se Mere", onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet af vikar-teamet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+                      });
                     } else {
                       return Container();
                     }
@@ -110,7 +126,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                 return Column(
                   children: snapshot.data!.docs.map((document){
                     if (document['month'] == DateTime.now().month) {
-                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: () {});
+                      return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se Mere", onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet af vikar-teamet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+
+                      });
                     } else {
                       return Container();
                     }
@@ -124,6 +143,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 }
+
+
 class CardFb2 extends StatelessWidget {
   final String text;
   final String imageUrl;
@@ -184,5 +205,8 @@ class CardFb2 extends StatelessWidget {
         ),
       ),
     );
+
   }
+
+
 }
