@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -210,13 +211,23 @@ class _State extends State<OwnDaysScreen> {
                   ),),
                 );
               }
+
                 return Column(
                 children: snapshot.data!.docs.map((document){
-                  return Column(children: [
-                    Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text("Vagt: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
-                  ],);
-                }).toList(),
-              );
+                  var docDate = DateFormat('dd-MM-yyyy').parse(document['date']);
+                  if (DateTime.now().isAfter(docDate)){
+                    if (kDebugMode) {
+                      print('datetime.now > document[date]');
+                    }
+                    return Container();
+                  } else if (DateTime.now().isBefore(docDate)){
+                    return Column(children: [
+                      Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text("Vagt: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+                    ],);
+                  } else {
+                    return Container();
+                  }
+                }).toList(),);
             }),
       ],
     ),
