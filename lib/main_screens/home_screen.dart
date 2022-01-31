@@ -115,7 +115,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   children: snapshot.data!.docs.map((document){
                     if (document['week'] == DateTime.now().weekOfYear) {
                       return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: " Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet af vikar-teamet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
                       });
                     } else {
                       return Container();
@@ -127,7 +127,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   children: snapshot.data!.docs.map((document){
                     if (document['month'] == DateTime.now().month) {
                       return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet af vikar-teamet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
 
                       });
                     } else {

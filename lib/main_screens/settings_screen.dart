@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:validators/validators.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -14,10 +15,116 @@ class SettingsScreen extends StatefulWidget {
 class _State extends State<SettingsScreen> {
 
   get getUserInfo => FirebaseFirestore.instance.collection('user').doc(user!.uid);
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
   User? user = FirebaseAuth.instance.currentUser;
+
+  final GlobalKey<FormState> _updateInfokey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _authUserkey = GlobalKey<FormState>();
+
+
+  final emailController = TextEditingController();
+  final updatedEmailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  String? validatePassword(String? password){
+    if (password == null || password.isEmpty){
+      return "Indsæt password";
+    }
+  }
+
+  String? validateEmail(String? email){
+    if (email == null || email.isEmpty){
+      return "Indsæt e-mail";
+    } else if (!email.contains("@") || !email.contains(".")){
+      return "Ugyldig e-mail";
+    }
+  }
+
+  String? validateUpdateField(String reference , String? input){
+    switch(reference){
+      case "phone": {
+        if (isNumeric(input!) == false || input == "" || input.isEmpty){
+          return "Telefon skal kun indeholde numre!";
+        } else if (input.length < 8 || input.length > 8){
+          return "Nummeret skal være 8 cifre langt!";
+        }
+      }
+      break;
+      case "email": {
+        if (input == null || input.isEmpty){
+          return "Indsæt e-mail";
+        } else if (!input.contains("@") || !input.contains(".")){
+          return "Ugyldig e-mail";
+        }
+      }
+      break;
+    }
+  }
+
+  updateUserField(String uid, String reference, String field, TextEditingController controller) {
+    return Column(
+      children: [
+        Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: const BackButton(color: Colors.black),
+          ),
+            body: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _updateInfokey,
+              child: Column(
+                children: [
+                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: (input) => validateUpdateField(reference, controller.text), controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10,),) ,)),
+                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {
+                    final validForm = _updateInfokey.currentState!.validate();
+                    if (validForm){
+                      switch(reference){
+                        case "phone":{
+                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Telefonnummer Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
+                        }
+                        break;
+                        case "email":{
+                          showDialog(context: context, builder: (BuildContext context){
+                            emailController.clear();
+                            return Form(
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              key: _authUserkey,
+                              child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode, for at komme videre."), actions: [
+                              TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
+                              TextFormField(validator: validatePassword, controller: passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
+                              TextButton(onPressed: () async {
+                                if (_authUserkey.currentState!.validate()){
+                                  try{
+                                  AuthCredential credential = EmailAuthProvider.credential(email: emailController.text, password: passwordController.text);
+                                  await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);
+                                  _showSnackBar(context, "Autentificering godkendt", Colors.green);
+                                  FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
+                                  usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt!", Colors.green); Navigator.pop(context); Navigator.pop(context);
+                                  }
+                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){_showSnackBar(context, "Forkert adgangskode!", Colors.red);} else if (e.code == "invalid-email"){ _showSnackBar(context, "Forkert E-mail!", Colors.red);} else if (e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else { _showSnackBar(context, "Fejlkode " + e.code, Colors.red);}}
+                                }
+                              }, child: const Text("Godkend")),
+                          ],),
+                            );});
+                        }
+                        break;
+                      }
+                    }
+                  }, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                ],
+              ),
+            ),)));
+        }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
+        ),
+      ],
+    );
   }
 
   @override
@@ -112,39 +219,63 @@ class _State extends State<SettingsScreen> {
       shrinkWrap: true,
       primary: false,
       children: [
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 30), child: const Center(child: Text("Mine Oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Align(alignment: Alignment.centerLeft, child: Row(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Telefonnummer: ", style: TextStyle(fontWeight: FontWeight.bold),),
+            Container(padding: const EdgeInsets.only(bottom: 20), child: const Center(child: Text("Mine Oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
+            Container(padding: const EdgeInsets.only(bottom: 20), child: Center(child: TextButton(onPressed: (){
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: const BackButton(color: Colors.black),
+              ),
+                body: Column(
+                  children: [
+                    Container(padding: const EdgeInsets.only(bottom: 20, top: 20) , child: const Center(child: Text("Rediger Bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
+                    updateUserField(user!.uid, 'phone', "Telefon", phoneController),
+                    updateUserField(user!.uid, 'email', "E-mail", updatedEmailController),
+                  ],
+                ),)));
+            }, child: const Text("Rediger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.red)),),),),
+          ],
+        ),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Telefonnummer", style: TextStyle(fontWeight: FontWeight.bold),),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData){
                     var name = snapshot.data as DocumentSnapshot;
-                    return Center(
-                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.grey),));
                   }
                   return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
             ),
           ],
-        ),),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 10, left: 10), child: Align(alignment: Alignment.centerLeft, child: Row(
+        ),),
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("E-mail: ", style: TextStyle(fontWeight: FontWeight.bold),),
+            const Text("E-mail", style: TextStyle(fontWeight: FontWeight.bold),),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData){
                     var name = snapshot.data as DocumentSnapshot;
-                    return Center(
-                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
+                    return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.grey),));
                   }
                   return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
             ),
           ],
-        ),),),
+        ),),
         Container(padding: const EdgeInsets.all(10),),
       ],
     ),
