@@ -102,8 +102,9 @@ class _State extends State<SettingsScreen> {
                               TextButton(onPressed: () async {
                                 if (_authUserkey.currentState!.validate()){
                                   try{
-                                  AuthCredential credential = EmailAuthProvider.credential(email: emailController.text, password: passwordController.text);
-                                  await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);
+                                  /*AuthCredential credential = EmailAuthProvider.credential(email: emailController.text, password: passwordController.text);
+                                  await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);*/
+                                    await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
                                   _showSnackBar(context, "Autentificering godkendt", Colors.green);
                                   FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
                                   usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt!", Colors.green); Navigator.pop(context); Navigator.pop(context);
