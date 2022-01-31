@@ -87,6 +87,7 @@ class _LoginState extends State<LoginScreen> {
 
           Form(
             key: _key,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               children: [
                 Container(padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15), margin: const EdgeInsets.only(top: 10), child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'E-mail',),)),

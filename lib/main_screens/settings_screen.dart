@@ -96,7 +96,7 @@ class _State extends State<SettingsScreen> {
                             return Form(
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               key: _authUserkey,
-                              child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode, for at komme videre."), actions: [
+                              child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."), actions: [
                               TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
                               TextFormField(validator: validatePassword, controller: passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
                               TextButton(onPressed: () async {
