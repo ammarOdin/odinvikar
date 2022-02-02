@@ -84,7 +84,6 @@ class _LoginState extends State<LoginScreen> {
               ],
             ),
           ),
-
           Form(
             key: _key,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -99,6 +98,7 @@ class _LoginState extends State<LoginScreen> {
               ],
             ),
           ),
+          Align(alignment: Alignment.bottomRight, child: IconButton(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Hjælp"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Kontakt din leder for at få dine loginoplysninger"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});} , icon: const Icon(Icons.info_outline_rounded, color: Colors.blue,))),
         ],
       ),
     );
