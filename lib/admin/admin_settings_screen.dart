@@ -51,6 +51,7 @@ class _State extends State<AdminSettingsScreen> {
   Future<UserCredential> register(String email, String password) async {
     FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
     try {
+      // initialize another app to prevent current user from logging out on creation of a new user
       UserCredential userCredential = await FirebaseAuth.instanceFor(app: app).createUserWithEmailAndPassword(email: email, password: password);
 
       usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
@@ -66,6 +67,7 @@ class _State extends State<AdminSettingsScreen> {
         }
       });
 
+      // killing the app after use
       await app.delete();
       return Future.sync(() => userCredential);
     }
@@ -75,7 +77,7 @@ class _State extends State<AdminSettingsScreen> {
         print(e.toString());
       }
     }
-
+    // making sure the app is killed, even if failed operation above
     await app.delete();
     return FirebaseAuth.instance.currentUser as UserCredential;
   }
@@ -111,7 +113,7 @@ class _State extends State<AdminSettingsScreen> {
                       if (validForm){
                         switch(reference){
                         case "email":{
-                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);}on FirebaseAuthException catch(e){_showSnackBar(context, "Databasefejl ved email!", Colors.red);}
+                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);}on FirebaseAuthException catch(e){if(e.code == 'invalid-email'){_showSnackBar(context, "Ugyldig E-mail", Colors.red);} else {_showSnackBar(context, "Databasefejl ved email!", Colors.red);}}
                         }
                         break;
                         case "password":{

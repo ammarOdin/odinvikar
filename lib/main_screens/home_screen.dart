@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:intl/intl.dart';
 
 import 'package:week_of_year/week_of_year.dart';
@@ -167,16 +166,16 @@ class CardFb2 extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         height: 75,
         padding: const EdgeInsets.all(15.0),
-        margin: const EdgeInsets.only(bottom: 5),
+        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12.5),
+          borderRadius: BorderRadius.circular(5),
           boxShadow: [
             BoxShadow(
-                offset: const Offset(10, 20),
+                offset: const Offset(5, 5),
                 blurRadius: 10,
                 spreadRadius: 0,
-                color: Colors.grey.withOpacity(.05)),
+                color: Colors.grey.withOpacity(.2)),
           ],
         ),
         child: Row(

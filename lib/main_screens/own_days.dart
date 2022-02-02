@@ -13,6 +13,7 @@ class OwnDaysScreen extends StatefulWidget {
 
   @override
   _State createState() => _State();
+
 }
 
 class _State extends State<OwnDaysScreen> {
@@ -32,7 +33,9 @@ class _State extends State<OwnDaysScreen> {
   void initState() {
     getFirestoreShift().then((results) {
       SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-        setState(() {});
+        setState(() {
+
+        });
       });
     });
     super.initState();
@@ -73,9 +76,10 @@ class _State extends State<OwnDaysScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return RefreshIndicator(
-      onRefresh: () {return Future.delayed(const Duration(seconds: 1));},
+      onRefresh: () {
+        return Future.delayed(const Duration(seconds: 1));
+        },
       backgroundColor: Colors.white,
       displacement: 70,
       edgeOffset: 0,
@@ -96,7 +100,6 @@ class _State extends State<OwnDaysScreen> {
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
                   monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 125,agendaItemHeight: 30,),
                   dataSource: events,
-
                 ),
               ),
 
@@ -118,23 +121,18 @@ class _State extends State<OwnDaysScreen> {
                       lastDate: DateTime.now().add(const Duration(days: 60))))!;
 
                       final f = DateFormat('dd-MM-yyyy');
-
-                      //var pickedDate = DateFormat.yMMMd().format(_pickedDay);
                       var pickedDate = f.format(_pickedDay);
                       var pickedMonth = _pickedDay.month;
                       var pickedWeek = _pickedDay.weekOfYear;
-
 
                   saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
                     if (documentSnapshot.exists) {
                       _showSnackBar(context, "Vagten findes allerede!", Colors.red);
                     } else if (!documentSnapshot.exists){
                       await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
+                      getFirestoreShift();
                       _showSnackBar(context, "Vagt Tilføjet", Colors.green);
-                      setState(() {
-                      });
                     }
-
                   });
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")),),
               ),
@@ -217,7 +215,7 @@ class _State extends State<OwnDaysScreen> {
                     return Container();
                   } else if (DateTime.now().isBefore(docDate)){
                     return Column(children: [
-                      Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text("Vagt: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
+                      Container(margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Vagt"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Er du sikker på at slette vagten?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))],);});}, child: Align(alignment: Alignment.centerLeft, child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text("Vagt: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))]),)) ,),
                     ],);
                   } else {
                     return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
