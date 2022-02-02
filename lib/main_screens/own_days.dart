@@ -78,7 +78,7 @@ class _State extends State<OwnDaysScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () {
-        return Future.delayed(const Duration(seconds: 1));
+        return getFirestoreShift();
         },
       backgroundColor: Colors.white,
       displacement: 70,
