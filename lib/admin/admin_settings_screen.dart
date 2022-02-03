@@ -25,7 +25,6 @@ class _State extends State<AdminSettingsScreen> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final GlobalKey<FormState> _updatekey = GlobalKey<FormState>();
 
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
@@ -108,7 +107,6 @@ class _State extends State<AdminSettingsScreen> {
                   children: [
                     Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: (input) => validateUpdateField(reference, controller.text), controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10,),) ,)),
                     Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {
-                      //try {if (reference == 'email'){updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);} else if (reference == 'password'){updateUserPassword(uid, controller.text); _showSnackBar(context, "Ny Adgangskode Gemt", Colors.green); Navigator.pop(context);} else {usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nye Oplysninger Gemt", Colors.green); Navigator.pop(context);} else {_showSnackBar(context, "Fejl", Colors.red);}} on FirebaseAuthException catch(e){_showSnackBar(context, "Databasefejl!", Colors.red);}
                       final validForm = _updatekey.currentState!.validate();
                       if (validForm){
                         switch(reference){

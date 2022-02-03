@@ -165,15 +165,15 @@ class CardFb2 extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 75,
-        padding: const EdgeInsets.all(15.0),
-        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.only(bottom: 8, left: 10, right: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
-                blurRadius: 10,
+                blurRadius: 15,
                 spreadRadius: 0,
                 color: Colors.grey.withOpacity(.2)),
           ],
