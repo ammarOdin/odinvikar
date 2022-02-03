@@ -98,7 +98,7 @@ class _State extends State<SettingsScreen> {
                               key: _authUserkey,
                               child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."), actions: [
                               TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
-                              TextFormField(validator: validatePassword, controller: passwordController, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
+                              TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
                               TextButton(onPressed: () async {
                                 if (_authUserkey.currentState!.validate()){
                                   try{
@@ -284,7 +284,7 @@ class _State extends State<SettingsScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData){
                   var name = snapshot.data as DocumentSnapshot;
-                  return Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: Text("Du er ved at nulstille din adgangskode. En E-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});}, child: const Text("Nulstil Adgangskode"))));
+                  return Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: Text("Du er ved at nulstille din adgangskode. En E-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});}, child: const Text("Nulstil Adgangskode"))));
                 }
                 return Container();
               }
