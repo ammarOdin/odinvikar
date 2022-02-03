@@ -277,7 +277,18 @@ class _State extends State<SettingsScreen> {
             ),
           ],
         ),),
-        Container(padding: const EdgeInsets.all(10),),
+        Container(padding: const EdgeInsets.all(5),),
+
+          StreamBuilder(
+              stream: getUserInfo.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData){
+                  var name = snapshot.data as DocumentSnapshot;
+                  return Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: Text("Du er ved at nulstille din adgangskode. En E-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});}, child: const Text("Nulstil Adgangskode"))));
+                }
+                return Container();
+              }
+          ),
       ],
     ),
   );
