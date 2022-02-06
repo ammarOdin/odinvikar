@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AdminCalendar extends StatefulWidget {
   const AdminCalendar({Key? key}) : super(key: key);
@@ -65,7 +63,7 @@ class _State extends State<AdminCalendar> {
     List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(10),
         from: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
         to: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
-        background: Colors.blue,
+        background: Colors.green,
         isAllDay: true)).toList();
 
     setState(() {
