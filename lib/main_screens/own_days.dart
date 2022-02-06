@@ -59,10 +59,13 @@ class _State extends State<OwnDaysScreen> {
   Future<void> getFirestoreShift() async {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
-    List<Meeting> list = snapShotsValue.docs.map((e)=> Meeting(eventName: "Til Rådighed",
+
+
+    List<Meeting> list = snapShotsValue.docs.map((e)=>
+        Meeting(eventName: "Til Rådighed",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
-        background: Colors.green,
+        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date'])) ? Colors.grey : Colors.green,
         isAllDay: true)).toList();
 
     setState(() {

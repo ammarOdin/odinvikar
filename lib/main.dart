@@ -2,17 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
+import 'package:odinvikar/intro_screen.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+bool screen = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // onboarding
+  final preferences = await SharedPreferences.getInstance();
+  screen = preferences.getBool("on_boarding") ?? true;
+
   runApp(const MyApp());
 }
 
@@ -32,7 +40,7 @@ class MyApp extends StatelessWidget {
         Locale('en'),
         Locale('da')
       ],
-        title: 'Odin Vikar Oversigt',
+        title: 'Vikar Oversigt',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: const Color(0xFF3EBACE),
@@ -40,6 +48,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(elevation: 0),
         ),
       home: user == null? const LoginScreen() : const AuthenticationWrapper(),
+      //home: screen? IntroScreen() : const AuthenticationWrapper(),
       locale: const Locale('da'),
     );
   }
@@ -64,7 +73,7 @@ class AuthenticationWrapper extends StatelessWidget {
     return admin;
   }
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
 
   }

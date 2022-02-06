@@ -46,6 +46,7 @@ dependencies:
   url_launcher: ^6.0.18
   validators: ^3.0.0
   introduction_screen: ^2.1.0
+  shared_preferences: ^2.0.13
   #animations: ^2.0.2
 
   # The following adds the Cupertino Icons font to your application.
