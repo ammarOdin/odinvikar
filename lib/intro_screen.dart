@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:introduction_screen/introduction_screen.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
-import 'package:odinvikar/main_screens/home_screen.dart';
+import 'package:onboarding/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroScreen extends StatelessWidget {
   IntroScreen({Key? key}) : super(key: key);
 
-  final List<PageViewModel> pages = [
+/*  final List<PageViewModel> pages = [
     PageViewModel(title: "Velkommen til OdinVikar", body: "Hold styr på de dage du kan arbejde.", image: Container(padding: const EdgeInsets.only(top: 50), child: Center(child: Image.asset("assets/1.png"),)), footer: ElevatedButton(onPressed: () {}, child: const Text("Næste"),)),
-  ];
+  ];*/
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,72 @@ class IntroScreen extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),),
-      body: IntroductionScreen(pages: pages, dotsDecorator: const DotsDecorator(
+      body: Onboarding(
+        background: Colors.blueGrey,
+        proceedButtonStyle: ProceedButtonStyle(proceedpButtonText: const Text("Fortsæt"),
+          proceedButtonRoute: onDone,
+        ),
+        isSkippable: false,
+        pages: [
+          PageModel(
+            widget: Column(
+              children: [
+                Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/1.png'))),
+                const Text('Velkommen til OdinVikar', style: pageTitleStyle),
+                const Text(
+                  'Hold styr på hvornår du kan arbejde, nemt og enkelt',
+                  style: pageInfoStyle,
+                )
+              ],
+            ),
+          ),
+          PageModel(
+            widget: Column(
+              children: [
+                Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/2.png'))),
+                const Text('Vagt Oversigt', style: pageTitleStyle),
+                const Text(
+                  'Se hvilke dage du har sat dig selv til rådighed',
+                  style: pageInfoStyle,
+                )
+              ],
+            ),
+          ),
+          PageModel(
+            widget: Column(
+              children: [
+                Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/3.png'))),
+                const Text('Strukturer dine vagter', style: pageTitleStyle),
+                const Text(
+                  'Sæt dig selv til rådighed, rediger og strukturer dine dage',
+                  style: pageInfoStyle,
+                )
+              ],
+            ),
+          ),
+          PageModel(
+            widget: Column(
+              children: [
+                Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/4.png'))),
+                const Text('Dine Oplysninger', style: pageTitleStyle),
+                const Text(
+                  'Se og rediger dine personlige oplysninger',
+                  style: pageInfoStyle,
+                )
+              ],
+            ),
+          ),
+        ],
+        indicator: Indicator(
+          indicatorDesign: IndicatorDesign.line(
+            lineDesign: LineDesign(
+              lineType: DesignType.line_uniform,
+            ),
+          ),
+        ),
+      )
+
+      /*IntroductionScreen(pages: pages, dotsDecorator: const DotsDecorator(
         size: Size(10,10),
         color: Colors.blue,
         activeSize: Size.square(15),
@@ -30,13 +94,13 @@ class IntroScreen extends StatelessWidget {
         showNextButton: true,
         next: const Icon(Icons.arrow_forward),
         onDone: (){onDone(context);},
-      ),
+      ),*/
     );
   }
 
   void onDone(context) async {
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool("on_boarding", false );
+    await preferences.setBool("on_boarding", false);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
   }
 }

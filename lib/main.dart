@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/intro_screen.dart';
@@ -74,7 +75,22 @@ class AuthenticationWrapper extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
-
+    //return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
+    if (screen == false){
+      if (kDebugMode) {
+        print("No Onboarding");
+      }
+      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
+    } else if (screen == true){
+      if (kDebugMode) {
+        print("Onboarding");
+      }
+      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): IntroScreen());
+    } else {
+      if (kDebugMode) {
+        print("Error");
+      }
+      return const LoginScreen();
+    }
   }
 }

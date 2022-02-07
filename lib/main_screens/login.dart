@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 
+import '../main.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -93,7 +95,19 @@ class _LoginState extends State<LoginScreen> {
                 Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-                  child: ElevatedButton.icon(onPressed: () async {if (_key.currentState!.validate()){try{await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text); _showSnackBar(context, "Logget Ind", Colors.green); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthenticationWrapper()));} on FirebaseAuthException catch(e){if(e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else {_showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}}} }, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+                  child: ElevatedButton.icon(onPressed: () async {
+                    if (_key.currentState!.validate()){
+                      try{
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                        _showSnackBar(context, "Logget Ind", Colors.green);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthenticationWrapper()));
+                      } on FirebaseAuthException catch(e){
+                        if(e.code == "user-not-found"){
+                          _showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);
+                        } else {
+                          _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}
+                      }
+                    }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
               ],
             ),
           ),
@@ -104,12 +118,12 @@ class _LoginState extends State<LoginScreen> {
   }
 }
 
-class AuthenticationWrapper extends StatelessWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+class AuthenticationLogin extends StatelessWidget {
+  const AuthenticationLogin({Key? key}) : super(key: key);
 
   isAdmin() async {
     var login = await
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
