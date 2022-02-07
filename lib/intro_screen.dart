@@ -4,11 +4,7 @@ import 'package:onboarding/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroScreen extends StatelessWidget {
-  IntroScreen({Key? key}) : super(key: key);
-
-/*  final List<PageViewModel> pages = [
-    PageViewModel(title: "Velkommen til OdinVikar", body: "Hold styr på de dage du kan arbejde.", image: Container(padding: const EdgeInsets.only(top: 50), child: Center(child: Image.asset("assets/1.png"),)), footer: ElevatedButton(onPressed: () {}, child: const Text("Næste"),)),
-  ];*/
+  const IntroScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +25,7 @@ class IntroScreen extends StatelessWidget {
               children: [
                 Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/1.png'))),
                 const Text('Velkommen til OdinVikar', style: pageTitleStyle),
-                const Text(
-                  'Hold styr på hvornår du kan arbejde, nemt og enkelt',
-                  style: pageInfoStyle,
-                )
+                const Text('Hold styr på hvornår du kan arbejde, nemt og enkelt.', style: pageInfoStyle,)
               ],
             ),
           ),
@@ -41,10 +34,7 @@ class IntroScreen extends StatelessWidget {
               children: [
                 Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/2.png'))),
                 const Text('Vagt Oversigt', style: pageTitleStyle),
-                const Text(
-                  'Se hvilke dage du har sat dig selv til rådighed',
-                  style: pageInfoStyle,
-                )
+                const Text('Se hvilke dage du har sat dig selv til rådighed.', style: pageInfoStyle,)
               ],
             ),
           ),
@@ -53,10 +43,7 @@ class IntroScreen extends StatelessWidget {
               children: [
                 Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/3.png'))),
                 const Text('Strukturer dine vagter', style: pageTitleStyle),
-                const Text(
-                  'Sæt dig selv til rådighed, rediger og strukturer dine dage',
-                  style: pageInfoStyle,
-                )
+                const Text('Sæt dig selv til rådighed, rediger og strukturer dine dage.', style: pageInfoStyle,)
               ],
             ),
           ),
@@ -65,10 +52,7 @@ class IntroScreen extends StatelessWidget {
               children: [
                 Container(padding: const EdgeInsets.only(bottom: 50, top: 50), child: ClipRRect(borderRadius: BorderRadius.circular(50), child: Image.asset('assets/4.png'))),
                 const Text('Dine Oplysninger', style: pageTitleStyle),
-                const Text(
-                  'Se og rediger dine personlige oplysninger',
-                  style: pageInfoStyle,
-                )
+                const Text('Se og rediger dine personlige oplysninger.', style: pageInfoStyle,)
               ],
             ),
           ),
@@ -81,20 +65,6 @@ class IntroScreen extends StatelessWidget {
           ),
         ),
       )
-
-      /*IntroductionScreen(pages: pages, dotsDecorator: const DotsDecorator(
-        size: Size(10,10),
-        color: Colors.blue,
-        activeSize: Size.square(15),
-        activeColor: Colors.blueAccent
-      ),
-      showDoneButton: true,
-      done: const Text("Kom i gang"),
-        showSkipButton: false,
-        showNextButton: true,
-        next: const Icon(Icons.arrow_forward),
-        onDone: (){onDone(context);},
-      ),*/
     );
   }
 
