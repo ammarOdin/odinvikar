@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
     localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
-        SfGlobalLocalizations.delegate
+        GlobalWidgetsLocalizations.delegate,
+        SfGlobalLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
         Locale('en'),
@@ -77,19 +79,10 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     //return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     if (screen == false){
-      if (kDebugMode) {
-        print("No Onboarding");
-      }
       return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     } else if (screen == true){
-      if (kDebugMode) {
-        print("Onboarding");
-      }
-      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): IntroScreen());
+      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const IntroScreen());
     } else {
-      if (kDebugMode) {
-        print("Error");
-      }
       return const LoginScreen();
     }
   }
