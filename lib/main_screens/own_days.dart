@@ -59,13 +59,11 @@ class _State extends State<OwnDaysScreen> {
   Future<void> getFirestoreShift() async {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
-
-
     List<Meeting> list = snapShotsValue.docs.map((e)=>
         Meeting(eventName: "Til Rådighed",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
-        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date'])) ? Colors.grey : Colors.green,
+        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.green,
         isAllDay: true)).toList();
 
     setState(() {
@@ -101,7 +99,7 @@ class _State extends State<OwnDaysScreen> {
                     startHour: 7,
                     endHour: 19,
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 125,agendaItemHeight: 30,),
+                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 125, agendaItemHeight: 30,),
                   dataSource: events,
                 ),
               ),
@@ -213,7 +211,7 @@ class _State extends State<OwnDaysScreen> {
               }
                 return Column(
                 children: snapshot.data!.docs.map((document){
-                  var docDate = DateFormat('dd-MM-yyyy').parse(document['date']);
+                  var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
                   if (DateTime.now().isAfter(docDate)){
                     return Container();
                   } else if (DateTime.now().isBefore(docDate)){

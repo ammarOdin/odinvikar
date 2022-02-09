@@ -93,7 +93,7 @@ class _State extends State<AdminCalendar> {
                     startHour: 7,
                     endHour: 19,
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 120,),
+                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 200,),
                   dataSource: events,
 
                 ),

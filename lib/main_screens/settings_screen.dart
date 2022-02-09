@@ -259,7 +259,7 @@ class _State extends State<SettingsScreen> {
             ),
           ],
         ),),
-        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Column(
+        Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(left: 10), child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text("E-mail", style: TextStyle(fontWeight: FontWeight.bold),),

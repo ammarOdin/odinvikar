@@ -124,7 +124,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               } else if (_controller.index == 1){
                 return Column(
                   children: snapshot.data!.docs.map((document){
-                    if (document['month'] == DateTime.now().month) {
+                    var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
+                    if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
                       return CardFb2(text: "Vagt: " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "Se Mere", onPressed: () {
                         showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Vagt: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: const Text("Du har sat dig selv til rådighed på valgte dato. Dette betyder ikke at du er garanteret vagten. Du vil blive kontaktet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
 
