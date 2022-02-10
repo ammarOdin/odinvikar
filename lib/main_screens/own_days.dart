@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -6,6 +7,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:week_of_year/week_of_year.dart';
 
 class OwnDaysScreen extends StatefulWidget {
@@ -19,14 +21,14 @@ class OwnDaysScreen extends StatefulWidget {
 class _State extends State<OwnDaysScreen> {
 
   late DateTime _pickedDay;
-
+  late List<DateTime> _specialDates;
   User? user = FirebaseAuth.instance.currentUser;
-
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
-
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
+  final DateRangePickerController drpController = DateRangePickerController();
+
 
 
   @override
@@ -34,10 +36,10 @@ class _State extends State<OwnDaysScreen> {
     getFirestoreShift().then((results) {
       SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
         setState(() {
-
         });
       });
     });
+    _specialDates = <DateTime>[DateTime.now()];
     super.initState();
   }
 
@@ -71,6 +73,13 @@ class _State extends State<OwnDaysScreen> {
     });
   }
 
+  void changedSelection(DateRangePickerSelectionChangedArgs args){
+    //todo - when datecells are selected, show info
+    if (kDebugMode) {
+      print(args.value);
+    }
+  }
+
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
@@ -92,7 +101,21 @@ class _State extends State<OwnDaysScreen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 1.45,
                 width: MediaQuery.of(context).size.width,
-                child: SfCalendar(
+                child: SfDateRangePicker(
+                  view: DateRangePickerView.month,
+                  controller: drpController,
+                  onSelectionChanged: changedSelection,
+                  selectionShape: DateRangePickerSelectionShape.rectangle,
+                  selectionMode: DateRangePickerSelectionMode.multiple,
+                  monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1, specialDates: _specialDates),
+                  monthCellStyle: DateRangePickerMonthCellStyle(
+                    specialDatesDecoration: BoxDecoration(
+                        color: Colors.green,
+                        border: Border.all(color: const Color(0xFF2B732F), width: 1),
+                        shape: BoxShape.circle),
+                  ),
+                ),
+                /*SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
@@ -101,7 +124,7 @@ class _State extends State<OwnDaysScreen> {
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
                   monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 125, agendaItemHeight: 30,),
                   dataSource: events,
-                ),
+                ),*/
               ),
 
               const Divider(thickness: 1, height: 4),

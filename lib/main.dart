@@ -47,11 +47,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: const Color(0xFF3EBACE),
+          //textTheme: GoogleFonts.oxygenTextTheme(Theme.of(context).textTheme),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
           appBarTheme: const AppBarTheme(elevation: 0),
         ),
       home: user == null? const LoginScreen() : const AuthenticationWrapper(),
-      //home: screen? IntroScreen() : const AuthenticationWrapper(),
       locale: const Locale('da'),
     );
   }
