@@ -21,7 +21,7 @@ class OwnDaysScreen extends StatefulWidget {
 class _State extends State<OwnDaysScreen> {
 
   late DateTime _pickedDay;
-  late List<DateTime> _specialDates;
+  //late List<DateTime> _specialDates;
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
@@ -39,7 +39,7 @@ class _State extends State<OwnDaysScreen> {
         });
       });
     });
-    _specialDates = <DateTime>[DateTime.now()];
+    //_specialDates = <DateTime>[DateTime.now()];
     super.initState();
   }
 
@@ -73,12 +73,11 @@ class _State extends State<OwnDaysScreen> {
     });
   }
 
-  void changedSelection(DateRangePickerSelectionChangedArgs args){
-    //todo - when datecells are selected, show info
+  /*void changedSelection(DateRangePickerSelectionChangedArgs args){
     if (kDebugMode) {
       print(args.value);
     }
-  }
+  }*/
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -101,7 +100,7 @@ class _State extends State<OwnDaysScreen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 1.45,
                 width: MediaQuery.of(context).size.width,
-                child: SfDateRangePicker(
+                child: /*SfDateRangePicker(
                   view: DateRangePickerView.month,
                   controller: drpController,
                   onSelectionChanged: changedSelection,
@@ -114,24 +113,28 @@ class _State extends State<OwnDaysScreen> {
                         border: Border.all(color: const Color(0xFF2B732F), width: 1),
                         shape: BoxShape.circle),
                   ),
-                ),
-                /*SfCalendar(
+                ),*/
+                SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 125, agendaItemHeight: 30,),
+                  monthViewSettings: const MonthViewSettings(
+                    showAgenda: true,
+                    agendaViewHeight: 100,
+                    agendaItemHeight: 30,
+                  monthCellStyle: MonthCellStyle(),
+                  agendaStyle: AgendaStyle(),),
                   dataSource: events,
-                ),*/
+                ),
               ),
 
               const Divider(thickness: 1, height: 4),
 
               Container(
                 height: 45,
-                width: 150,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
                   _pickedDay = (await showDatePicker(
@@ -158,37 +161,23 @@ class _State extends State<OwnDaysScreen> {
                       _showSnackBar(context, "Vagt Tilføjet", Colors.green);
                     }
                   });
-                  }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")),),
+                  }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.blue)
+                    )
+                )),),
               ),
               Container(
                 height: 45,
-                width: 150,
                 margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
-
-              /* const Divider(thickness: 1, height: 4),
-              Container(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20), child: const Text("Alle Vagter", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-              // one card, make foreach from db within current user
-              StreamBuilder(
-                  stream: shift.snapshots() ,
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    if (!snapshot.hasData){
-                      return const Center(child: CircularProgressIndicator(),);
-                    } else if (snapshot.data!.docs.isEmpty){
-                      return Container(
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: const Center(child: Text(
-                          "Ingen Vagter",
-                          style: TextStyle(color: Colors.blue, fontSize: 18),
-                        ),),
-                      );
-                    }
-                    return Column(
-                      children: snapshot.data!.docs.map((document){
-                        return CardFb2(text: "Vagt - " + document['date'], imageUrl: "https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", subtitle: "", onPressed: (){});
-                      }).toList(),
-                    );
-                  }),*/
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")),
+                  style: ButtonStyle(shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: const BorderSide(color: Colors.blue)
+                    )
+                )), ),),
             ],
           ),
         ),

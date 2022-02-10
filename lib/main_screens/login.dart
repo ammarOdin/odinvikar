@@ -112,7 +112,12 @@ class _LoginState extends State<LoginScreen> {
                         } else {
                           _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}
                       }
-                    }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ElevatedButton.styleFrom(primary: Colors.blue),),),
+                    }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ButtonStyle(shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: const BorderSide(color: Colors.blue)
+                      )
+                  )),),),
               ],
             ),
           ),
