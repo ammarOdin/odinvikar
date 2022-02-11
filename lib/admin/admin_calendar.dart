@@ -89,13 +89,23 @@ class _State extends State<AdminCalendar> {
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
                   view: CalendarView.month,
-                  showCurrentTimeIndicator: true, firstDayOfWeek: 1, timeSlotViewSettings: const TimeSlotViewSettings(
+                  firstDayOfWeek: 1,
+                  showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(showAgenda: true, agendaViewHeight: 100,),
+                  monthViewSettings: const MonthViewSettings(
+                    showAgenda: true,
+                    agendaViewHeight: 100,
+                    agendaItemHeight: 30,),
+                  //monthCellBuilder: monthCellBuilder,
                   dataSource: events,
-
+                  cellBorderColor: Colors.transparent,
+                  selectionDecoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.blue, width: 2),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    shape: BoxShape.rectangle,),
                 ),
               ),
 
