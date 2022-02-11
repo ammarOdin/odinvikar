@@ -56,7 +56,7 @@ class _HomescreenState extends State<AdminDashboard> {
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: Colors.black,
@@ -66,8 +66,8 @@ class _HomescreenState extends State<AdminDashboard> {
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
           ),
           child: BottomNavigationBar(
             currentIndex: _currentIndex,

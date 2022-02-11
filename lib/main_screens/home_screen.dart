@@ -68,29 +68,6 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                   )
               ),
-              /*Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 40),
-                child: StreamBuilder(
-                  stream: shift.snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData){
-                      return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
-                    } else if (snapshot.data!.docs.isEmpty){
-                      return const Center(child: Text(
-                        "Ingen Tilgængelige",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),);
-                    } else {return Center(
-                        child: snapshot.data!.docs.map((document){
-                          return Text(
-                            document['date'],
-                            style: const TextStyle(color: Colors.white, fontSize: 26),
-                          );
-                        }).first);}
-                  }
-                ),
-              ),*/
             ],
           ),
         ),
@@ -170,13 +147,12 @@ class CardFb2 extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8, left: 10, right: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
                 blurRadius: 15,
-                spreadRadius: 0,
-                color: Colors.grey.withOpacity(.2)),
+                color: Colors.grey.withOpacity(.5)),
           ],
         ),
         child: Row(
