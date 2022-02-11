@@ -21,7 +21,6 @@ class OwnDaysScreen extends StatefulWidget {
 class _State extends State<OwnDaysScreen> {
 
   late DateTime _pickedDay;
-  //late List<DateTime> _specialDates;
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
@@ -39,7 +38,6 @@ class _State extends State<OwnDaysScreen> {
         });
       });
     });
-    //_specialDates = <DateTime>[DateTime.now()];
     super.initState();
   }
 
@@ -73,14 +71,23 @@ class _State extends State<OwnDaysScreen> {
     });
   }
 
-  /*void changedSelection(DateRangePickerSelectionChangedArgs args){
-    if (kDebugMode) {
-      print(args.value);
-    }
-  }*/
-
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  Widget monthCellBuilder(BuildContext context, MonthCellDetails details) {
+    if (details.date == DateTime.now()){
+      return Container(color: Colors.blue,);
+    }
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(details.date.day.toString()),
+        ),
+
+      ],
+    );
   }
 
   @override
@@ -98,23 +105,9 @@ class _State extends State<OwnDaysScreen> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 1.45,
+                height: MediaQuery.of(context).size.height / 1.25,
                 width: MediaQuery.of(context).size.width,
-                child: /*SfDateRangePicker(
-                  view: DateRangePickerView.month,
-                  controller: drpController,
-                  onSelectionChanged: changedSelection,
-                  selectionShape: DateRangePickerSelectionShape.rectangle,
-                  selectionMode: DateRangePickerSelectionMode.multiple,
-                  monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1, specialDates: _specialDates),
-                  monthCellStyle: DateRangePickerMonthCellStyle(
-                    specialDatesDecoration: BoxDecoration(
-                        color: Colors.green,
-                        border: Border.all(color: const Color(0xFF2B732F), width: 1),
-                        shape: BoxShape.circle),
-                  ),
-                ),*/
-                SfCalendar(
+                child: SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
@@ -124,17 +117,22 @@ class _State extends State<OwnDaysScreen> {
                   monthViewSettings: const MonthViewSettings(
                     showAgenda: true,
                     agendaViewHeight: 100,
-                    agendaItemHeight: 30,
-                  monthCellStyle: MonthCellStyle(),
-                  agendaStyle: AgendaStyle(),),
+                    agendaItemHeight: 30,),
+                  //monthCellBuilder: monthCellBuilder,
                   dataSource: events,
+                  cellBorderColor: Colors.transparent,
+                  selectionDecoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.blue, width: 2),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    shape: BoxShape.rectangle,),
                 ),
               ),
 
               const Divider(thickness: 1, height: 4),
 
               Container(
-                height: 45,
+                height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
                   _pickedDay = (await showDatePicker(
@@ -169,7 +167,7 @@ class _State extends State<OwnDaysScreen> {
                 )),),
               ),
               Container(
-                height: 45,
+                height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
@@ -198,8 +196,6 @@ class _State extends State<OwnDaysScreen> {
       cornerRadius: 15,
     ),
   );
-
-  //Widget buildHeader(BuildContext context, SheetState state) => Material(child: Stack(children: <Widget>[Container(height: MediaQuery.of(context).size.height / 3 , color: Colors.blue,),Positioned(bottom: 20, child: SizedBox(width: MediaQuery.of(context).size.width, height: 40, child: Image.network("https://katrinebjergskolen.aarhus.dk/media/23192/aula-logo.jpg?anchor=center&mode=crop&width=1200&height=630&rnd=132022572610000000", height: 59, fit: BoxFit.contain)))],),);
 
   Widget showJob(context, state) => Material(
   child: ListView(
@@ -238,7 +234,6 @@ class _State extends State<OwnDaysScreen> {
       ],
     ),
   );
-
 }
 
 // Calendar content class (syncfusion)
