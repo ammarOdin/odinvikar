@@ -147,7 +147,7 @@ class _State extends State<OwnDaysScreen> {
                   });
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(20.0),
                         side: const BorderSide(color: Colors.blue)
                     )
                 )),),
@@ -158,7 +158,7 @@ class _State extends State<OwnDaysScreen> {
                 child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(20.0),
                         side: const BorderSide(color: Colors.blue)
                     )
                 )), ),),

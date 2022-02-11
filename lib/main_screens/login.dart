@@ -114,7 +114,7 @@ class _LoginState extends State<LoginScreen> {
                       }
                     }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ButtonStyle(shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                          borderRadius: BorderRadius.circular(20.0),
                           side: const BorderSide(color: Colors.blue)
                       )
                   )),),),

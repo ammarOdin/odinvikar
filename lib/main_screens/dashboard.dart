@@ -52,28 +52,46 @@ class _HomescreenState extends State<Dashboard> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() => _currentIndex = index);
-          _pageController.jumpToPage(index);
-        },
-        items: const [
-          BottomNavigationBarItem(
-              label: 'Oversigt',
-              icon: Icon(Icons.home)
-          ),
-          BottomNavigationBarItem(
-              label: 'Mine Dage',
-              icon: Icon(Icons.apps)
-          ),
-          BottomNavigationBarItem(
-              label: 'Profil',
-              icon: Icon(Icons.account_box)
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 5,
           ),
         ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            onTap: (index) {
+              setState(() => _currentIndex = index);
+              _pageController.jumpToPage(index);
+            },
+            items: const [
+              BottomNavigationBarItem(
+                  label: 'Oversigt',
+                  icon: Icon(Icons.home)
+              ),
+              BottomNavigationBarItem(
+                  label: 'Mine Dage',
+                  icon: Icon(Icons.apps)
+              ),
+              BottomNavigationBarItem(
+                  label: 'Profil',
+                  icon: Icon(Icons.account_box)
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
