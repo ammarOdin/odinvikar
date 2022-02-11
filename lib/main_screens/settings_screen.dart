@@ -181,10 +181,12 @@ class _State extends State<SettingsScreen> {
         Container(padding: const EdgeInsets.only(top: 10, bottom: 20, left: 20),
           child: const Text("Indstillinger",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+        const Divider(thickness: 1, height: 1),
+
         Container(
           height: 50,
           width: 150,
-          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
           child: ElevatedButton.icon(onPressed: () {showContactInfo();}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine Oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
