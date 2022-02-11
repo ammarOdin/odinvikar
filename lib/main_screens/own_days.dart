@@ -75,21 +75,6 @@ class _State extends State<OwnDaysScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
-  Widget monthCellBuilder(BuildContext context, MonthCellDetails details) {
-    if (details.date == DateTime.now()){
-      return Container(color: Colors.blue,);
-    }
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(details.date.day.toString()),
-        ),
-
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -102,10 +87,11 @@ class _State extends State<OwnDaysScreen> {
       child: Scaffold(
         body: SizedBox(
           child: ListView(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
+            //physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(top: 50),
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 1.25,
+                height: MediaQuery.of(context).size.height / 1.5,
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
                   view: CalendarView.month,
@@ -168,7 +154,7 @@ class _State extends State<OwnDaysScreen> {
               ),
               Container(
                 height: 50,
-                margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 10),
+                margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
