@@ -294,10 +294,12 @@ class _State extends State<AdminSettingsScreen> {
         Container(padding: const EdgeInsets.only(top: 10, bottom: 20, left: 20),
           child: const Text("Indstillinger",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+        const Divider(thickness: 1, height: 1),
+
         Container(
           height: 50,
           width: 150,
-          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
           child: ElevatedButton.icon(onPressed: () {showContactInfo();}, icon: const Icon(Icons.contact_page, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine Oplysninger", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(

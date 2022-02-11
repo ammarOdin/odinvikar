@@ -181,6 +181,7 @@ class _State extends State<SettingsScreen> {
         Container(padding: const EdgeInsets.only(top: 10, bottom: 20, left: 20),
           child: const Text("Indstillinger",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+
         const Divider(thickness: 1, height: 1),
 
         Container(
