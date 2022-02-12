@@ -54,20 +54,20 @@ class _HomescreenState extends State<Dashboard> {
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+          /*borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),*/
           boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black,
-            blurRadius: 2,
+            blurRadius: 1,
           ),
         ],
         ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.only(
+          /*borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(30.0),
             topRight: Radius.circular(30.0),
-          ),
+          ),*/
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             selectedItemColor: Colors.blue,
