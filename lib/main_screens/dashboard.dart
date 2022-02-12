@@ -59,7 +59,7 @@ class _HomescreenState extends State<Dashboard> {
           boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black,
-            blurRadius: 1,
+            blurRadius: 0.1,
           ),
         ],
         ),
