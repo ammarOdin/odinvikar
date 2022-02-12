@@ -257,7 +257,7 @@ class _State extends State<SettingsScreen> {
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(bottom: 15, left: 10), child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Telefonnummer", style: TextStyle(fontWeight: FontWeight.bold),),
+            Container(padding: const EdgeInsets.only(bottom: 5), child: const Text("Telefonnummer", style: TextStyle(color: Colors.grey),)),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
@@ -265,7 +265,7 @@ class _State extends State<SettingsScreen> {
                     var name = snapshot.data as DocumentSnapshot;
                     return Align(
                       alignment: Alignment.centerLeft,
-                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.grey),));
+                        child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
                   return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
@@ -275,7 +275,7 @@ class _State extends State<SettingsScreen> {
         Container(margin: const EdgeInsets.all(3), padding: const EdgeInsets.only(left: 10), child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("E-mail", style: TextStyle(fontWeight: FontWeight.bold),),
+            Container(padding: const EdgeInsets.only(bottom: 5), child: const Text("E-mail", style: TextStyle(color: Colors.grey),)),
             StreamBuilder(
                 stream: getUserInfo.snapshots(),
                 builder: (context, snapshot) {
@@ -283,7 +283,7 @@ class _State extends State<SettingsScreen> {
                     var name = snapshot.data as DocumentSnapshot;
                     return Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.grey),));
+                        child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
                   return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
                 }
@@ -297,7 +297,7 @@ class _State extends State<SettingsScreen> {
                 if (snapshot.hasData){
                   var name = snapshot.data as DocumentSnapshot;
                   return Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: Text("Du er ved at nulstille din adgangskode. En E-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
+                    return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
                       TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
                       TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
                       child: const Text("Nulstil Adgangskode"))));
