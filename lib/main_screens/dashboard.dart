@@ -81,7 +81,7 @@ class _HomescreenState extends State<Dashboard> {
               ),
               BottomNavigationBarItem(
                   label: 'Mine Dage',
-                  icon: Icon(Icons.apps)
+                  icon: Icon(Icons.today_outlined)
               ),
               BottomNavigationBarItem(
                   label: 'Profil',

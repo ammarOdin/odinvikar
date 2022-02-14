@@ -84,7 +84,7 @@ class _HomescreenState extends State<AdminDashboard> {
               ),
               BottomNavigationBarItem(
                   label: 'Kalender',
-                  icon: Icon(Icons.apps)
+                  icon: Icon(Icons.today_outlined)
               ),
               BottomNavigationBarItem(
                   label: 'Telefonliste',
