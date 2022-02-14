@@ -60,7 +60,7 @@ class _HomescreenState extends State<AdminDashboard> {
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: Colors.black,
-              blurRadius: 1,
+              blurRadius: 0.1,
             ),
           ],
         ),
@@ -92,7 +92,7 @@ class _HomescreenState extends State<AdminDashboard> {
               ),
               BottomNavigationBarItem(
                   label: 'Indstillinger',
-                  icon: Icon(Icons.account_box)
+                  icon: Icon(Icons.settings)
               ),
             ],
           ),

@@ -79,7 +79,7 @@ class _LoginState extends State<LoginScreen> {
                     child: const Align(
                       alignment: Alignment.centerLeft,
                         child: Text(
-                          "OdinVikar \nLogin",
+                          "Vikarly \nOdinskolen",
                           style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                         ))),
               ],

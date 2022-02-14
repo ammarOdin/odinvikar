@@ -3,8 +3,6 @@ import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
 
-
-
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
