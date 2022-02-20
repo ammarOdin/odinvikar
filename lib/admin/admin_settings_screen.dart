@@ -90,7 +90,7 @@ class _State extends State<AdminSettingsScreen> {
   }
 
   // update the selected field for a specific user
-  updateUserField(String uid, String reference, String field, TextEditingController controller) {
+  updateUserField(String uid, String reference, String field, TextEditingController controller, String name) {
     return Column(
       children: [
         Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
@@ -132,7 +132,7 @@ class _State extends State<AdminSettingsScreen> {
                   ],
                 ),
               ),)));
-          }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
+          }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(name, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
         ),
       ],
     );
@@ -450,10 +450,10 @@ class _State extends State<AdminSettingsScreen> {
                                       body: Column(
                                         children: [
                                           Container(padding: const EdgeInsets.only(bottom: 20) , child: const Center(child: Text("Rediger Bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
-                                          updateUserField(e.id, 'email', e['email'], emailController),
-                                          updateUserField(e.id, 'password', "Adgangskode", passwordController),
-                                          updateUserField(e.id, 'phone', e['phone'], phoneController),
-                                          updateUserField(e.id, 'name', e['name'],nameController),
+                                          updateUserField(e.id, 'email', e['email'], emailController, 'E-mail'),
+                                          updateUserField(e.id, 'password', "Adgangskode", passwordController, 'Adgangskode'),
+                                          updateUserField(e.id, 'phone', e['phone'], phoneController, 'Telefon'),
+                                          updateUserField(e.id, 'name', e['name'],nameController, 'Navn'),
                                           Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
                                       ],
                                       ),)));

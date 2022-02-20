@@ -149,9 +149,7 @@ class _State extends State<OwnDaysScreen> {
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         side: const BorderSide(color: Colors.blue)
-                    )
-                )),),
-              ),
+                    ))),),),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
