@@ -129,12 +129,12 @@ class _State extends State<OwnDaysScreen> {
                       cancelText: "Annuller",
                       initialDate: initialDate(),
                       firstDate: initialDate(),
-                      lastDate: DateTime.now().add(const Duration(days: 60))))!;
+                      lastDate: DateTime.now().add(const Duration(days: 90))))!;
 
-                      final f = DateFormat('dd-MM-yyyy');
-                      var pickedDate = f.format(_pickedDay);
-                      var pickedMonth = _pickedDay.month;
-                      var pickedWeek = _pickedDay.weekOfYear;
+                  final f = DateFormat('dd-MM-yyyy');
+                  var pickedDate = f.format(_pickedDay);
+                  var pickedMonth = _pickedDay.month;
+                  var pickedWeek = _pickedDay.weekOfYear;
 
                   saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
                     if (documentSnapshot.exists) {
