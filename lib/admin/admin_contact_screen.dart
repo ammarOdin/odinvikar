@@ -78,7 +78,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
                 return Column(children: [
                   CardFb2(text: document.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Opkald/SMS", onPressed: (){
                     showDialog(context: context, builder: (BuildContext context){
-                      return SimpleDialog(title: const Center(child: Text("Kontakt"),), children: [
+                      return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: const Center(child: Text("Kontakt"),), children: [
                         SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),
                         SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + document.substring(0,8));},), ),),
                       ],);
