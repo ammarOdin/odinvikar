@@ -1,4 +1,2 @@
-## Odinvikar
-
-En app hvor alle vikarer kan skrive ind de dage (timer) de kan arbejde, hvor vagthavende får en oversigt over tilgængelige personer, hurtigt og effektivt.
-
+### Vikarly
+Struktur over vikariat, hvor vikarer kan indtaste dage hvor de kan arbejde således vikardækkeren har et overblik 24/7.
