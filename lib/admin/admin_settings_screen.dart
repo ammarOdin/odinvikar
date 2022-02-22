@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
@@ -48,7 +47,7 @@ class _State extends State<AdminSettingsScreen> {
   }
 
   // Register user through auth without logging current user out
-  Future<UserCredential> register(String email, String password) async {
+  Future<void> register(String email, String password) async {
     FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
     try {
       // initialize another app to prevent current user from logging out on creation of a new user
@@ -72,14 +71,18 @@ class _State extends State<AdminSettingsScreen> {
       return Future.sync(() => userCredential);
     }
     on FirebaseAuthException catch (e) {
-      _showSnackBar(context, "Bruger kunne ikke oprettes", Colors.red);
-      if (kDebugMode) {
-        print(e.toString());
+      if (e.code == "invalid-email"){
+        _showSnackBar(context, "Invalid e-mail", Colors.red);
+      } else {
+        _showSnackBar(context, "Bruger kunne ikke oprettes", Colors.red);
       }
+      /*if (kDebugMode) {
+        print(e.toString());
+      }*/
     }
     // making sure the app is killed, even if failed operation above
-    await app.delete();
-    return FirebaseAuth.instance.currentUser as UserCredential;
+    //await app.delete();
+    //return FirebaseAuth.instance.currentUser as UserCredential;
   }
 
   // Delete user with admin sdk cloud function
