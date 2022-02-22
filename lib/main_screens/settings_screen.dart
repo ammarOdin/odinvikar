@@ -296,11 +296,43 @@ class _State extends State<SettingsScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData){
                   var name = snapshot.data as DocumentSnapshot;
-                  return Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
-                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                      TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
-                      child: const Text("Nulstil Adgangskode"))));
+                  return Row(
+                    children: [
+                      Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
+                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                          TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
+                          child: const Text("Nulstil Adgangskode")))),
+                      Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [
+                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                          TextButton(onPressed: () async {
+                            Navigator.pop(context);
+                            showDialog(context: context, builder: (BuildContext context){
+                              emailController.clear();
+                              return Form(
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                key: _authUserkey,
+                                child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."), actions: [
+                                  TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
+                                  TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
+                                  TextButton(onPressed: () async {
+                                    if (_authUserkey.currentState!.validate()){
+                                      try{
+                                        await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                                        FirebaseAuth.instance.currentUser?.delete();
+                                        Navigator.pop(context); Navigator.pop(context);
+                                        _showSnackBar(context, "Bruger Slettet", Colors.green);
+                                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                      }
+                                      on FirebaseAuthException catch(e){if(e.code == "wrong-password"){_showSnackBar(context, "Forkert adgangskode!", Colors.red);} else if (e.code == "invalid-email"){ _showSnackBar(context, "Forkert E-mail!", Colors.red);} else if (e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else { _showSnackBar(context, "Fejlkode " + e.code, Colors.red);}}
+                                    }
+                                  }, child: const Text("Godkend")),
+                                ],),
+                              );});}, child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});},
+                          child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))),
+                    ],
+                  );
                 }
                 return Container();
               }
