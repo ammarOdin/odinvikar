@@ -71,7 +71,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "Uge",), Tab(text: "Måned",)])),
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Uge"), Tab(text: "Måned",)])),
         StreamBuilder(
             stream: shift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){

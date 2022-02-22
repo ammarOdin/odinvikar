@@ -46,6 +46,8 @@ class MyApp extends StatelessWidget {
         title: 'Vikar Oversigt',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          /*colorSchemeSeed: Colors.blue,
+          useMaterial3: true,*/
           primaryColor: const Color(0xFF3EBACE),
           //textTheme: GoogleFonts.oxygenTextTheme(Theme.of(context).textTheme),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
