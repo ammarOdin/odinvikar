@@ -16,6 +16,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
+  get unsortedShift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   late TabController _controller;
 
   @override
@@ -73,7 +74,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Uge"), Tab(text: "Måned",)])),
         StreamBuilder(
-            stream: shift.snapshots() ,
+            stream: unsortedShift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
                 return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
