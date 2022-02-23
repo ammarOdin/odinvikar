@@ -92,7 +92,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
 
         FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
           if (!snapshot.hasData){

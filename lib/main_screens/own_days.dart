@@ -22,7 +22,7 @@ class _State extends State<OwnDaysScreen> {
 
   late DateTime _pickedDay;
   User? user = FirebaseAuth.instance.currentUser;
-  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
+  get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
