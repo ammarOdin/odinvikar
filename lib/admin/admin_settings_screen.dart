@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/login.dart';
@@ -317,7 +318,7 @@ class _State extends State<AdminSettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {showSubInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Brugere", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+          child: ElevatedButton.icon(onPressed: () {showSubInfo(); FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});}, icon: const Icon(Icons.supervised_user_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Brugere", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                   side: const BorderSide(color: Colors.blue)
@@ -371,7 +372,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                 }
             ),
           ],
@@ -387,7 +388,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                 }
             ),
           ],
@@ -422,7 +423,7 @@ class _State extends State<AdminSettingsScreen> {
                 stream: usersRef.snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData){
-                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                   } else if (snapshot.data!.docs.isEmpty){
                     return Container(
                       padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -446,6 +447,7 @@ class _State extends State<AdminSettingsScreen> {
                                     Navigator.push(
                                         context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
                                       backgroundColor: Colors.transparent,
+                                      leading: const BackButton(color: Colors.black,),
                                       elevation: 0,
                                     ),
                                       body: Column(
@@ -455,7 +457,7 @@ class _State extends State<AdminSettingsScreen> {
                                           updateUserField(e.id, 'password', "Adgangskode", passwordController, 'Adgangskode'),
                                           updateUserField(e.id, 'phone', e['phone'], phoneController, 'Telefon'),
                                           updateUserField(e.id, 'name', e['name'],nameController, 'Navn'),
-                                          Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
+                                          //Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
                                       ],
                                       ),)));
                                   }, child: const Center(child: Text("Rediger Oplysninger"))),

@@ -50,6 +50,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
           color: Colors.blue,
           height: MediaQuery.of(context).size.height / 3,
           child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               Container(
                   padding: EdgeInsets.only(
@@ -77,7 +78,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             stream: unsortedShift.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
               }else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.all(50),

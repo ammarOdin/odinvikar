@@ -121,15 +121,22 @@ class _State extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  _pickedDay = (await showDatePicker(
-                      locale : const Locale("da","DA"),
-                      selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
-                      context: context,
-                      confirmText: "Vælg dag",
-                      cancelText: "Annuller",
-                      initialDate: initialDate(),
-                      firstDate: initialDate(),
-                      lastDate: DateTime.now().add(const Duration(days: 90))))!;
+                  /*if (Theme.of(context).platform == TargetPlatform.iOS){
+                    _pickedDay = (await DatePicker.showDatePicker(
+                      context,
+                      locale: const Locale("da", "DA"),
+                    ))!;
+                  }*/
+                    _pickedDay = (await showDatePicker(
+                        locale : const Locale("da","DA"),
+                        selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
+                        context: context,
+                        confirmText: "Vælg dag",
+                        cancelText: "Annuller",
+                        initialDate: initialDate(),
+                        firstDate: initialDate(),
+                        lastDate: DateTime.now().add(const Duration(days: 90))))!;
+
 
                   final f = DateFormat('dd-MM-yyyy');
                   var pickedDate = f.format(_pickedDay);
@@ -191,7 +198,7 @@ class _State extends State<OwnDaysScreen> {
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
               } else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -233,7 +240,7 @@ class _State extends State<OwnDaysScreen> {
                         )) ,),
                     ],);
                   } else {
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
                   }
                 }).toList(),);
             }),

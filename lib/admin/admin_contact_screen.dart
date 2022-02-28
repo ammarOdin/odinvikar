@@ -61,7 +61,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
         ),
         FutureBuilder(future: getInfo(), builder: (context, AsyncSnapshot<List> snapshot){
           if (!snapshot.hasData){
-            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator());
+            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
           } else if (snapshot.data!.isEmpty) {
             return Container(
               padding: const EdgeInsets.all(50),

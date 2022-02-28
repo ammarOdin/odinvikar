@@ -171,7 +171,7 @@ class _State extends State<SettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                         }
                     ),),
               ),
@@ -267,7 +267,7 @@ class _State extends State<SettingsScreen> {
                       alignment: Alignment.centerLeft,
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                 }
             ),
           ],
@@ -285,7 +285,7 @@ class _State extends State<SettingsScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const LinearProgressIndicator()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
                 }
             ),
           ],
@@ -303,7 +303,7 @@ class _State extends State<SettingsScreen> {
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
                           TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
                           child: const Text("Nulstil Adgangskode")))),
-                      Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
+                      /*Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
                           TextButton(onPressed: () async {
@@ -330,7 +330,7 @@ class _State extends State<SettingsScreen> {
                                   }, child: const Text("Godkend")),
                                 ],),
                               );});}, child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});},
-                          child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))),
+                          child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))),*/
                     ],
                   );
                 }

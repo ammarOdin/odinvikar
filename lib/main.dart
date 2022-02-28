@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/intro_screen.dart';
@@ -20,6 +21,18 @@ Future<void> main() async {
   // onboarding
   final preferences = await SharedPreferences.getInstance();
   screen = preferences.getBool("on_boarding") ?? true;
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
 
   runApp(const MyApp());
 }
