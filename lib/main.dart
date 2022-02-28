@@ -13,12 +13,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 bool screen = true;
+FirebaseMessaging messaging = FirebaseMessaging.instance;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
     alert: true,
     announcement: false,
@@ -32,6 +33,7 @@ Future<void> main() async {
   // onboarding
   final preferences = await SharedPreferences.getInstance();
   screen = preferences.getBool("on_boarding") ?? true;
+
   runApp(const MyApp());
 }
 
@@ -78,8 +80,10 @@ class AuthenticationWrapper extends StatelessWidget {
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
-        .then((DocumentSnapshot documentSnapshot){
+        .then((DocumentSnapshot documentSnapshot) async {
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+        final preferences = await SharedPreferences.getInstance();
+        await preferences.setBool("on_boarding", false);
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
         return false;
@@ -89,7 +93,6 @@ class AuthenticationWrapper extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    //return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     if (screen == false){
       return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     } else if (screen == true){
