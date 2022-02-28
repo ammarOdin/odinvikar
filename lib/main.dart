@@ -18,12 +18,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // onboarding
-  final preferences = await SharedPreferences.getInstance();
-  screen = preferences.getBool("on_boarding") ?? true;
-
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
   await messaging.requestPermission(
     alert: true,
     announcement: false,
@@ -34,6 +29,9 @@ Future<void> main() async {
     sound: true,
   );
 
+  // onboarding
+  final preferences = await SharedPreferences.getInstance();
+  screen = preferences.getBool("on_boarding") ?? true;
   runApp(const MyApp());
 }
 
