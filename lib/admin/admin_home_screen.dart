@@ -108,7 +108,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           } else if (snapshot.connectionState == ConnectionState.waiting){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
           }
-          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Tryk for at ringe", onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Opkald"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du er ved at foretage et opkald"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () {Navigator.pop(context); launch("tel://" + e.substring(0,8));}, child: const Text("Opkald"))],);});}),
+          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Tryk for at ringe", onPressed: () {launch("tel://" + e.substring(0,8));}),
           ).toList());
         }),
       ],
