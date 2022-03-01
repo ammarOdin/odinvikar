@@ -31,8 +31,8 @@ Future<void> main() async {
   );
 
   // onboarding
-  final preferences = await SharedPreferences.getInstance();
-  screen = preferences.getBool("on_boarding") ?? true;
+  /*final preferences = await SharedPreferences.getInstance();
+  screen = preferences.getBool("on_boarding") ?? true;*/
 
   runApp(const MyApp());
 }
@@ -82,8 +82,8 @@ class AuthenticationWrapper extends StatelessWidget {
         .get()
         .then((DocumentSnapshot documentSnapshot) async {
       if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        final preferences = await SharedPreferences.getInstance();
-        await preferences.setBool("on_boarding", false);
+        /*final preferences = await SharedPreferences.getInstance();
+        await preferences.setBool("on_boarding", false);*/
         return true;
       } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
         return false;
@@ -93,12 +93,13 @@ class AuthenticationWrapper extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    if (screen == false){
+    /*if (screen == false){
       return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
     } else if (screen == true){
       return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const IntroScreen());
     } else {
       return const LoginScreen();
-    }
+    }*/
+    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
   }
 }
