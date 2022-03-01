@@ -2,7 +2,7 @@
     package="com.odinvikar.odinvikar">
    <application
         android:label="Odinskolen"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
