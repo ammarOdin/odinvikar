@@ -1,4 +1,4 @@
-package com.odinvikar.odinvikar
+package com.vikarly.odinskolen
 
 import io.flutter.embedding.android.FlutterActivity
 
