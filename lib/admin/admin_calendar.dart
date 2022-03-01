@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminCalendar extends StatefulWidget {
   const AdminCalendar({Key? key}) : super(key: key);
@@ -48,6 +51,24 @@ class _State extends State<AdminCalendar> {
     }
   }
 
+  void calendarTapped(CalendarTapDetails calendarTapDetails) async {
+    var userRef = await databaseReference.collection('user').get();
+    final Meeting appointmentDetails = calendarTapDetails.appointments![0];
+
+    if (calendarTapDetails.targetElement == CalendarElement.appointment) {
+      for (var users in userRef.docs){
+        if (appointmentDetails.eventName == users.get(FieldPath(const ["name"]))){
+          showDialog(context: context, builder: (BuildContext context){
+            return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + users.get(FieldPath(const ["name"]))),), children: [
+              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + users.get(FieldPath(const ["phone"])));},), ),),
+              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + users.get(FieldPath(const ["phone"])));},), ),),
+            ],);
+          });
+        }
+      }
+    }
+  }
+
   Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
     List<String> shiftList = [];
@@ -56,11 +77,11 @@ class _State extends State<AdminCalendar> {
       CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
       QuerySnapshot shiftSnapshot = await shiftRef.get();
       for (var shifts in shiftSnapshot.docs){
-        shiftList.add(shifts.id+users.get(FieldPath(const ['name'])));
+        shiftList.add(shifts.id+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
       }
     }
 
-    List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(10),
+    List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(18),
         from: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
         to: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
         background: Colors.green,
@@ -85,9 +106,10 @@ class _State extends State<AdminCalendar> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 1.45,
+                height: MediaQuery.of(context).size.height / 1.35,
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
+                  onTap: calendarTapped,
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
@@ -96,8 +118,10 @@ class _State extends State<AdminCalendar> {
                     nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
                   monthViewSettings: const MonthViewSettings(
                     showAgenda: true,
-                    agendaViewHeight: 100,
-                    agendaItemHeight: 30,),
+                    agendaViewHeight: 150,
+                    agendaItemHeight: 35,
+                    agendaStyle: AgendaStyle(),
+                  ),
                   //monthCellBuilder: monthCellBuilder,
                   dataSource: events,
                   cellBorderColor: Colors.transparent,
