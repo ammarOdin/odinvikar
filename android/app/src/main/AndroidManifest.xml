@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.odinvikar.odinvikar">
+    package="com.vikarly.odinskolen">
    <application
-        android:label="Vikarly Dev"
+        android:label="Odinskolen"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
