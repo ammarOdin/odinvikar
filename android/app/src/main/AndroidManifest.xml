@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vikarly.odinskolen">
+    package="com.odinvikar.odinvikar">
    <application
-        android:label="Odinskolen"
+        android:label="Vikarly Dev"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -18,7 +18,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <!-- Displays an Android View that continues showing the launch screen
+            <!-- Displays an ndroid View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
                  gap between the end of Android's launch screen and the painting of
