@@ -38,15 +38,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 <!--    <uses-permission android:name="android.permission.INTERNET" />-->
 
-=======
->>>>>>> parent of c2d03ea (Setup for android release)
-=======
->>>>>>> parent of c2d03ea (Setup for android release)
-=======
->>>>>>> parent of c2d03ea (Setup for android release)
 </manifest>
