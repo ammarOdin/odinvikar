@@ -38,8 +38,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-<<<<<<< HEAD
 <!--    <uses-permission android:name="android.permission.INTERNET" />-->
-=======
->>>>>>> parent of 87d98da (Merge pull request #1 from ammarOdin/master)
+
 </manifest>
