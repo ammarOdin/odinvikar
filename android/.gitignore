@@ -11,8 +11,4 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
-app/src/main/AndroidManifest.xml
 app/google-services.json
-
-app/src/debug/AndroidManifest.xml
-android/app/src/main/AndroidManifest.xml
