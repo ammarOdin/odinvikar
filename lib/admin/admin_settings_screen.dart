@@ -320,6 +320,7 @@ class _State extends State<AdminSettingsScreen> {
                   return Form(
                     key: _feedbackKey,
                     child: AlertDialog(title: const Text("Feedback"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
                       actions: [
                         TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),),
