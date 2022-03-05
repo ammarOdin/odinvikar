@@ -16,16 +16,19 @@ class _State extends State<SettingsScreen> {
 
   get getUserInfo => FirebaseFirestore.instance.collection('user').doc(user!.uid);
   final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
+  final feedbackReference = FirebaseFirestore.instance.collection("feedback");
   User? user = FirebaseAuth.instance.currentUser;
 
   final GlobalKey<FormState> _updateInfokey = GlobalKey<FormState>();
   final GlobalKey<FormState> _authUserkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _feedbackKey = GlobalKey<FormState>();
 
 
   final emailController = TextEditingController();
   final updatedEmailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
+  final feedbackController = TextEditingController();
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -63,6 +66,14 @@ class _State extends State<SettingsScreen> {
         }
       }
       break;
+    }
+  }
+
+  String? validateFeedbackField(String? input){
+    if (input == null || input.isEmpty){
+      return "Feltet må ikke være tomt";
+    } else if (!input.contains(new RegExp(r'^[a-zA-Z0-9,. !?+-]+$'))){
+      return "Teksten indeholder ugyldige karakterer";
     }
   }
 
@@ -178,11 +189,42 @@ class _State extends State<SettingsScreen> {
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(top: 10, bottom: 20, left: 20),
-          child: const Text("Indstillinger",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+        Row(
+          children: [
+            Container(padding: const EdgeInsets.only(left: 20),
+              child: const Text("Indstillinger",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+            const Spacer(),
 
-        const Divider(thickness: 1, height: 1),
+            Container(
+              child: IconButton(onPressed: () {
+
+                showDialog(context: context, builder: (BuildContext context){
+                  return Form(
+                    key: _feedbackKey,
+                    child: AlertDialog(title: const Text("Feedback"),
+                      content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
+                      actions: [
+                        TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),),
+                        TextButton(onPressed: () async {
+                          if (_feedbackKey.currentState!.validate()){
+                            try {
+                              feedbackReference.doc().set({'message': feedbackController.text});
+                              Navigator.pop(context);
+                              _showSnackBar(context, "Feedback sendt!", Colors.green);
+                            } catch (e) {
+                              _showSnackBar(context, "Kunne ikke sende meddelelse", Colors.red);
+                            }
+                          }
+
+                          }, child: const Text("Send"))
+                      ],),
+                  );
+                });} , icon: const Icon(Icons.feedback, color: Colors.blue,)),)
+          ],
+        ),
+
+        const Divider(thickness: 1, height: 15),
 
         Container(
           height: 50,
@@ -205,6 +247,8 @@ class _State extends State<SettingsScreen> {
                   side: const BorderSide(color: Colors.blue)
               )
           )),),),
+
+        
 
 
 
