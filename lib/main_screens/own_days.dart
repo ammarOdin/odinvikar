@@ -2,13 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:week_of_year/week_of_year.dart';
 
 class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
@@ -20,14 +19,11 @@ class OwnDaysScreen extends StatefulWidget {
 
 class _State extends State<OwnDaysScreen> {
 
-  late DateTime _pickedDay;
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
-  final DateRangePickerController drpController = DateRangePickerController();
-
 
 
   @override
@@ -44,16 +40,6 @@ class _State extends State<OwnDaysScreen> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  DateTime initialDate() {
-    if (DateTime.now().weekday == DateTime.saturday){
-      return DateTime.now().add(const Duration(days: 2));
-    } else if (DateTime.now().weekday == DateTime.sunday){
-      return DateTime.now().add(const Duration(days: 1));
-    } else {
-      return DateTime.now();
-    }
   }
 
   Future<void> getFirestoreShift() async {
@@ -121,37 +107,10 @@ class _State extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  /*if (Theme.of(context).platform == TargetPlatform.iOS){
-                    _pickedDay = (await DatePicker.showDatePicker(
-                      context,
-                      locale: const Locale("da", "DA"),
-                    ))!;
-                  }*/
-                    _pickedDay = (await showDatePicker(
-                        locale : const Locale("da","DA"),
-                        selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
-                        context: context,
-                        confirmText: "Vælg dag",
-                        cancelText: "Annuller",
-                        initialDate: initialDate(),
-                        firstDate: initialDate(),
-                        lastDate: DateTime.now().add(const Duration(days: 90))))!;
-
-
-                  final f = DateFormat('dd-MM-yyyy');
-                  var pickedDate = f.format(_pickedDay);
-                  var pickedMonth = _pickedDay.month;
-                  var pickedWeek = _pickedDay.weekOfYear;
-
-                  saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
-                    if (documentSnapshot.exists) {
-                      _showSnackBar(context, "Vagten findes allerede!", Colors.red);
-                    } else if (!documentSnapshot.exists){
-                      await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek});
-                      getFirestoreShift();
-                      _showSnackBar(context, "Vagt Tilføjet", Colors.green);
-                    }
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OwnDaysDatepicker()),
+                  );
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),

@@ -216,7 +216,6 @@ class _State extends State<SettingsScreen> {
                               _showSnackBar(context, "Kunne ikke sende meddelelse", Colors.red);
                             }
                           }
-
                           }, child: const Text("Send"))
                       ],),
                   );
