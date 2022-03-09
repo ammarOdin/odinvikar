@@ -21,10 +21,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
   bool isSwitched = false;
   late DateTime? _pickedDay = DateTime.now();
-  late TimeOfDay _startTime;
-  late TimeOfDay _endTime;
   String _startDropDownValue = "8:00";
-  String _endDropDownValue = "8:00";
+  String _endDropDownValue = "9:00";
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -51,18 +49,25 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
       body: ListView(
           children: [
             Center(
-              child: Text("Vælg dato", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
+              child: Text("Tilføj Dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
             ),
 
             Container(
-              padding: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.only(top: 40, bottom: 10),
               child: Row(
                 children: [
                   TextButton.icon(onPressed: null, icon: Icon(Icons.date_range), label: Text("Dato")),
                   const Spacer(),
                   Container(
                     padding: EdgeInsets.only(right: 20),
+                    height: 50,
                     child: ElevatedButton(
+                      style: ButtonStyle(shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: const BorderSide(color: Colors.blue)
+                          )
+                      )),
                         onPressed: () async {
                       _pickedDay = (await showDatePicker(
                       locale : const Locale("da","DA"),
@@ -110,8 +115,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                       children: [
                         Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
                         Container(
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          margin: EdgeInsets.only(left: 60, right: 30),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
+                          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.white
@@ -120,7 +125,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                             child: DropdownButton<String>(
                               icon: Icon(Icons.keyboard_arrow_down),
                               value: _startDropDownValue,
-                                items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
+                                items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
                                     .map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -142,8 +147,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                       children: [
                         Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
                         Container(
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          margin: EdgeInsets.only(left: 30, right: 30),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
+                          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/20, right: MediaQuery.of(context).size.width/20),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white
@@ -152,7 +157,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                             child: DropdownButton<String>(
                                 icon: Icon(Icons.keyboard_arrow_down),
                                 value: _endDropDownValue,
-                                items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
+                                items: <String>['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
                                     .map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
