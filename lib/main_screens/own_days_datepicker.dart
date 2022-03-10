@@ -199,57 +199,60 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                     controller: commentController,
                     validator: validateComment,
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height / 10, horizontal: 10),
+                        //contentPadding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height / 10, horizontal: 10),
                         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.5)),
                         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.blue, width: 1)),
                     ),
                   ),
                 ),),
 
-              Container(
-                padding: EdgeInsets.all(15),
-                  height: 100,
-                  width: 250,
-                  child: ElevatedButton.icon(
-                      style: ButtonStyle(shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                              side: const BorderSide(color: Colors.blue)
-                          )
-                      )),
-                      onPressed: () async {
-                        final f = DateFormat('dd-MM-yyyy');
-                        var pickedDate = f.format(_pickedDay!);
-                        var pickedMonth = _pickedDay?.month;
-                        var pickedWeek = _pickedDay?.weekOfYear;
-                        var timeRange = '';
-                        var comment = commentController.text;
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                    height: 100,
+                    width: 250,
+                    child: ElevatedButton.icon(
+                        style: ButtonStyle(shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                side: const BorderSide(color: Colors.blue)
+                            )
+                        )),
+                        onPressed: () async {
+                          final f = DateFormat('dd-MM-yyyy');
+                          var pickedDate = f.format(_pickedDay!);
+                          var pickedMonth = _pickedDay?.month;
+                          var pickedWeek = _pickedDay?.weekOfYear;
+                          var timeRange = '';
+                          var comment = commentController.text;
 
-                        if (commentController.text == "" || commentController.text.isEmpty){
-                          comment = "Ingen";
-                        }
-
-                        if (isSwitched == false){
-                           timeRange = '$_startDropDownValue - $_endDropDownValue';
-                        } else if (isSwitched == true){
-                          timeRange = 'Hele dagen';
-                        }
-                        saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
-                          if (documentSnapshot.exists) {
-                            _showSnackBar(context, "Vagten findes allerede!", Colors.red);
-                          } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
-                            try{
-                              await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
-                              saveShift.get();
-                              _showSnackBar(context, "Vagt Tilføjet", Colors.green);
-                            } catch (e) {
-                              _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
-                            }
+                          if (commentController.text == "" || commentController.text.isEmpty){
+                            comment = "Ingen";
                           }
-                        });
-                      },
-                      icon: Icon(Icons.add_circle),
-                      label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+
+                          if (isSwitched == false){
+                             timeRange = '$_startDropDownValue - $_endDropDownValue';
+                          } else if (isSwitched == true){
+                            timeRange = 'Hele dagen';
+                          }
+                          saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
+                            if (documentSnapshot.exists) {
+                              _showSnackBar(context, "Vagten findes allerede!", Colors.red);
+                            } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
+                              try{
+                                await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
+                                saveShift.get();
+                                _showSnackBar(context, "Vagt Tilføjet", Colors.green);
+                              } catch (e) {
+                                _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
+                              }
+                            }
+                          });
+                        },
+                        icon: Icon(Icons.add_circle),
+                        label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+              ),
             ]
         ),
       ),);
