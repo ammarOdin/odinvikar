@@ -52,17 +52,15 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.blue,
         toolbarHeight: kToolbarHeight + 1,
         leading: const BackButton(color: Colors.white,),
     ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height / 1.2,
-          child: Column(
+      body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: ListView(
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height / 5,
@@ -215,11 +213,11 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                     ),
                   ),),
 
-                  Spacer(),
+                  //Spacer(),
                   Container(
-                    padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(15),
                       height: 100,
-                      width: 250,
+                      margin: EdgeInsets.only(left: 50, right: 50),
                       child: ElevatedButton.icon(
                           style: ButtonStyle(shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
@@ -252,6 +250,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
                                   saveShift.get();
                                   _showSnackBar(context, "Vagt Tilføjet", Colors.green);
+                                  Navigator.pop(context);
+
                                 } catch (e) {
                                   _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
                                 }
@@ -264,6 +264,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
               ]
           ),
         ),
-      ),);
+      );
   }
 }

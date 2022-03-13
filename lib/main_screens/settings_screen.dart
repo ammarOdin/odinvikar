@@ -206,7 +206,9 @@ class _State extends State<SettingsScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
                       actions: [
-                        TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),),
+                        Container(
+                            padding: EdgeInsets.only(right: 20),
+                            child: TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),)),
                         TextButton(onPressed: () async {
                           if (_feedbackKey.currentState!.validate()){
                             try {
