@@ -59,16 +59,22 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
         leading: const BackButton(color: Colors.white,),
     ),
       body: ListView(
-        physics: ClampingScrollPhysics(),
-              padding: const EdgeInsets.only(top: 0),
-              shrinkWrap: true,
-              children: [
-                Container(
+          physics: ClampingScrollPhysics(),
+          padding: const EdgeInsets.only(top: 0),
+          shrinkWrap: true,
+          children: [
+            Container(
                   height: MediaQuery.of(context).size.height / 5,
                   padding: EdgeInsets.only(bottom: 30),
                   color: Colors.blue,
-                  child: Center(
-                    child: Text("Tilføj Dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
+                  child: ListView(
+                    padding: EdgeInsets.only(top: 20),
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      Center(
+                        child: Text("Tilføj Dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -130,36 +136,38 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                 if (isSwitched == false) Center(child: Column(
                   children: [
                     Row(children: [
-                      Column(
-                          children: [
-                            Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
-                            Container(
-                              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
-                              margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white
+                      Expanded(
+                        child: Column(
+                            children: [
+                              Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
+                              Container(
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
+                                margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    icon: Icon(Icons.keyboard_arrow_down),
+                                    value: _startDropDownValue,
+                                      items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
+                                          .map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue){
+                                      setState(() {
+                                        _startDropDownValue = newValue!;
+                                      });
+                                      }),
+                                ),
                               ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  icon: Icon(Icons.keyboard_arrow_down),
-                                  value: _startDropDownValue,
-                                    items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
-                                        .map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue){
-                                    setState(() {
-                                      _startDropDownValue = newValue!;
-                                    });
-                                    }),
-                              ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                      ),
                       Container(
                         padding: EdgeInsets.all(20),
                         child: Column(
@@ -167,7 +175,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                             Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
                             Container(
                               padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
-                              margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/20, right: MediaQuery.of(context).size.width/20),
+                              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width/20),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white
@@ -261,7 +269,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                           },
                           icon: Icon(Icons.add_circle),
                           label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
-
               ]
           ),
       );
