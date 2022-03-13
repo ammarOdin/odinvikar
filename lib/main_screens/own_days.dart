@@ -80,6 +80,8 @@ class _State extends State<OwnDaysScreen> {
                 height: MediaQuery.of(context).size.height / 1.5,
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
+                  /*todayHighlightColor: Colors.lightBlueAccent,
+                  backgroundColor: Colors.blueGrey,*/
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(

@@ -55,7 +55,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
       //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        toolbarHeight: kToolbarHeight + 1,
+        toolbarHeight: kToolbarHeight + 2,
         leading: const BackButton(color: Colors.white,),
     ),
       body: SizedBox(

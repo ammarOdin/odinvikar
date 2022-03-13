@@ -57,7 +57,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       top: MediaQuery.of(context).size.height / 30),
                   child: const Center(
                       child: Text(
-                        "Vagt Oversigt",
+                        "Dine Dage",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
               Container(

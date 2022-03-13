@@ -79,7 +79,7 @@ class _HomescreenState extends State<Dashboard> {
                   icon: Icon(Icons.home)
               ),
               BottomNavigationBarItem(
-                  label: 'Mine Dage',
+                  label: 'Kalender',
                   icon: Icon(Icons.today_outlined)
               ),
               BottomNavigationBarItem(
