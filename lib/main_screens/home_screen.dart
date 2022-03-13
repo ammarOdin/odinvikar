@@ -42,7 +42,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      //physics: const NeverScrollableScrollPhysics(),
+      physics: ClampingScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       children: [

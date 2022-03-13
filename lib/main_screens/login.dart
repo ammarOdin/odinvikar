@@ -64,7 +64,7 @@ class _LoginState extends State<LoginScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: ListView(
-        //physics: const NeverScrollableScrollPhysics(),
+        physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [

@@ -59,6 +59,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
         leading: const BackButton(color: Colors.white,),
     ),
       body: ListView(
+        physics: ClampingScrollPhysics(),
               padding: const EdgeInsets.only(top: 0),
               shrinkWrap: true,
               children: [
