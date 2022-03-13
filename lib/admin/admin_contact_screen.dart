@@ -40,7 +40,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: ClampingScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       children: [
