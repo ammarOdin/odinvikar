@@ -61,6 +61,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
       body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: ListView(
+              padding: const EdgeInsets.only(top: 0),
+              shrinkWrap: true,
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height / 5,
