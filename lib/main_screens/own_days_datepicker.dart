@@ -58,9 +58,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
         toolbarHeight: kToolbarHeight + 2,
         leading: const BackButton(color: Colors.white,),
     ),
-      body: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: ListView(
+      body: ListView(
               padding: const EdgeInsets.only(top: 0),
               shrinkWrap: true,
               children: [
@@ -265,7 +263,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
               ]
           ),
-        ),
       );
   }
 }
