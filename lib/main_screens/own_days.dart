@@ -62,7 +62,7 @@ class _State extends State<OwnDaysScreen> {
                     content: const Text("Er du sikker på at slette vagten?"),
                     actions: [
                       TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
+                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
                           , child: const Text("Slet"))
                     ],
                   );});},), ),),
