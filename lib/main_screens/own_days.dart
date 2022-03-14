@@ -55,9 +55,17 @@ class _State extends State<OwnDaysScreen> {
               Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
               SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Vagt", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
-                data.reference.delete();
-                Navigator.pop(context);
-                _showSnackBar(context, "Vagt Slettet", Colors.red);},), ),),
+                showDialog(context: context, builder: (BuildContext context){
+                  return AlertDialog(
+                    title: const Text("Slet Vagt"),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    content: const Text("Er du sikker på at slette vagten?"),
+                    actions: [
+                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
+                          , child: const Text("Slet"))
+                    ],
+                  );});},), ),),
             ],);
           });
         }
