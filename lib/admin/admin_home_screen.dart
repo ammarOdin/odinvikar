@@ -109,7 +109,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           } else if (snapshot.connectionState == ConnectionState.waiting){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
           }
-          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Tryk for at ringe", onPressed: () {launch("tel://" + e.substring(0,8));}),
+          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Kontakt", onPressed: () {
+            showDialog(context: context, builder: (BuildContext context){
+              return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(8)),), children: [
+                SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel://" + e.substring(0,8));},), ),),
+                SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + e.substring(0,8));},), ),),
+              ],);
+            });
+            }),
           ).toList());
         }),
       ],
