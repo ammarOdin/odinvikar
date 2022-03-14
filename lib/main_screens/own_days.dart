@@ -42,6 +42,30 @@ class _State extends State<OwnDaysScreen> {
     super.dispose();
   }
 
+  void calendarTapped(CalendarTapDetails calendarTapDetails) async {
+    final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
+    var userData = await databaseReference.collection(user!.uid).get();
+
+    if (calendarTapDetails.targetElement == CalendarElement.appointment) {
+      for (var data in userData.docs){
+        if (data.get(FieldPath(const ["date"])) == tapDate){
+          showDialog(context: context, builder: (BuildContext context){
+            return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Til Rådighed"),), children: [
+              Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
+              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
+              const Divider(thickness: 1),
+              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Vagt", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+                data.reference.delete();
+                Navigator.pop(context);
+                _showSnackBar(context, "Vagt Slettet", Colors.red);},), ),),
+            ],);
+          });
+        }
+      }
+
+    }
+  }
+
   Future<void> getFirestoreShift() async {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
@@ -82,6 +106,7 @@ class _State extends State<OwnDaysScreen> {
                 child: SfCalendar(
                   /*todayHighlightColor: Colors.lightBlueAccent,
                   backgroundColor: Colors.blueGrey,*/
+                  onTap: calendarTapped,
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
@@ -185,7 +210,8 @@ class _State extends State<OwnDaysScreen> {
                               content: const Text("Er du sikker på at slette vagten?"),
                               actions: [
                                 TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                                TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}, child: const Text("Slet"))
+                                TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
+                                    , child: const Text("Slet"))
                               ],
                             );});
                           }, child: Align(
