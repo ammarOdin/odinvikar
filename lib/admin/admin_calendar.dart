@@ -56,10 +56,6 @@ class _State extends State<AdminCalendar> {
     final Meeting appointmentDetails = calendarTapDetails.appointments![0];
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
 
-    if (kDebugMode){
-      print(tapDate);
-    }
-
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       for (var users in userRef.docs){
         var userData = await databaseReference.collection(users.id).get();
@@ -68,7 +64,8 @@ class _State extends State<AdminCalendar> {
             showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + users.get(FieldPath(const ["name"]))),), children: [
                 Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-                Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"])))),
+                Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
+                const Divider(thickness: 1),
                 SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + users.get(FieldPath(const ["phone"])));},), ),),
                 SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + users.get(FieldPath(const ["phone"])));},), ),),
               ],);
