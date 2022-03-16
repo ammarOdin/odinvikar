@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
@@ -118,15 +119,20 @@ class _LoginState extends State<LoginScreen> {
                           side: const BorderSide(color: Colors.blue)
                       )
                   )),),),
+                TextButton(onPressed: () async {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
+                      TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
+                      TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail"))],);});
+                }, child: Text("Glemt Adgangskode")),
               ],
             ),
           ),
-          Align(alignment: Alignment.bottomRight, child: IconButton(onPressed: () {
-            showDialog(context: context, builder: (BuildContext context){
-              return AlertDialog(title: const Text("Hjælp"),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Kontakt din leder for at få dine loginoplysninger."),
-                actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);
-            });} , icon: const Icon(Icons.info_outline_rounded, color: Colors.blue,))),
+          Container(
+            padding: EdgeInsets.only(left: 10, right: 10, top: 80),
+            child: Center(child: Text("Kan du ikke logge ind, skal du kontakte os via telefon 60 51 02 97. Ønsker du at være vikar, kan du kontakte os via nedenstående link:")),
+          ),
+          TextButton(onPressed: (){launch("https://odinskolen.aula.dk/");}, child: Text("www.odinskolen.aula.dk")),
         ],
       ),
     );
