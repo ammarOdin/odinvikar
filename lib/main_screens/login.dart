@@ -73,6 +73,7 @@ class _LoginState extends State<LoginScreen> {
             color: Colors.blue,
             height: MediaQuery.of(context).size.height / 3,
             child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 Container(
                     padding: EdgeInsets.only(
