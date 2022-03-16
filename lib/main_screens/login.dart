@@ -19,6 +19,7 @@ class _LoginState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _resetKey = GlobalKey<FormState>();
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -120,12 +121,26 @@ class _LoginState extends State<LoginScreen> {
                           side: const BorderSide(color: Colors.blue)
                       )
                   )),),),
-                TextButton(onPressed: () async {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
-                      TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
-                      TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail"))],);});
-                }, child: Text("Glemt Adgangskode")),
+                Form(
+                  key: _resetKey,
+                  child: TextButton(onPressed: () async {
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
+                        TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
+                        TextButton(onPressed: () async {
+                          if(_resetKey.currentState!.validate()){
+                            try{
+                              await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);
+                            } on FirebaseAuthException catch (e){
+                              if(e.code == "user-not-found"){
+                                _showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);
+                              } else {
+                                _showSnackBar(context, "Fejl", Colors.red);}
+                            }
+
+                          }}, child: const Text("Send E-mail"))],);});
+                  }, child: Text("Glemt Adgangskode")),
+                ),
               ],
             ),
           ),
