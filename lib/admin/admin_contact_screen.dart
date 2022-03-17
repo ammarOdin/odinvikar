@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:odinvikar/main_screens/home_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../card_assets.dart';
 
 
 class AdminContactScreen extends StatefulWidget {
@@ -77,7 +78,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
             child: Column(
               children: snapshot.data!.map<Widget>((document){
                 return Column(children: [
-                  CardFb2(text: document.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Opkald/SMS", onPressed: (){
+                  InfoCard(text: document.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Opkald/SMS", onPressed: (){
                     showDialog(context: context, builder: (BuildContext context){
                       return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: const Center(child: Text("Kontakt"),), children: [
                         SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),

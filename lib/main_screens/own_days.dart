@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
@@ -50,7 +49,7 @@ class _State extends State<OwnDaysScreen> {
       for (var data in userData.docs){
         if (data.get(FieldPath(const ["date"])) == tapDate){
           showDialog(context: context, builder: (BuildContext context){
-            return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Til Rådighed"),), children: [
+            return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
               Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
               Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
@@ -78,7 +77,7 @@ class _State extends State<OwnDaysScreen> {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
     List<Meeting> list = snapShotsValue.docs.map((e)=>
-        Meeting(eventName: "Til Rådighed",
+        Meeting(eventName: "Tilgængelig",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
         background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.green,
@@ -142,8 +141,7 @@ class _State extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker()));
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),

@@ -199,7 +199,6 @@ class _State extends State<SettingsScreen> {
 
             Container(
               child: IconButton(onPressed: () {
-
                 showDialog(context: context, builder: (BuildContext context){
                   return Form(
                     key: _feedbackKey,

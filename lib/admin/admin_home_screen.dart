@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:odinvikar/main_screens/home_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../card_assets.dart';
 
 
 class AdminHomeScreen extends StatefulWidget {
@@ -109,7 +110,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           } else if (snapshot.connectionState == ConnectionState.waiting){
             return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
           }
-          return Column(children: snapshot.data!.map<Widget>((e) => CardFb2(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Kontakt", onPressed: () {
+          return Column(children: snapshot.data!.map<Widget>((e) => InfoCard(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Kontakt", onPressed: () {
             showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(8)),), children: [
                 SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel://" + e.substring(0,8));},), ),),

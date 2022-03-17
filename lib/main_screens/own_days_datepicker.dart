@@ -260,7 +260,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   saveShift.get();
                                   _showSnackBar(context, "Vagt Tilføjet", Colors.green);
                                   Navigator.pop(context);
-
                                 } catch (e) {
                                   _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
                                 }
