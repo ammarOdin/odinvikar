@@ -72,6 +72,7 @@ class _HomescreenState extends State<AdminDashboard> {
             topRight: Radius.circular(30.0),
           ),*/
           child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             currentIndex: _currentIndex,
             selectedItemColor: Colors.blue,
             unselectedItemColor: Colors.grey,
