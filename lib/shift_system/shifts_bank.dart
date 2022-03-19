@@ -13,26 +13,40 @@ class ShiftBankScreen extends StatefulWidget {
 
 class _ShiftBankScreenState extends State<ShiftBankScreen> {
 
-  late String name = "no name";
-
   @override
   void initState() {
     super.initState();
-     name = "";
   }
 
   User? user = FirebaseAuth.instance.currentUser;
   get vagter => FirebaseFirestore.instance.collection("shifts");
 
   final CollectionReference vagterRef = FirebaseFirestore.instance.collection("shifts");
+  final CollectionReference userInfo = FirebaseFirestore.instance.collection('user');
 
-  Future<String?> getName() async {
-    var userInfo = await FirebaseFirestore.instance.collection('user').doc(user!.uid);
+
+
+  String? getName()  {
+    String name = "";
+    var userInfo = FirebaseFirestore.instance.collection('user').doc(user!.uid);
     userInfo.get().then((value) {
-      setState(() {
-        return name = value['name'];
-      });
+      name = value['name'];
+      return name;
     });
+    if (kDebugMode){
+      print(name);
+    }
+  }
+
+  Future<String> getUser() async {
+    String name = "";
+    QuerySnapshot usersSnapshot = await userInfo.get();
+    for (var users in usersSnapshot.docs){
+      if(users.id == user!.uid){
+        name = users.get(FieldPath(const['name']));
+      }
+    }
+    return name;
   }
 
   @override
@@ -69,25 +83,27 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                 return Column(
                   children: snapshot.data!.docs.map((document){
                     if (document['isTaken'] == false){
-                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.green, size: 20,), text: "Ledig: " + document['date'], subtitle: " Detaljer", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(
-                            title: Text("Vagt Detaljer: " + document['date']),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: Text("Tid: " + document['time'] + "\n\nKommentar: " + document['comment']),
-                            actions: [TextButton(onPressed: () {
-                              showDialog(context: context, builder: (BuildContext context){
-                                return AlertDialog(
-                                  title: Text("Vagt Detaljer: " + document['date']),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                  content: Text("Er du sikker på at tage vagten? Fortryder du, skal du kontakte din leder."),
-                                  actions: [TextButton(onPressed: () {
-                                    // assign shift to user
-                                    vagterRef.doc(document.id).update({"isTaken": true, "userID": user!.uid, "name": getName()});
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  }, child: const Text("OK"))],);});
-                            }, child: const Text("Tag Vagt"))],);});
+                      return FutureBuilder(future: getUser(), builder: (context, AsyncSnapshot<String> snapshot){
+                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.green, size: 20,), text: "Ledig: " + document['date'], subtitle: " Detaljer", onPressed: () {
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              title: Text("Vagt Detaljer: " + document['date']),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                              content: Text("Tid: " + document['time'] + "\n\nKommentar: " + document['comment']),
+                              actions: [TextButton(onPressed: () {
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return AlertDialog(
+                                    title: Text("Vagt Detaljer: " + document['date']),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    content: Text("Er du sikker på at tage vagten? Fortryder du, skal du kontakte din leder."),
+                                    actions: [TextButton(onPressed: () async {
+                                      // assign shift to user
+                                      await vagterRef.doc(document.id).update({"isTaken": true, "userID": user!.uid, "name": document['name']});
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    }, child: const Text("OK"))],);});
+                              }, child: const Text("Tag Vagt"))],);});
+                        });
                       });
                     } else {
                       return Container();
@@ -97,9 +113,9 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                 );
 
               }),
-          /*ElevatedButton(onPressed: (){
-            name;
-          }, child: Text("test")),*/
+          ElevatedButton(onPressed: () async {
+            await getUser();
+          }, child: Text("test")),
         ],
       ),
     );
