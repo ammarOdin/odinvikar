@@ -94,8 +94,13 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                 return Column(
                   children: snapshot.data!.docs.map((document){
                     if (document['week'] == DateTime.now().weekOfYear) {
-                      return InfoCard(text: "Tilgængelig: " + document['date'], imageUrl: "assets/aula-logo.jpg", subtitle: " Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Dato: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Kan arbejde: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nDu har sat dig selv til rådighed på valgte dato. Du vil blive kontaktet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Dato: " + document['date']),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Kan arbejde: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nStatus: " + document['status']),
+                            actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                , child: const Text("OK"))],);});
                       });
                     } else {
                       return Container();
@@ -107,8 +112,13 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   children: snapshot.data!.docs.map((document){
                     var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
                     if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
-                      return InfoCard(text: "Tilgængelig: " + document['date'], imageUrl: "assets/aula-logo.jpg", subtitle: "Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: Text("Dato: " + document['date']), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Kan arbejde: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nDu har sat dig selv til rådighed på valgte dato. Du vil blive kontaktet såfremt vagten er din."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});
+                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Dato: " + document['date']),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Kan arbejde: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nStatus: " + document['status']),
+                            actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                , child: const Text("OK"))],);});
 
                       });
                     } else {

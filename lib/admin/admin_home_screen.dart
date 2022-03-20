@@ -47,9 +47,9 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       QuerySnapshot shiftSnapshot = await shiftRef.get();
       for (var shifts in shiftSnapshot.docs){
         if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-          userID.add(users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
+          userID.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
         } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
-          userID2.add(users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
+          userID2.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
         }
       }
     }
@@ -96,30 +96,69 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         ),
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
 
-        FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
-          if (!snapshot.hasData){
-            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
-          } else if (snapshot.data!.isEmpty) {
-            return Container(
-              padding: const EdgeInsets.all(50),
-              child: const Center(child: Text(
-                "Ingen Vikarer",
-                style: TextStyle(color: Colors.blue, fontSize: 18),
-              ),),
-            );
-          } else if (snapshot.connectionState == ConnectionState.waiting){
-            return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
-          }
-          return Column(children: snapshot.data!.map<Widget>((e) => InfoCard(text: e.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Kontakt", onPressed: () {
-            showDialog(context: context, builder: (BuildContext context){
-              return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(8)),), children: [
-                SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel://" + e.substring(0,8));},), ),),
-                SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + e.substring(0,8));},), ),),
-              ],);
-            });
-            }),
-          ).toList());
-        }),
+        Row(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 5),
+              child: Icon(Icons.circle, color: Colors.orange,),
+            ),
+            Text(" Ikke Godkendt", style: TextStyle(fontSize: 12),)
+          ],
+        ),
+        Row(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 5),
+              child: Icon(Icons.circle, color: Colors.green,),
+            ),
+            Text(" Godkendt", style: TextStyle(fontSize: 12),)
+          ],
+        ),
+
+        const Divider(thickness: 1),
+
+
+        Container(
+          padding: EdgeInsets.only(top: 10),
+          child: FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
+            if (!snapshot.hasData){
+              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+            } else if (snapshot.data!.isEmpty) {
+              return Container(
+                padding: const EdgeInsets.all(50),
+                child: const Center(child: Text(
+                  "Ingen Vikarer",
+                  style: TextStyle(color: Colors.blue, fontSize: 18),
+                ),),
+              );
+            } else if (snapshot.connectionState == ConnectionState.waiting){
+              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+            }
+            return Column(children: snapshot.data!.map<Widget>((e) => AvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Detaljer", onPressed: () {
+              showDialog(context: context, builder: (BuildContext context){
+                return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(18)),), children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel://" + e.substring(10,18));},), ),),
+                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + e.substring(10,18));},), ),),
+                    ],
+                  ),
+                  const Divider(thickness: 1),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    child: Text("Naviger til kalendersiden for yderligere info."
+                        ""),
+                  ),
+                ],);
+              });
+              }),
+            ).toList());
+          }),
+        ),
       ],
     );
   }

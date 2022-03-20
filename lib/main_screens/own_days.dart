@@ -22,6 +22,7 @@ class OwnDays extends State<OwnDaysScreen> {
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   final databaseReference = FirebaseFirestore.instance;
+  final calendarDetails = CalendarTapDetails;
   MeetingDataSource? events;
 
 
@@ -52,19 +53,33 @@ class OwnDays extends State<OwnDaysScreen> {
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
               Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
               Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
+              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
               const Divider(thickness: 1),
               SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
-                showDialog(context: context, builder: (BuildContext context){
-                  return AlertDialog(
-                    title: const Text("Slet Dag"),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                    content: const Text("Er du sikker på at slette dagen?"),
-                    actions: [
-                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
-                          , child: const Text("Slet"))
-                    ],
-                  );});},), ),),
+                if (data.get(FieldPath(const ["isAccepted"])) == true){
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(
+                      title: const Text("Slet Dag"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      content: const Text("Vagten er allerede godkendt. Kontakt din chef hvis du ikke kan arbejde."),
+                      actions: [
+                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                      ],
+                    );});
+                } else {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(
+                      title: const Text("Slet Dag"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      content: const Text("Er du sikker på at slette dagen?"),
+                      actions: [
+                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                        TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
+                            , child: const Text("Slet"))
+                      ],
+                    );});
+                }
+                },), ),),
             ],);
           });
         }
@@ -80,7 +95,7 @@ class OwnDays extends State<OwnDaysScreen> {
         Meeting(eventName: "Tilgængelig",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
-        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.green,
+        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
         isAllDay: true)).toList();
 
     setState(() {
@@ -150,7 +165,7 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Vagter")),
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Dage")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -183,7 +198,7 @@ class OwnDays extends State<OwnDaysScreen> {
       shrinkWrap: true,
       primary: false,
       children: [
-        Container(padding: const EdgeInsets.only(bottom: 20, top: 10), child: const Center(child: Text("Dine Vagter", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),)),
+        Container(padding: const EdgeInsets.only(bottom: 20, top: 10), child: const Center(child: Text("Dine Dage", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),)),
         StreamBuilder(
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -193,7 +208,7 @@ class OwnDays extends State<OwnDaysScreen> {
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
                   child: const Center(child: Text(
-                    "Ingen Vagter",
+                    "Ingen Dage",
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),),
                 );
@@ -209,17 +224,29 @@ class OwnDays extends State<OwnDaysScreen> {
                         margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15),
                         decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))),
                         child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-                              title: const Text("Slet Dag"),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: const Text("Er du sikker på at slette dagen?"),
-                              actions: [
-                                TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                                TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, document.id + " Slettet", Colors.green); setState(() {});}
-                                    , child: const Text("Slet"))
-                              ],
-                            );});
+                          if (document.get(FieldPath(const ["status"])) == "Godkendt"){
+                            showDialog(context: context, builder: (BuildContext context){
+                              return AlertDialog(
+                                title: const Text("Slet Dag"),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                content: const Text("Vagten er allerede godkendt. Kontakt din chef hvis du ikke kan arbejde."),
+                                actions: [
+                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                ],
+                              );});
+                          } else {
+                            showDialog(context: context, builder: (BuildContext context){
+                              return AlertDialog(
+                                title: const Text("Slet Dag"),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                content: const Text("Er du sikker på at slette dagen?"),
+                                actions: [
+                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                                  TextButton(onPressed: () {document.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, document.id + " Slettet", Colors.green); setState(() {});}
+                                      , child: const Text("Slet"))
+                                ],
+                              );});
+                          }
                           }, child: Align(
                           alignment: Alignment.centerLeft,
                           child: Row(

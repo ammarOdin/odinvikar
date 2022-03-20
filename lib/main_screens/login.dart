@@ -146,9 +146,9 @@ class _LoginState extends State<LoginScreen> {
           ),
           Container(
             padding: EdgeInsets.only(left: 20, right: 20, top: 80),
-            child: Center(child: Text("Har du problemer med din konto, kan du kontakte os via telefon 60 51 02 97. Ønsker du at oprette dig som vikar, sker dette via nedenstående link:")),
+            child: Center(child: Text("Har du problemer med din konto, kan du kontakte os via telefon")),
           ),
-          TextButton(onPressed: (){launch("https://odinskolen.aula.dk/");}, child: Text("www.odinskolen.aula.dk")),
+          TextButton(onPressed: (){launch("tel://60 51 02 97");}, child: Text("60 51 02 97.")),
         ],
       ),
     );

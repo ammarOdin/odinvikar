@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/main_screens/own_days.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 
@@ -41,6 +43,25 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
     } else {
       return DateTime.now();
 
+    }
+  }
+
+  DateTime getDateFromCalendar(CalendarTapDetails calendarTapDetails) {
+
+    if (calendarTapDetails.targetElement == true){
+      final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
+      if(kDebugMode){
+        print(calendarTapDetails.date);
+      }
+      return tapDate as DateTime;
+    } else {
+      if (DateTime.now().weekday == DateTime.saturday){
+        return DateTime.now().add(const Duration(days: 2));
+      } else if (DateTime.now().weekday == DateTime.sunday){
+        return DateTime.now().add(const Duration(days: 1));
+      } else {
+        return DateTime.now();
+      }
     }
   }
 
@@ -109,7 +130,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                           setState(() {
                             _pickedDay;
                           });
-                        }, child: Text('${DateFormat('dd-MM-yyyy').format(_pickedDay!)}'),),
+                        }, child: Text('${DateFormat('dd-MM-yyyy').format(_pickedDay!)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
                       ),
                     ],
                   ),
@@ -227,33 +248,10 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   ),),
 
                   //Spacer(),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
                         Container(
-                            padding: EdgeInsets.only(top: 15, left: 15, bottom: 15, right: 1),
+                            padding: EdgeInsets.all(15),
                             height: 100,
-                            width: 200,
-                            //margin: EdgeInsets.only(left: 50, right: 50, top: 10),
-                            child: ElevatedButton.icon(
-                                onPressed: (){Navigator.pop(context);},
-                                icon: Icon(Icons.exit_to_app),
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        side: const BorderSide(color: Colors.grey)
-                                    )
-                                ),
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),),
-                                label: Text("Tilbage", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
-                        Container(
-                            padding: EdgeInsets.only(top: 15, left: 1, bottom: 15, right: 15),
-                            height: 100,
-                            width: 200,
-                            //margin: EdgeInsets.only(left: 50, right: 50, top: 10),
+                            margin: EdgeInsets.only(left: 50, right: 50, top: 10),
                             child: ElevatedButton.icon(
                                 style: ButtonStyle(shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
@@ -283,9 +281,9 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                       _showSnackBar(context, pickedDate + " er allerede oprettet", Colors.red);
                                     } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
                                       try{
-                                        await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
-                                        FirebaseFirestore.instance.collection(user!.uid).get();
+                                        await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment, 'isAccepted': false, 'color': '0xFFFF9800', 'status': 'Ikke Godkendt'});
                                         _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
+                                        Navigator.pop(context);
                                       } catch (e) {
                                         _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
                                       }
@@ -294,9 +292,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                 },
                                 icon: Icon(Icons.add_circle),
                                 label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
-                      ],
-                    ),
-                  ),
               ]
           ),
       );
