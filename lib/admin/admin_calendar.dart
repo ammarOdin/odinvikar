@@ -97,7 +97,7 @@ class _State extends State<AdminCalendar> {
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Godkend Dag"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Vagten er allerede godkendt."),
+                              content: Text("Dagen er allerede godkendt."),
                               actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                   , child: const Text("OK"))],);});
                         } else {
@@ -111,7 +111,7 @@ class _State extends State<AdminCalendar> {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
                                       await userRef.doc(data.id).update({'status': 'Godkendt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
-                                      _showSnackBar(context," Vagt Godkendt", Colors.green);
+                                      _showSnackBar(context," Dag Godkendt", Colors.green);
                                       Navigator.pop(context);
                                       // TODO send notification to user that shift is accepted!
 
