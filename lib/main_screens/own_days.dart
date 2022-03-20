@@ -12,11 +12,11 @@ class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
 
   @override
-  _State createState() => _State();
+  OwnDays createState() => OwnDays();
 
 }
 
-class _State extends State<OwnDaysScreen> {
+class OwnDays extends State<OwnDaysScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
@@ -53,15 +53,15 @@ class _State extends State<OwnDaysScreen> {
               Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
               Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
-              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Vagt", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                 showDialog(context: context, builder: (BuildContext context){
                   return AlertDialog(
-                    title: const Text("Slet Vagt"),
+                    title: const Text("Slet Dag"),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                    content: const Text("Er du sikker på at slette vagten?"),
+                    content: const Text("Er du sikker på at slette dagen?"),
                     actions: [
                       TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
+                      TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
                           , child: const Text("Slet"))
                     ],
                   );});},), ),),
@@ -211,12 +211,12 @@ class _State extends State<OwnDaysScreen> {
                         child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(
-                              title: const Text("Slet Vagt"),
+                              title: const Text("Slet Dag"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: const Text("Er du sikker på at slette vagten?"),
+                              content: const Text("Er du sikker på at slette dagen?"),
                               actions: [
                                 TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                                TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, "Vagt Slettet", Colors.green); setState(() {});}
+                                TextButton(onPressed: () {saveShift.doc(document.id).delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, document.id + " Slettet", Colors.green); setState(() {});}
                                     , child: const Text("Slet"))
                               ],
                             );});
@@ -224,7 +224,7 @@ class _State extends State<OwnDaysScreen> {
                           alignment: Alignment.centerLeft,
                           child: Row(
                               children: [
-                                Align(alignment: Alignment.centerLeft, child: Text("Vagt: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)),
+                                Align(alignment: Alignment.centerLeft, child: Text("Dag: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)),
                                 const Spacer(),
                                 const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))
                               ]),

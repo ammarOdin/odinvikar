@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:odinvikar/main_screens/own_days.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 
@@ -14,6 +15,8 @@ class OwnDaysDatepicker extends StatefulWidget {
 }
 
 class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
+
+  final calendar = OwnDays();
 
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   User? user = FirebaseAuth.instance.currentUser;
@@ -135,7 +138,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                 ),
                 if (isSwitched == false) Center(child: Column(
                   children: [
-                    Row(children: [
+                    Row(
+                      children: [
                       Expanded(
                         child: Column(
                             children: [
@@ -224,50 +228,75 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
                   //Spacer(),
                   Container(
-                      padding: EdgeInsets.all(15),
-                      height: 100,
-                      margin: EdgeInsets.only(left: 50, right: 50, top: 10),
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  side: const BorderSide(color: Colors.blue)
-                              )
-                          )),
-                          onPressed: () async {
-                            final f = DateFormat('dd-MM-yyyy');
-                            var pickedDate = f.format(_pickedDay!);
-                            var pickedMonth = _pickedDay?.month;
-                            var pickedWeek = _pickedDay?.weekOfYear;
-                            var timeRange = '';
-                            var comment = commentController.text;
+                    padding: EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.only(top: 15, left: 15, bottom: 15, right: 1),
+                            height: 100,
+                            width: 200,
+                            //margin: EdgeInsets.only(left: 50, right: 50, top: 10),
+                            child: ElevatedButton.icon(
+                                onPressed: (){Navigator.pop(context);},
+                                icon: Icon(Icons.exit_to_app),
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        side: const BorderSide(color: Colors.grey)
+                                    )
+                                ),
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),),
+                                label: Text("Tilbage", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                        Container(
+                            padding: EdgeInsets.only(top: 15, left: 1, bottom: 15, right: 15),
+                            height: 100,
+                            width: 200,
+                            //margin: EdgeInsets.only(left: 50, right: 50, top: 10),
+                            child: ElevatedButton.icon(
+                                style: ButtonStyle(shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        side: const BorderSide(color: Colors.blue)
+                                    )
+                                )),
+                                onPressed: () async {
+                                  final f = DateFormat('dd-MM-yyyy');
+                                  var pickedDate = f.format(_pickedDay!);
+                                  var pickedMonth = _pickedDay?.month;
+                                  var pickedWeek = _pickedDay?.weekOfYear;
+                                  var timeRange = '';
+                                  var comment = commentController.text;
 
-                            if (commentController.text == "" || commentController.text.isEmpty){
-                              comment = "Ingen";
-                            }
+                                  if (commentController.text == "" || commentController.text.isEmpty){
+                                    comment = "Ingen";
+                                  }
 
-                            if (isSwitched == false){
-                               timeRange = '$_startDropDownValue - $_endDropDownValue';
-                            } else if (isSwitched == true){
-                              timeRange = 'Hele dagen';
-                            }
-                            saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
-                              if (documentSnapshot.exists) {
-                                _showSnackBar(context, "Vagten findes allerede!", Colors.red);
-                              } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
-                                try{
-                                  await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
-                                  saveShift.get();
-                                  _showSnackBar(context, "Vagt Tilføjet", Colors.green);
-                                  Navigator.pop(context);
-                                } catch (e) {
-                                  _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
-                                }
-                              }
-                            });
-                          },
-                          icon: Icon(Icons.add_circle),
-                          label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                                  if (isSwitched == false){
+                                     timeRange = '$_startDropDownValue - $_endDropDownValue';
+                                  } else if (isSwitched == true){
+                                    timeRange = 'Hele dagen';
+                                  }
+                                  saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
+                                    if (documentSnapshot.exists) {
+                                      _showSnackBar(context, pickedDate + " er allerede oprettet", Colors.red);
+                                    } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
+                                      try{
+                                        await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment});
+                                        FirebaseFirestore.instance.collection(user!.uid).get();
+                                        _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
+                                      } catch (e) {
+                                        _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
+                                      }
+                                    }
+                                  });
+                                },
+                                icon: Icon(Icons.add_circle),
+                                label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                      ],
+                    ),
+                  ),
               ]
           ),
       );
