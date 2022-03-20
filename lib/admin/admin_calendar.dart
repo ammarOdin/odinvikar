@@ -82,8 +82,8 @@ class _State extends State<AdminCalendar> {
                 Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
                 Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
                 Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
-                const Divider(thickness: 1),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
+                const Divider(thickness: 1, height: 50,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
                   alignment: Alignment.center,

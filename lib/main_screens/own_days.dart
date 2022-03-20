@@ -55,8 +55,8 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
               Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
-              const Divider(thickness: 1),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              const Divider(thickness: 1, height: 50,),
 
               SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                 if (data.get(FieldPath(const ["isAccepted"])) == true){
@@ -227,7 +227,7 @@ class OwnDays extends State<OwnDaysScreen> {
                         margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15),
                         decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))),
                         child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-                          if (document.get(FieldPath(const ["status"])) == "Godkendt"){
+                          if (document.get(FieldPath(const ["isAccepted"])) == true){
                             showDialog(context: context, builder: (BuildContext context){
                               return AlertDialog(
                                 title: const Text("Slet Dag"),
