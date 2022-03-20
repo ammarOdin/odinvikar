@@ -81,7 +81,8 @@ class _State extends State<AdminCalendar> {
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
                 Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
                 Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
-                Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+                Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -92,26 +93,26 @@ class _State extends State<AdminCalendar> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Godkend", style: TextStyle(color: Colors.green),), icon: const Icon(Icons.add_circle, color: Colors.green,), onPressed: (){
+                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Tildel Vagt", style: TextStyle(color: Colors.green),), icon: const Icon(Icons.add_circle, color: Colors.green,), onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Godkend Dag"),
+                            return AlertDialog(title: Text("Tildel Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Dagen er allerede godkendt."),
+                              content: Text("Der er allerede tildelt en vagt."),
                               actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                   , child: const Text("OK"))],);});
                         } else {
                           showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Godkend Dag"),
+                            return AlertDialog(title: Text("Tildel Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Suppler evt. med detaljer nedenunder"),
+                              content: Text("Suppler evt. med detaljer nedenunder:"),
                               actions: [
-                                TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.details), hintText: "Detaljer",),),
+                                TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
                                 TextButton(onPressed: () async {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
-                                      await userRef.doc(data.id).update({'status': 'Godkendt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
-                                      _showSnackBar(context," Dag Godkendt", Colors.green);
+                                      await userRef.doc(data.id).update({'status': 'Tildelt Vagt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
+                                      _showSnackBar(context,"Vagt Tildelt", Colors.green);
                                       Navigator.pop(context);
                                       // TODO send notification to user that shift is accepted!
 
@@ -126,11 +127,10 @@ class _State extends State<AdminCalendar> {
 
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Fjern", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
-                        // TODO remove shift
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(title: Text("Slet Dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: Text("Du er ved at slette dagen."),
+                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                             actions: [TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context);}
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },), ),),

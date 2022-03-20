@@ -116,7 +116,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(title: Text("Dato: " + document['date']),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: Text("Kan arbejde: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nStatus: " + document['status']),
+                            content: document['isAccepted'] == true ? Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status']+ "\nDetaljer: " + document['details']) :
+                            Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
                             actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                 , child: const Text("OK"))],);});
 

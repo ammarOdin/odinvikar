@@ -52,16 +52,19 @@ class OwnDays extends State<OwnDaysScreen> {
           showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
               Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
-              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
+              Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              const Divider(thickness: 1),
+
               SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                 if (data.get(FieldPath(const ["isAccepted"])) == true){
                   showDialog(context: context, builder: (BuildContext context){
                     return AlertDialog(
                       title: const Text("Slet Dag"),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: const Text("Vagten er allerede godkendt. Kontakt din chef hvis du ikke kan arbejde."),
+                      content: const Text("Vagten er allerede tildelt. Kontakt din leder hvis du ikke kan arbejde."),
                       actions: [
                         TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
                       ],
@@ -92,7 +95,7 @@ class OwnDays extends State<OwnDaysScreen> {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
     List<Meeting> list = snapShotsValue.docs.map((e)=>
-        Meeting(eventName: "Tilgængelig",
+        Meeting(eventName: "Detaljer",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
         background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
@@ -229,7 +232,7 @@ class OwnDays extends State<OwnDaysScreen> {
                               return AlertDialog(
                                 title: const Text("Slet Dag"),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: const Text("Vagten er allerede godkendt. Kontakt din chef hvis du ikke kan arbejde."),
+                                content: const Text("Der er en vagt tildelt til dig på denne dato. Kontakt din chef hvis du ikke kan arbejde."),
                                 actions: [
                                   TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
                                 ],

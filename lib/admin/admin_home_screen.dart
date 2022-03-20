@@ -103,7 +103,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               padding: EdgeInsets.only(left: 5),
               child: Icon(Icons.circle, color: Colors.orange,),
             ),
-            Text(" Ikke Godkendt", style: TextStyle(fontSize: 12),)
+            Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
           ],
         ),
         Row(
@@ -113,7 +113,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               padding: EdgeInsets.only(left: 5),
               child: Icon(Icons.circle, color: Colors.green,),
             ),
-            Text(" Godkendt", style: TextStyle(fontSize: 12),)
+            Text(" Tildelt Vagt", style: TextStyle(fontSize: 12),)
           ],
         ),
 
@@ -136,7 +136,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             } else if (snapshot.connectionState == ConnectionState.waiting){
               return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
             }
-            return Column(children: snapshot.data!.map<Widget>((e) => AvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Detaljer", onPressed: () {
+            return Column(children: snapshot.data!.map<Widget>((e) => AvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Se mere", onPressed: () {
               showDialog(context: context, builder: (BuildContext context){
                 return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(18)),), children: [
                   Row(
