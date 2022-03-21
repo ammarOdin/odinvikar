@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +67,13 @@ class _State extends State<AdminCalendar> {
     }
   }
 
+  Future<void> sendAssignedShiftNotification(String token) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('shiftNotif');
+    await callable.call(<String, dynamic>{
+      'token': token,
+    });
+  }
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     var userRef = await databaseReference.collection('user').get();
     final Meeting appointmentDetails = calendarTapDetails.appointments![0];
@@ -114,8 +122,7 @@ class _State extends State<AdminCalendar> {
                                       await userRef.doc(data.id).update({'status': 'Tildelt Vagt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
                                       _showSnackBar(context,"Vagt Tildelt", Colors.green);
                                       Navigator.pop(context);
-                                      // TODO send notification to user that shift is accepted!
-
+                                      sendAssignedShiftNotification(users.get(FieldPath(const ["token"])));
                                       Navigator.pop(context);
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);
@@ -124,7 +131,6 @@ class _State extends State<AdminCalendar> {
                                 }
                                     , child: const Text("Godkend"))],);});
                         }
-
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Fjern", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                         showDialog(context: context, builder: (BuildContext context){
@@ -134,9 +140,14 @@ class _State extends State<AdminCalendar> {
                             actions: [TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context);}
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },), ),),
+
                     ],
                   ),
                 ),
+               /* SimpleDialogOption(child: TextButton(onPressed: () {
+                  sendAssignedShiftNotification(users.get(FieldPath(const ["token"])));
+                },
+                  child: Text("Test notifikation"),),),*/
                 const Divider(thickness: 1),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -220,8 +231,6 @@ class _State extends State<AdminCalendar> {
                     shape: BoxShape.rectangle,),
                 ),
               ),
-
-              //const Divider(thickness: 1, height: 4),
               ],
           ),
         ),

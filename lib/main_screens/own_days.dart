@@ -22,7 +22,6 @@ class OwnDays extends State<OwnDaysScreen> {
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   final databaseReference = FirebaseFirestore.instance;
-  final calendarDetails = CalendarTapDetails;
   MeetingDataSource? events;
 
 
