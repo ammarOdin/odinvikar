@@ -68,7 +68,14 @@ class _State extends State<AdminCalendar> {
   }
 
   Future<void> sendAssignedShiftNotification(String token) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('shiftNotif');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('addShiftNotif');
+    await callable.call(<String, dynamic>{
+      'token': token,
+    });
+  }
+
+  Future<void> sendEditedShiftNotification(String token) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('editShiftNotif');
     await callable.call(<String, dynamic>{
       'token': token,
     });
@@ -101,29 +108,44 @@ class _State extends State<AdminCalendar> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Tildel Vagt", style: TextStyle(color: Colors.green),), icon: const Icon(Icons.add_circle, color: Colors.green,), onPressed: (){
+                      SimpleDialogOption(
+                        child: Align(alignment: Alignment.centerLeft,
+                          child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger Vagt", style: TextStyle(color: Colors.orange),):const Text("Tildel Vagt", style: TextStyle(color: Colors.green),),
+                        icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Tildel Vagt"),
+                            return AlertDialog(title: Text("Rediger Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Der er allerede tildelt en vagt."),
-                              actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                  , child: const Text("OK"))],);});
+                              content: Text("TIlføj nye detaljer nedenunder:"),
+                              actions: [
+                                TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
+                                TextButton(onPressed: () async {
+                                  if (_detailsKey.currentState!.validate()){
+                                    try{
+                                      await userRef.doc(data.id).update({'details': detailsController.text});
+                                      sendEditedShiftNotification(users.get(FieldPath(const ["token"])));
+                                      Navigator.pop(context);Navigator.pop(context);
+                                      _showSnackBar(context,"Vagt Redigeret", Colors.green);
+                                    } catch (e) {
+                                      _showSnackBar(context, "Fejl", Colors.red);
+                                    }
+                                  }
+                                }
+                                    , child: const Text("Godkend"))],);});
                         } else {
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Tildel Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Suppler evt. med detaljer nedenunder:"),
+                              content: Text("Suppler med detaljer nedenunder (Tidsrum mm.):"),
                               actions: [
                                 TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
                                 TextButton(onPressed: () async {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
                                       await userRef.doc(data.id).update({'status': 'Tildelt Vagt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
-                                      _showSnackBar(context,"Vagt Tildelt", Colors.green);
-                                      Navigator.pop(context);
+                                      Navigator.pop(context);Navigator.pop(context);
                                       sendAssignedShiftNotification(users.get(FieldPath(const ["token"])));
-                                      Navigator.pop(context);
+                                      _showSnackBar(context,"Vagt Tildelt", Colors.green);
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);
                                     }

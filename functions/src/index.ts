@@ -58,13 +58,33 @@ export const updateUserPass = functions.https.onCall(async (data, context)=>{
       });
 });
 
-export const shiftNotif = functions.https.onCall(async (data, context)=>{
+export const addShiftNotif = functions.https.onCall(async (data, context)=>{
   const token = data.token;
   const message = {
     token: token,
     notification: {
       title: "Vagt tildelt",
       body: "Du er blevet tildelt en vagt. Se i appen for detaljer.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const editShiftNotif = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagt Redigeret",
+      body: "En vagt du er blevet tildelt, er blevet redigeret.",
     },
   };
 
