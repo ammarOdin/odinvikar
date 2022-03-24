@@ -67,17 +67,19 @@ class _State extends State<AdminCalendar> {
     }
   }
 
-  Future<void> sendAssignedShiftNotification(String token) async {
+  Future<void> sendAssignedShiftNotification(String token, String date) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('addShiftNotif');
     await callable.call(<String, dynamic>{
       'token': token,
+      'date': date
     });
   }
 
-  Future<void> sendEditedShiftNotification(String token) async {
+  Future<void> sendEditedShiftNotification(String token, String date) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('editShiftNotif');
     await callable.call(<String, dynamic>{
       'token': token,
+      'date': date
     });
   }
 
@@ -123,7 +125,7 @@ class _State extends State<AdminCalendar> {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
                                       await userRef.doc(data.id).update({'details': detailsController.text});
-                                      sendEditedShiftNotification(users.get(FieldPath(const ["token"])));
+                                      sendEditedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       Navigator.pop(context);Navigator.pop(context);
                                       _showSnackBar(context,"Vagt Redigeret", Colors.green);
                                     } catch (e) {
@@ -144,7 +146,7 @@ class _State extends State<AdminCalendar> {
                                     try{
                                       await userRef.doc(data.id).update({'status': 'Tildelt Vagt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
                                       Navigator.pop(context);Navigator.pop(context);
-                                      sendAssignedShiftNotification(users.get(FieldPath(const ["token"])));
+                                      sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       _showSnackBar(context,"Vagt Tildelt", Colors.green);
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);

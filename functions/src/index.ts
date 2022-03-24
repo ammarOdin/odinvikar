@@ -60,11 +60,12 @@ export const updateUserPass = functions.https.onCall(async (data, context)=>{
 
 export const addShiftNotif = functions.https.onCall(async (data, context)=>{
   const token = data.token;
+  const date = data.date;
   const message = {
     token: token,
     notification: {
       title: "Vagt tildelt",
-      body: "Du er blevet tildelt en vagt. Se i appen for detaljer.",
+      body: "Du er blevet tildelt en vagt d. "+date+". Se i app for detaljer.",
     },
   };
 
@@ -80,11 +81,12 @@ export const addShiftNotif = functions.https.onCall(async (data, context)=>{
 
 export const editShiftNotif = functions.https.onCall(async (data, context)=>{
   const token = data.token;
+  const date = data.date;
   const message = {
     token: token,
     notification: {
       title: "Vagt Redigeret",
-      body: "En vagt du er blevet tildelt, er blevet redigeret.",
+      body: "Din vagt d. "+date+" er blevet redigeret. Se i app for detaljer.",
     },
   };
 
