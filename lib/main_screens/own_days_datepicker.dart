@@ -18,10 +18,10 @@ class OwnDaysDatepicker extends StatefulWidget {
 
 class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
-  final calendar = OwnDays();
-
   get saveShift => FirebaseFirestore.instance.collection(user!.uid);
   User? user = FirebaseAuth.instance.currentUser;
+  final databaseReference = FirebaseFirestore.instance;
+  MeetingDataSource? events;
 
   bool isSwitched = false;
   late DateTime? _pickedDay = initialDate();
@@ -30,6 +30,21 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
+
+  Future<void> getFirestoreShift() async {
+    var snapShotsValue = await databaseReference.collection(user!.uid).get();
+
+    List<Meeting> list = snapShotsValue.docs.map((e)=>
+        Meeting(eventName: "Detaljer",
+            from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
+            to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
+            background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
+            isAllDay: true)).toList();
+
+    setState(() {
+      events = MeetingDataSource(list);
+    });
+  }
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -47,7 +62,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
   }
 
   DateTime getDateFromCalendar(CalendarTapDetails calendarTapDetails) {
-
     if (calendarTapDetails.targetElement == true){
       final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
       if(kDebugMode){
@@ -92,7 +106,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   padding: EdgeInsets.only(bottom: 30),
                   color: Colors.blue,
                   child: ListView(
-                    padding: EdgeInsets.only(top: 20),
+                    padding: EdgeInsets.only(top: 40),
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       Center(
@@ -282,8 +296,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                     } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
                                       try{
                                         await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment, 'isAccepted': false, 'color': '0xFFFF9800', 'status': 'Tilgængelig'});
-                                        _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
                                         Navigator.pop(context);
+                                        _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
                                       } catch (e) {
                                         _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
                                       }

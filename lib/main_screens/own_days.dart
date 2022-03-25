@@ -158,7 +158,9 @@ class OwnDays extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker())).then((value) {setState(() {
+                    getFirestoreShift();
+                  });});
                   }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
