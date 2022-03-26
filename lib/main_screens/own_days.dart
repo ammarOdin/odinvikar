@@ -57,7 +57,7 @@ class OwnDays extends State<OwnDaysScreen> {
               data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
-              SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+              SimpleDialogOption(child: Align(alignment: Alignment.center, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                 if (data.get(FieldPath(const ["isAccepted"])) == true){
                   showDialog(context: context, builder: (BuildContext context){
                     return AlertDialog(

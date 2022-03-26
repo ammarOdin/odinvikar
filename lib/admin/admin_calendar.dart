@@ -161,7 +161,7 @@ class _State extends State<AdminCalendar> {
                           return AlertDialog(title: Text("Slet Dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context);}
+                            actions: [TextButton(onPressed: () {data.reference.delete(); getFirestoreShift(); Navigator.pop(context); Navigator.pop(context);}
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },), ),),
 
@@ -207,7 +207,7 @@ class _State extends State<AdminCalendar> {
     List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(18),
         from: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
         to: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
-        background: Colors.indigoAccent,
+        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.substring(0,10)).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
         isAllDay: true)).toList();
 
     setState(() {

@@ -98,8 +98,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(title: Text("Dato: " + document['date']),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: document['isAccepted'] == true ? Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status']+ "\nDetaljer: " + document['details']) :
-                            Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                            content: document['isAccepted'] == true ?
+                            Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                            Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
                             actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                 , child: const Text("OK"))],);});
                       });
@@ -117,8 +118,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(title: Text("Dato: " + document['date']),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: document['isAccepted'] == true ? Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status']+ "\nDetaljer: " + document['details']) :
-                            Text("Kan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nStatus: " + document['status'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                            content: document['isAccepted'] == true ?
+                            Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                            Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
                             actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                 , child: const Text("OK"))],);});
 

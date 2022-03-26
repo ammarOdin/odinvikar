@@ -41,7 +41,7 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: ClampingScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       children: [
@@ -81,8 +81,13 @@ class _State extends State<AdminContactScreen> with TickerProviderStateMixin {
                   InfoCard(text: document.substring(8), imageUrl: "assets/aula-logo.jpg", subtitle: "Kontakt", onPressed: (){
                     showDialog(context: context, builder: (BuildContext context){
                       return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: const Center(child: Text("Kontakt"),), children: [
-                        SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),
-                        SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + document.substring(0,8));},), ),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + document.substring(0,8));},), ),),
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + document.substring(0,8));},), ),),
+                          ],
+                        ),
                       ],);
                     });
                   }),
