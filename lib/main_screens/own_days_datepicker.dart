@@ -148,7 +148,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                           setState(() {
                             widget.date;
                           });
-                        }, child: Text('${DateFormat('dd-MM-yyyy').format(widget.date)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
+                        }, child: Text(widget.date == null ? '${DateFormat('dd-MM-yyyy').format(widget.date)}' : '${DateFormat('dd-MM-yyyy').format(_pickedDay!)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
                       ),
                     ],
                   ),
@@ -227,11 +227,11 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                       ),
 
                     ],),
-                    /*Container(
+                    Container(
                         padding: EdgeInsets.only(left: 100, right: 100),
                         child: ElevatedButton.icon(onPressed: (){
 
-                        }, icon: Icon(Icons.add), label: Text("Tilføj Tidsrum"))),*/
+                        }, icon: Icon(Icons.add), label: Text("Tilføj Tidsrum"))),
                 ],)) else Container(),
 
                 Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: null, icon: Icon(Icons.add_comment_outlined), label: Text("Kommentar"))),
