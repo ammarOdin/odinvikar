@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
@@ -25,7 +24,7 @@ class OwnDays extends State<OwnDaysScreen> {
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
 
-  late DateTime getDateTap;
+  late DateTime getDateTap = initialDate();
 
   @override
   void initState() {
@@ -41,6 +40,17 @@ class OwnDays extends State<OwnDaysScreen> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  DateTime initialDate() {
+    if (DateTime.now().weekday == DateTime.saturday){
+      return DateTime.now().add(const Duration(days: 2));
+    } else if (DateTime.now().weekday == DateTime.sunday){
+      return DateTime.now().add(const Duration(days: 1));
+    } else {
+      return DateTime.now();
+
+    }
   }
 
 
@@ -161,7 +171,7 @@ class OwnDays extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap == "" ? DateTime.now() : getDateTap))).then((value) {
                     setState(() {
                     getFirestoreShift();
                   });});

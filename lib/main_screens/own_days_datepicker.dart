@@ -26,8 +26,10 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
 
   bool isSwitched = false;
   late DateTime? _pickedDay = widget.date;
-  String _startDropDownValue = "8:00";
-  String _endDropDownValue = "9:00";
+
+  late List<TimeOfDay> timeList;
+  late TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
+  late TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
@@ -177,10 +179,11 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   children: [
                     Row(
                       children: [
-                      Expanded(
+                      Container(
+                        padding: EdgeInsets.only(left: 10),
                         child: Column(
                             children: [
-                              Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
+                              Container(padding: EdgeInsets.only(bottom: 5, left: 40), child: Text("Fra")),
                               Container(
                                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
                                 margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/20),
@@ -188,23 +191,13 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white
                                 ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    icon: Icon(Icons.keyboard_arrow_down),
-                                    value: _startDropDownValue,
-                                      items: <String>['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
-                                          .map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue){
-                                      setState(() {
-                                        _startDropDownValue = newValue!;
-                                      });
-                                      }),
-                                ),
+                                child: TextButton(onPressed: () async {
+                                  startTime = (await showTimePicker(initialTime: startTime, context: context))!;
+                                  setState(() {
+                                  startTime.format(context);
+                                });
+                                  },
+                                child: Text(startTime.format(context)),),
                               ),
                             ],
                           ),
@@ -221,29 +214,24 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white
                               ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                    icon: Icon(Icons.keyboard_arrow_down),
-                                    value: _endDropDownValue,
-                                    items: <String>['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
-                                        .map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue){
-                                      setState(() {
-                                        _endDropDownValue = newValue!;
-                                      });
-                                    }),
-                              ),
+                              child: TextButton(onPressed: () async {
+                                endTime = (await showTimePicker(initialTime: endTime, context: context))!;
+                                setState(() {
+                                endTime.format(context);
+                                });
+                                },
+                                child: Text(endTime.format(context)),),
                             ),
                           ],
                         ),
                       ),
-                    ],),
 
+                    ],),
+                    /*Container(
+                        padding: EdgeInsets.only(left: 100, right: 100),
+                        child: ElevatedButton.icon(onPressed: (){
+
+                        }, icon: Icon(Icons.add), label: Text("Tilføj Tidsrum"))),*/
                 ],)) else Container(),
 
                 Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: null, icon: Icon(Icons.add_comment_outlined), label: Text("Kommentar"))),
@@ -280,15 +268,15 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   var pickedDate = f.format(_pickedDay!);
                                   var pickedMonth = _pickedDay?.month;
                                   var pickedWeek = _pickedDay?.weekOfYear;
+                                  var starting = startTime.format(context);
+                                  var ending = endTime.format(context);
                                   var timeRange = '';
                                   var comment = commentController.text;
-
                                   if (commentController.text == "" || commentController.text.isEmpty){
                                     comment = "Ingen";
                                   }
-
                                   if (isSwitched == false){
-                                     timeRange = '$_startDropDownValue - $_endDropDownValue';
+                                     timeRange = '$starting - $ending';
                                   } else if (isSwitched == true){
                                     timeRange = 'Hele dagen';
                                   }
