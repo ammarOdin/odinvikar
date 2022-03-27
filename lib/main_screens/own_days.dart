@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
@@ -24,6 +25,7 @@ class OwnDays extends State<OwnDaysScreen> {
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
 
+  late DateTime getDateTap;
 
   @override
   void initState() {
@@ -41,9 +43,11 @@ class OwnDays extends State<OwnDaysScreen> {
     super.dispose();
   }
 
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
     var userData = await databaseReference.collection(user!.uid).get();
+    getDateTap = calendarTapDetails.date!;
 
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       for (var data in userData.docs){
@@ -51,7 +55,7 @@ class OwnDays extends State<OwnDaysScreen> {
           showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
               Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-              Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
+              Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
               Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
               data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
@@ -86,7 +90,6 @@ class OwnDays extends State<OwnDaysScreen> {
           });
         }
       }
-
     }
   }
 
@@ -158,7 +161,7 @@ class OwnDays extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker())).then((value) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
                     setState(() {
                     getFirestoreShift();
                   });});

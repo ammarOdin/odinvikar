@@ -123,7 +123,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         Container(
           padding: EdgeInsets.only(top: 10),
           child: FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
-            if (!snapshot.hasData){
+            if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
               return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
             } else if (snapshot.data!.isEmpty) {
               return Container(
@@ -133,8 +133,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   style: TextStyle(color: Colors.blue, fontSize: 18),
                 ),),
               );
-            } else if (snapshot.connectionState == ConnectionState.waiting){
-              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
             }
             return Column(children: snapshot.data!.map<Widget>((e) => AvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Se mere", onPressed: () {
               showDialog(context: context, builder: (BuildContext context){

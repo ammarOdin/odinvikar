@@ -97,7 +97,7 @@ class _State extends State<AdminCalendar> {
             showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
                 Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-                Container(padding: EdgeInsets.only(bottom: 15), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
+                Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
                 Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
                 data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1, height: 50,),
@@ -156,12 +156,12 @@ class _State extends State<AdminCalendar> {
                                     , child: const Text("Godkend"))],);});
                         }
                       },), ),),
-                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Fjern", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(title: Text("Slet Dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {data.reference.delete(); getFirestoreShift(); Navigator.pop(context); Navigator.pop(context);}
+                            actions: [TextButton(onPressed: () {data.reference.delete(); getFirestoreShift(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },), ),),
 
@@ -233,6 +233,19 @@ class _State extends State<AdminCalendar> {
                 width: MediaQuery.of(context).size.width,
                 child: SfCalendar(
                   onTap: calendarTapped,
+                  /*loadMoreWidgetBuilder:
+                      (BuildContext context, LoadMoreCallback loadMoreAppointments) {
+                    return FutureBuilder<void>(
+                      future: getFirestoreShift(),
+                      builder: (context, snapShot) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height / 2,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator.adaptive());
+                      },
+                    );
+                  },*/
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
@@ -294,6 +307,18 @@ class MeetingDataSource extends CalendarDataSource {
   @override
   bool isAllDay(int index) {
     return appointments![index].isAllDay;
+  }
+
+  @override
+  Future<void> handleLoadMore(DateTime startDate, DateTime endDate) async {
+    final List<Appointment> shifts = <Appointment>[];
+    DateTime appStartDate = startDate;
+    DateTime appEndDate = endDate;
+
+    while(appStartDate.isBefore(appEndDate)){
+
+    }
+
   }
 }
 

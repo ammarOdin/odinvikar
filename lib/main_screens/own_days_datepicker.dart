@@ -10,7 +10,8 @@ import 'package:week_of_year/date_week_extensions.dart';
 
 
 class OwnDaysDatepicker extends StatefulWidget {
-  const OwnDaysDatepicker({Key? key}) : super(key: key);
+  final DateTime date;
+  const OwnDaysDatepicker({Key? key, required this.date}) : super(key: key);
 
   @override
   State<OwnDaysDatepicker> createState() => _OwnDaysDatepickerState();
@@ -24,12 +25,13 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
   MeetingDataSource? events;
 
   bool isSwitched = false;
-  late DateTime? _pickedDay = initialDate();
+  late DateTime? _pickedDay = widget.date;
   String _startDropDownValue = "8:00";
   String _endDropDownValue = "9:00";
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
+
 
   Future<void> getFirestoreShift() async {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
@@ -138,13 +140,13 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                           context: context,
                           confirmText: "Vælg dag",
                           cancelText: "Annuller",
-                          initialDate: initialDate(),
+                          initialDate: widget.date,
                           firstDate: initialDate(),
                           lastDate: DateTime.now().add(const Duration(days: 90))))!;
                           setState(() {
-                            _pickedDay;
+                            widget.date;
                           });
-                        }, child: Text('${DateFormat('dd-MM-yyyy').format(_pickedDay!)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
+                        }, child: Text('${DateFormat('dd-MM-yyyy').format(widget.date)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
                       ),
                     ],
                   ),
