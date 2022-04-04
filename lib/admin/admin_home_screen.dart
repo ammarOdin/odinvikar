@@ -98,22 +98,27 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
         Row(
           children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 5),
-              child: Icon(Icons.circle, color: Colors.orange,),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                ),
+                Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
+              ],
             ),
-            Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
-          ],
-        ),
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 5),
-              child: Icon(Icons.circle, color: Colors.green,),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                ),
+                Text(" Tildelt Vagt", style: TextStyle(fontSize: 12),)
+              ],
             ),
-            Text(" Tildelt Vagt", style: TextStyle(fontSize: 12),)
           ],
         ),
 

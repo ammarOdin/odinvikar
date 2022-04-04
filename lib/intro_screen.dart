@@ -16,7 +16,7 @@ class IntroScreen extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),),
-      body: Onboarding(
+      /*body: Onboarding(
         background: Colors.blueGrey,
         proceedButtonStyle: ProceedButtonStyle(proceedpButtonText: const Text("Fortsæt"),
           proceedButtonRoute: onDone,
@@ -67,7 +67,7 @@ class IntroScreen extends StatelessWidget {
             ),
           ),
         ),
-      )
+      )*/
     );
   }
 

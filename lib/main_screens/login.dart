@@ -40,22 +40,6 @@ class _LoginState extends State<LoginScreen> {
     }
   }
 
-  isAdmin() async {
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot){
-      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        return true;
-      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        return false;
-      } else {
-        return false;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

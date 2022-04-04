@@ -46,7 +46,7 @@ dependencies:
   week_of_year: ^2.0.0
   url_launcher: ^6.0.18
   validators: ^3.0.0
-  onboarding: ^2.1.0
+  onboarding: ^3.1.0
   shared_preferences: ^2.0.13
   google_fonts: ^2.3.1
   firebase_messaging: ^11.2.6
