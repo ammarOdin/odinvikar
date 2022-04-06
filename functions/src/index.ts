@@ -65,7 +65,7 @@ export const addShiftNotif = functions.https.onCall(async (data, context)=>{
     token: token,
     notification: {
       title: "Vagt tildelt",
-      body: "Du er blevet tildelt en vagt d. "+date+". Se i app for detaljer.",
+      body: "Du er blevet tildelt en vagt d. "+date+". Accepter i app'en.",
     },
   };
 
@@ -87,6 +87,28 @@ export const editShiftNotif = functions.https.onCall(async (data, context)=>{
     notification: {
       title: "Vagt Redigeret",
       body: "Din vagt d. "+date+" er blevet redigeret. Se i app for detaljer.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const acceptShiftNotif = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const name = data.name;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagt Accepteret",
+      body: "Vagten d. "+date+" er blevet accepteret af "+name,
     },
   };
 

@@ -83,6 +83,10 @@ class _State extends State<AdminCalendar> {
     });
   }
 
+  // awaitConfirmation = 0 -> User added a shift
+  // awaitConfirmation = 1 -> Admin assigned shift, not accepted by user
+  // awaitConfirmation = 2 -> User accepted assigned shift by admin
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     var userRef = await databaseReference.collection('user').get();
     final Meeting appointmentDetails = calendarTapDetails.appointments![0];
@@ -118,7 +122,7 @@ class _State extends State<AdminCalendar> {
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Rediger Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("TIlføj nye detaljer nedenunder:"),
+                              content: Text("Tilføj nye detaljer nedenunder:"),
                               actions: [
                                 TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
                                 TextButton(onPressed: () async {
@@ -134,7 +138,7 @@ class _State extends State<AdminCalendar> {
                                   }
                                 }
                                     , child: const Text("Godkend"))],);});
-                        } else {
+                        } else if (data.get(FieldPath(const ["awaitConfirmation"])) == 0){
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Tildel Vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -144,7 +148,7 @@ class _State extends State<AdminCalendar> {
                                 TextButton(onPressed: () async {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
-                                      await userRef.doc(data.id).update({'status': 'Tildelt Vagt', 'isAccepted': true, 'color': '0xFF4CAF50', 'details': detailsController.text});
+                                      await userRef.doc(data.id).update({'status': 'Afventer Accept', 'isAccepted': true, 'color': '0xFFFF9800', 'details': detailsController.text, 'awaitConfirmation': 1});
                                       Navigator.pop(context);Navigator.pop(context);
                                       sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       _showSnackBar(context,"Vagt Tildelt", Colors.green);
@@ -153,7 +157,7 @@ class _State extends State<AdminCalendar> {
                                     }
                                   }
                                 }
-                                    , child: const Text("Godkend"))],);});
+                                    , child: const Text("Tildel"))],);});
                         }
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){

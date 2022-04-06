@@ -116,7 +116,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(left: 5),
                   child: Icon(Icons.circle, color: Colors.green, size: 16,),
                 ),
-                Text(" Tildelt Vagt", style: TextStyle(fontSize: 12),)
+                Text(" Godkendt Vagt", style: TextStyle(fontSize: 12),)
               ],
             ),
           ],

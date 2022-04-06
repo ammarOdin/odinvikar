@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -42,6 +43,15 @@ class OwnDays extends State<OwnDaysScreen> {
     super.dispose();
   }
 
+  Future<void> sendAcceptedShiftNotification(String token, String date, String name) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acceptShiftNotif');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date,
+      'name': name,
+    });
+  }
+
   DateTime initialDate() {
     if (DateTime.now().weekday == DateTime.saturday){
       return DateTime.now().add(const Duration(days: 2));
@@ -53,14 +63,26 @@ class OwnDays extends State<OwnDaysScreen> {
     }
   }
 
+  Color calendarColor(String dateTime, int awaitConfirmation){
+    if (DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(dateTime).add(const Duration(days: 1)))){
+      return Colors.grey;
+    } else if (awaitConfirmation == 2){
+      return Colors.green;
+    } else {
+      return Colors.orange;
+    }
+  }
+
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
     var userData = await databaseReference.collection(user!.uid).get();
+    var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+    var adminRef = await databaseReference.collection('user').get();
     getDateTap = calendarTapDetails.date!;
 
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
-      for (var data in userData.docs){
+        for (var data in userData.docs){
         if (data.get(FieldPath(const ["date"])) == tapDate){
           showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
@@ -71,35 +93,74 @@ class OwnDays extends State<OwnDaysScreen> {
               data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
-              SimpleDialogOption(child: Align(alignment: Alignment.center, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
-                if (data.get(FieldPath(const ["isAccepted"])) == true){
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(
-                      title: const Text("Slet Dag"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: const Text("Vagten er allerede tildelt. Kontakt din leder hvis du ikke kan arbejde."),
-                      actions: [
-                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                      ],
-                    );});
-                } else {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(
-                      title: const Text("Slet Dag"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: const Text("Er du sikker på at slette dagen?"),
-                      actions: [
-                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                        TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
-                            , child: const Text("Slet"))
-                      ],
-                    );});
-                }
-                },), ),),
+              Row(
+                children: [
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: (){
+                    var confirmation = data.get(FieldPath(const ["awaitConfirmation"]));
+                    if(confirmation == 0){
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Accepter Vagt"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Du er ikke blevet tildelt en vagt endnu. Denne handling kan ikke udføres."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                    } else if (confirmation == 1){
+                      data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt Vagt", 'color' : '0xFF4CAF50'});
+                      Navigator.pop(context);
+                      _showSnackBar(context, "Vagt Accepteret", Colors.green);
+                      getFirestoreShift();
+                      for (var admins in adminRef.docs){
+                        if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                          sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), data.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                        }
+                      }
+                    } else if (confirmation == 2){
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Accepter Vagt"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Vagten er allerede accepteret."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                    }
+                  }, icon: Icon(Icons.add_circle, color: Colors.green,), label: Text("Accepter", style: TextStyle(color: Colors.green),)),),),
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+                    if (data.get(FieldPath(const ["isAccepted"])) == true){
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Slet Dag"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Vagten er allerede tildelt. Kontakt din leder hvis du ikke kan arbejde."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                    } else {
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Slet Dag"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Er du sikker på at slette dagen?"),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
+                            TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
+                                , child: const Text("Slet"))
+                          ],
+                        );});
+                    }
+                    },), ),),
+                ],
+              ),
             ],);
           });
         }
       }
+
     }
   }
 
@@ -110,7 +171,7 @@ class OwnDays extends State<OwnDaysScreen> {
         Meeting(eventName: "Detaljer",
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
-        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.data()['date']).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
+        background: calendarColor(e.data()['date'], e.data()['awaitConfirmation']),
         isAllDay: true)).toList();
 
     setState(() {
