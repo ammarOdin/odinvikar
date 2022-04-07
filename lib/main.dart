@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/login.dart';
+import 'package:odinvikar/main_screens/web_register.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -15,7 +17,9 @@ bool screen = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(apiKey: "AIzaSyBU0I4h6PEocz7ZgT5Eb2FEo0tVSUD-jIM", appId: "1:320368504585:web:d6ecf3729dc524167aedd8", messagingSenderId: "320368504585", projectId: "odinvikar", storageBucket: "odinvikar.appspot.com"),
+  );
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
@@ -101,6 +105,11 @@ class AuthenticationWrapper extends StatelessWidget {
     } else {
       return const LoginScreen();
     }*/
-    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
+
+    if (kIsWeb){
+      return FutureBuilder(builder: (context, snapshot) => const RegisterPage());
+    } else {
+      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
+    }
   }
 }
