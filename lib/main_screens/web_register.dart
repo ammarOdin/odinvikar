@@ -106,11 +106,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                     width: MediaQuery.of(context).size.width / 2,
                     padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                    child: TextFormField(validator: validateName, controller: nameController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.person), border: UnderlineInputBorder(), labelText: 'Navn',),)),
+                    child: TextFormField(validator: validateName, controller: nameController, decoration: const InputDecoration(icon: Icon(Icons.person), border: UnderlineInputBorder(), labelText: 'Navn',),)),
                 Container(
                     width: MediaQuery.of(context).size.width / 2,
                     padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                    child: TextFormField(validator: validatePhone, controller: phoneController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.phone), border: UnderlineInputBorder(), labelText: 'Telefon',),)),
+                    child: TextFormField(validator: validatePhone, controller: phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), border: UnderlineInputBorder(), labelText: 'Telefon',),)),
                 Container(
                   width: MediaQuery.of(context).size.width / 2,
                   height: 60,
@@ -124,17 +124,13 @@ class _RegisterPageState extends State<RegisterPage> {
                             _showSnackBar(context, "Bruger findes allerede!", Colors.red);
                           } else if (!documentSnapshot.exists) {
                             await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
-                            _showSnackBar(context, "Bruger oprettet!", Colors.green);
                             emailController.clear();
                             passwordController.clear();
                             nameController.clear();
                             phoneController.clear();
-                            launch("https://vikarly.dk/?page_id=1685");
                           }
                         });
-
-                        _showSnackBar(context, "Bruger Oprettet", Colors.green);
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                        launch("https://vikarly.dk/?page_id=1685");
                       } on FirebaseAuthException catch(e){
                         _showSnackBar(context, "Fejl ved oprettelse - " + e.code, Colors.red);}
                     }},child: Container(

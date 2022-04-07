@@ -44,10 +44,20 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+
+    Widget checkHome(){
+      if (kIsWeb) {
+        return RegisterPage();
+      } else {
+        return user == null? const LoginScreen() : const AuthenticationWrapper();
+    }
+    }
 
     return MaterialApp(
     localizationsDelegates: const [
@@ -70,7 +80,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
           appBarTheme: const AppBarTheme(elevation: 0),
         ),
-      home: user == null? const LoginScreen() : const AuthenticationWrapper(),
+      home: checkHome(),
       locale: const Locale('da'),
     );
   }
