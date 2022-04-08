@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
 
-import 'login.dart';
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
