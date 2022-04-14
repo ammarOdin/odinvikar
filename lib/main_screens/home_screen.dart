@@ -21,6 +21,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
   get unsortedShift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
   late TabController _controller;
 
+  List months =
+  ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
+
   @override
   void initState() {
     _controller = TabController(length: 2, vsync: this);
@@ -75,65 +78,111 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Uge"), Tab(text: "Måned",)])),
-        StreamBuilder(
-            stream: unsortedShift.snapshots() ,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
-              }else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen Vagter",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }
-              if (_controller.index == 0){
-                return Column(
-                  children: snapshot.data!.docs.map((document){
-                    if (document['week'] == DateTime.now().weekOfYear) {
-                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(title: Text("Dato: " + document['date']),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: document['isAccepted'] == true ?
-                            Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                            Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
-                            actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                , child: const Text("OK"))],);});
-                      });
-                    } else {
-                      return Container();
-                    }
-                  }).toList(),
-                );
-              } else if (_controller.index == 1){
-                return Column(
-                  children: snapshot.data!.docs.map((document){
-                    var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
-                    if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
-                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(title: Text("Dato: " + document['date']),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: document['isAccepted'] == true ?
-                            Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                            Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
-                            actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                , child: const Text("OK"))],);});
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Måned"), Tab(text: "Uge",)])),
 
-                      });
-                    } else {
-                      return Container();
-                    }
-                  }).toList(),
-                );
-              } else {
-                return Container();
-              }
-            }),
+        Row(
+          children: [
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                ),
+                Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.circle, color: Color(0xFF1167B1), size: 16,),
+                ),
+                Text(" Afventer Accept", style: TextStyle(fontSize: 12),)
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                ),
+                Text(" Godkendt Vagt", style: TextStyle(fontSize: 12),)
+              ],
+            ),
+          ],
+        ),
+
+        if (_controller.index == 0) Container(
+            padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+            child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+        if (_controller.index == 1) Container(
+            padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+            child: Text("Uge " + DateTime.now().weekOfYear.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+
+        Container(
+          padding: EdgeInsets.only(top: 10),
+          child: StreamBuilder(
+              stream: unsortedShift.snapshots() ,
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                if (!snapshot.hasData){
+                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+                }else if (snapshot.data!.docs.isEmpty){
+                  return Container(
+                    padding: const EdgeInsets.all(50),
+                    child: const Center(child: Text(
+                      "Ingen Vagter",
+                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                    ),),
+                  );
+                }
+                if (_controller.index == 1){
+                  return Column(
+                    children: snapshot.data!.docs.map((document){
+                      if (document['week'] == DateTime.now().weekOfYear) {
+                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(title: Text("Dato: " + document['date']),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                              content: document['isAccepted'] == true ?
+                              Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                              Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                              actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                  , child: const Text("OK"))],);});
+                        });
+                      } else {
+                        return Container();
+                      }
+                    }).toList(),
+                  );
+                } else if (_controller.index == 0){
+                  return Column(
+                    children: snapshot.data!.docs.map((document){
+                      var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
+                      if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
+                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(title: Text("Dato: " + document['date']),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                              content: document['isAccepted'] == true ?
+                              Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                              Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                              actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                  , child: const Text("OK"))],);});
+
+                        });
+                      } else {
+                        return Container();
+                      }
+                    }).toList(),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
       ],
     );
   }

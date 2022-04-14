@@ -102,7 +102,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 5),
+                  padding: EdgeInsets.only(left: 10),
                   child: Icon(Icons.circle, color: Colors.orange, size: 16,),
                 ),
                 Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
@@ -112,7 +112,16 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.circle, color: Color(0xFF1167B1), size: 16,),
+                ),
+                Text(" Afventer Accept", style: TextStyle(fontSize: 12),)
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(left: 5),
                   child: Icon(Icons.circle, color: Colors.green, size: 16,),
                 ),

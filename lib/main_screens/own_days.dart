@@ -68,8 +68,22 @@ class OwnDays extends State<OwnDaysScreen> {
       return Colors.grey;
     } else if (awaitConfirmation == 2){
       return Colors.green;
+    } else if (awaitConfirmation == 1) {
+      return Color(0xFF1167B1);
     } else {
       return Colors.orange;
+    }
+  }
+
+  String calendarDetails(int awaitConfirmation){
+    if (awaitConfirmation == 0){
+      return 'Tilgængelig - se mere';
+    } else if (awaitConfirmation == 1) {
+      return 'Afventer Accept - se mere';
+    } else if (awaitConfirmation == 2) {
+      return 'Godkendt - se mere';
+    } else {
+      return 'Detaljer - se mere';
     }
   }
 
@@ -102,7 +116,7 @@ class OwnDays extends State<OwnDaysScreen> {
                         return AlertDialog(
                           title: const Text("Accepter Vagt"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Du er ikke blevet tildelt en vagt endnu. Denne handling kan ikke udføres."),
+                          content: const Text("Du er ikke blevet tildelt en vagt endnu."),
                           actions: [
                             TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
                           ],
@@ -168,7 +182,7 @@ class OwnDays extends State<OwnDaysScreen> {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
     List<Meeting> list = snapShotsValue.docs.map((e)=>
-        Meeting(eventName: "Detaljer",
+        Meeting(eventName: calendarDetails(e.data()['awaitConfirmation']),
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
         background: calendarColor(e.data()['date'], e.data()['awaitConfirmation']),
