@@ -133,7 +133,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
         const Divider(thickness: 1),
 
-
         Container(
           padding: EdgeInsets.only(top: 10),
           child: FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
