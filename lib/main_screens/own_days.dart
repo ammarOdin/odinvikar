@@ -69,9 +69,9 @@ class OwnDays extends State<OwnDaysScreen> {
     } else if (awaitConfirmation == 2){
       return Colors.green;
     } else if (awaitConfirmation == 1) {
-      return Color(0xFF1167B1);
-    } else {
       return Colors.orange;
+    } else {
+      return Colors.red;
     }
   }
 
