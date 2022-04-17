@@ -332,7 +332,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                       _showSnackBar(context, pickedDate + " er allerede oprettet", Colors.red);
                                     } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
                                       try{
-                                        await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment, 'isAccepted': false, 'color': '0xFFFF0000', 'status': 'Tilgængelig', 'awaitConfirmation': 0});
+                                        await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment, 'isAccepted': false, 'color': '0xFFFFA500', 'status': 'Tilgængelig', 'awaitConfirmation': 0});
                                         Navigator.pop(context);
                                         _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
                                       } catch (e) {

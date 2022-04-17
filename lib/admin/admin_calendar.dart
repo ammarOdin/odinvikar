@@ -148,7 +148,7 @@ class _State extends State<AdminCalendar> {
                                 TextButton(onPressed: () async {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
-                                      await userRef.doc(data.id).update({'status': 'Afventer Accept', 'isAccepted': true, 'color': '0xFFFFA500', 'details': detailsController.text, 'awaitConfirmation': 1});
+                                      await userRef.doc(data.id).update({'status': 'Afventer Accept', 'isAccepted': true, 'color': '0xFFFF0000', 'details': detailsController.text, 'awaitConfirmation': 1});
                                       Navigator.pop(context);Navigator.pop(context);
                                       sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       _showSnackBar(context,"Vagt Tildelt", Colors.green);
