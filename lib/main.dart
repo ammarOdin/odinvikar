@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -19,7 +18,6 @@ bool screen = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if (kIsWeb){
     await Firebase.initializeApp(
       // web app info
@@ -67,10 +65,6 @@ Future<void> main() async {
               channel.name,
               icon: android.smallIcon,
             ),
-            iOS: IOSNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-            )
           ));
     }
   });
@@ -99,7 +93,7 @@ Future<void> main() async {
   await messaging.setForegroundNotificationPresentationOptions(
     alert: true, // Required to display a heads up notification
     badge: true,
-    sound: true,
+    sound: true
   );
 
   // User token saver
@@ -195,14 +189,12 @@ class AuthenticationWrapper extends StatelessWidget {
 }
 
 
-/*void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) {
+void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) {
   Get.dialog(AlertDialog(
     title: Text(title!),
     content: Text(body!),
   ));
-}*/
-
-
+}
 
 void selectNotification(String? payload) async {
   if (payload != null) {
@@ -210,12 +202,4 @@ void selectNotification(String? payload) async {
   }
   // Fires when a notification has been tapped on via the onSelectNotification callback
 
-}
-
-void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
-  Get.defaultDialog(
-    title: title!,
-    content: Text(body!)
-  );
-  print(id);
 }
