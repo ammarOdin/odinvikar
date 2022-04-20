@@ -114,7 +114,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     if(confirmation == 0){
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: const Text("Accepter Vagt"),
+                          title: const Text("Accepter vagt"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           content: const Text("Du er ikke blevet tildelt en vagt endnu."),
                           actions: [
@@ -122,9 +122,9 @@ class OwnDays extends State<OwnDaysScreen> {
                           ],
                         );});
                     } else if (confirmation == 1){
-                      data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt Vagt", 'color' : '0xFF4CAF50'});
+                      data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
                       Navigator.pop(context);
-                      _showSnackBar(context, "Vagt Accepteret", Colors.green);
+                      _showSnackBar(context, "Vagt accepteret", Colors.green);
                       getFirestoreShift();
                       for (var admins in adminRef.docs){
                         if (admins.get(FieldPath(const ["isAdmin"])) == true){
@@ -134,7 +134,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     } else if (confirmation == 2){
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: const Text("Accepter Vagt"),
+                          title: const Text("Accepter vagt"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           content: const Text("Vagten er allerede accepteret."),
                           actions: [
@@ -143,11 +143,11 @@ class OwnDays extends State<OwnDaysScreen> {
                         );});
                     }
                   }, icon: Icon(Icons.add_circle, color: Colors.green,), label: Text("Accepter", style: TextStyle(color: Colors.green),)),),),
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet Dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                     if (data.get(FieldPath(const ["isAccepted"])) == true){
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: const Text("Slet Dag"),
+                          title: const Text("Slet dag"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           content: const Text("Vagten er allerede tildelt. Kontakt din leder hvis du ikke kan arbejde."),
                           actions: [
@@ -157,7 +157,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     } else {
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: const Text("Slet Dag"),
+                          title: const Text("Slet dag"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           content: const Text("Er du sikker på at slette dagen?"),
                           actions: [

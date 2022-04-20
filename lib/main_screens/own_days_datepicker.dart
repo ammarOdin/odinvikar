@@ -145,7 +145,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       Center(
-                        child: Text("Tilføj Dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
+                        child: Text("Tilføj dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
                       ),
                     ],
                   ),
@@ -334,7 +334,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                       try{
                                         await saveShift.doc(pickedDate).set({'date': pickedDate,'month': pickedMonth, 'week': pickedWeek, 'time': timeRange, 'comment': comment, 'isAccepted': false, 'color': '0xFFFFA500', 'status': 'Tilgængelig', 'awaitConfirmation': 0});
                                         Navigator.pop(context);
-                                        _showSnackBar(context, pickedDate + " Tilføjet", Colors.green);
+                                        _showSnackBar(context, pickedDate + " tilføjet", Colors.green);
                                       } catch (e) {
                                         _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
                                       }

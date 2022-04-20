@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -69,35 +70,38 @@ Future<void> main() async {
     }
   });
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  if (Platform.isIOS){
+// iOS notifications permissions
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
-  // iOS notifications permissions
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
 
-  await messaging.setForegroundNotificationPresentationOptions(
-    alert: true, // Required to display a heads up notification
-    badge: true,
-    sound: true
-  );
+    await messaging.setForegroundNotificationPresentationOptions(
+        alert: true, // Required to display a heads up notification
+        badge: true,
+        sound: true
+    );
+  }
 
   // User token saver
-  User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.
+  instance.currentUser;
   FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
 
 // onboarding

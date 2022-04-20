@@ -78,7 +78,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       top: MediaQuery.of(context).size.height / 30),
                   child: const Center(
                       child: Text(
-                        "Vikar Oversigt",
+                        "Vikaroversigt",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
               Center(
@@ -94,7 +94,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I Morgen",)])),
+        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I morgen",)])),
 
         Row(
           children: [
@@ -115,7 +115,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(left: 10),
                   child: Icon(Icons.circle, color: Colors.red, size: 16,),
                 ),
-                Text(" Afventer Accept", style: TextStyle(fontSize: 12),)
+                Text(" Afventer accept", style: TextStyle(fontSize: 12),)
               ],
             ),
             Row(
@@ -125,7 +125,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(left: 5),
                   child: Icon(Icons.circle, color: Colors.green, size: 16,),
                 ),
-                Text(" Godkendt Vagt", style: TextStyle(fontSize: 12),)
+                Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
               ],
             ),
           ],
@@ -142,7 +142,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               return Container(
                 padding: const EdgeInsets.all(50),
                 child: const Center(child: Text(
-                  "Ingen Vikarer",
+                  "Ingen vikarer",
                   style: TextStyle(color: Colors.blue, fontSize: 18),
                 ),),
               );

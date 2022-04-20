@@ -108,7 +108,7 @@ class _State extends State<AdminCalendar> {
                 Container(
                   padding: EdgeInsets.only(top: 5),
                   alignment: Alignment.center,
-                  child: Text("Skift Status", style: TextStyle(fontWeight: FontWeight.bold),),),
+                  child: Text("Vagt status", style: TextStyle(fontWeight: FontWeight.bold),),),
                 Form(
                   key: _detailsKey,
                   child: Row(
@@ -116,11 +116,11 @@ class _State extends State<AdminCalendar> {
                     children: [
                       SimpleDialogOption(
                         child: Align(alignment: Alignment.centerLeft,
-                          child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger Vagt", style: TextStyle(color: Colors.orange),):const Text("Tildel Vagt", style: TextStyle(color: Colors.green),),
+                          child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger vagt", style: TextStyle(color: Colors.orange),):const Text("Tildel vagt", style: TextStyle(color: Colors.green),),
                         icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Rediger Vagt"),
+                            return AlertDialog(title: Text("Rediger vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                               content: Text("Tilføj nye detaljer nedenunder:"),
                               actions: [
@@ -131,7 +131,7 @@ class _State extends State<AdminCalendar> {
                                       await userRef.doc(data.id).update({'details': detailsController.text});
                                       sendEditedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       Navigator.pop(context);Navigator.pop(context);
-                                      _showSnackBar(context,"Vagt Redigeret", Colors.green);
+                                      _showSnackBar(context,"Vagt redigeret", Colors.green);
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);
                                     }
@@ -140,7 +140,7 @@ class _State extends State<AdminCalendar> {
                                     , child: const Text("Godkend"))],);});
                         } else if (data.get(FieldPath(const ["awaitConfirmation"])) == 0){
                           showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Tildel Vagt"),
+                            return AlertDialog(title: Text("Tildel vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                               content: Text("Suppler med detaljer nedenunder (Tidsrum mm.):"),
                               actions: [
@@ -148,10 +148,10 @@ class _State extends State<AdminCalendar> {
                                 TextButton(onPressed: () async {
                                   if (_detailsKey.currentState!.validate()){
                                     try{
-                                      await userRef.doc(data.id).update({'status': 'Afventer Accept', 'isAccepted': true, 'color': '0xFFFF0000', 'details': detailsController.text, 'awaitConfirmation': 1});
+                                      await userRef.doc(data.id).update({'status': 'Afventer accept', 'isAccepted': true, 'color': '0xFFFF0000', 'details': detailsController.text, 'awaitConfirmation': 1});
                                       Navigator.pop(context);Navigator.pop(context);
                                       sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
-                                      _showSnackBar(context,"Vagt Tildelt", Colors.green);
+                                      _showSnackBar(context,"Vagt tildelt", Colors.green);
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);
                                     }
@@ -162,7 +162,7 @@ class _State extends State<AdminCalendar> {
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                         showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(title: Text("Slet Dag"),
+                          return AlertDialog(title: Text("Slet dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                             actions: [TextButton(onPressed: () {data.reference.delete(); getFirestoreShift(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
@@ -196,7 +196,7 @@ class _State extends State<AdminCalendar> {
     }
   }
 
-  Future<void> getFirestoreShift() async {
+  /*Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
     List<String> shiftList = [];
 
@@ -216,6 +216,41 @@ class _State extends State<AdminCalendar> {
 
     setState(() {
       events = MeetingDataSource(list);
+    });
+  }*/
+
+  Future<void> getFirestoreShift() async {
+    var userRef = await databaseReference.collection('user').get();
+    List<Meeting> shiftList = [];
+    List tempList = [];
+    List shiftElements = [];
+
+    for (var users in userRef.docs){
+      var shiftRef = await databaseReference.collection(users.id).get();
+      shiftRef.docs.forEach((e) {
+        tempList.add(e.data()['date'] + ";"
+            + e.data()['status'] + ";"
+            + e.data()['color'] + ";"
+            + users.get(FieldPath(const ['phone'])) + ";"
+            + users.get(FieldPath(const ['name'])) + ";"
+            + e.data()['awaitConfirmation'].toString());
+      });
+      for (var shifts in tempList){
+        shiftElements = shifts.toString().split(";");
+        print(shiftElements);
+      }
+      //List shiftElements = tempList.toString().split(";");
+      //print(tempList);
+    }
+
+    /*shiftList = shiftList.map((e)=> Meeting(eventName: ,
+          from: DateFormat('dd-MM-yyyy').parse(),
+          to: DateFormat('dd-MM-yyyy').parse(),
+          background: ,
+          isAllDay: true)).toList();*/
+
+    setState(() {
+      events = MeetingDataSource(shiftList);
     });
   }
 
