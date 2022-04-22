@@ -67,6 +67,18 @@ class _State extends State<AdminCalendar> {
     }
   }
 
+  Color calendarColor(String dateTime, int awaitConfirmation){
+    if (DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(dateTime).add(const Duration(days: 1)))){
+      return Colors.grey;
+    } else if (awaitConfirmation == 2){
+      return Colors.green;
+    } else if (awaitConfirmation == 1) {
+      return Colors.red;
+    } else {
+      return Colors.orange;
+    }
+  }
+
   Future<void> sendAssignedShiftNotification(String token, String date) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('addShiftNotif');
     await callable.call(<String, dynamic>{
@@ -152,6 +164,7 @@ class _State extends State<AdminCalendar> {
                                       Navigator.pop(context);Navigator.pop(context);
                                       sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
                                       _showSnackBar(context,"Vagt tildelt", Colors.green);
+                                      getFirestoreShift();
                                     } catch (e) {
                                       _showSnackBar(context, "Fejl", Colors.red);
                                     }
@@ -221,36 +234,30 @@ class _State extends State<AdminCalendar> {
 
   Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
-    List<Meeting> shiftList = [];
-    List tempList = [];
-    List shiftElements = [];
+    List<Meeting> meetingsList = [];
+    List<String> shiftList = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
-      shiftRef.docs.forEach((e) {
-        tempList.add(e.data()['date'] + ";"
-            + e.data()['status'] + ";"
-            + e.data()['color'] + ";"
+      for (var shifts in shiftRef.docs){
+        shiftList.add(shifts.data()['date'] + ";"
+            + shifts.data()['status'] + ";"
             + users.get(FieldPath(const ['phone'])) + ";"
             + users.get(FieldPath(const ['name'])) + ";"
-            + e.data()['awaitConfirmation'].toString());
-      });
-      for (var shifts in tempList){
-        shiftElements = shifts.toString().split(";");
-        print(shiftElements);
+            + shifts.data()['awaitConfirmation'].toString());
       }
-      //List shiftElements = tempList.toString().split(";");
-      //print(tempList);
     }
 
-    /*shiftList = shiftList.map((e)=> Meeting(eventName: ,
-          from: DateFormat('dd-MM-yyyy').parse(),
-          to: DateFormat('dd-MM-yyyy').parse(),
-          background: ,
-          isAllDay: true)).toList();*/
-
+    for (var shifts in shiftList){
+      List shiftSplit = shifts.split(";");
+      meetingsList.add(Meeting(eventName: shiftSplit[3],
+          from: DateFormat('dd-MM-yyyy').parse(shiftSplit[0]),
+          to: DateFormat('dd-MM-yyyy').parse(shiftSplit[0]),
+          background: calendarColor(shiftSplit[0], int.parse(shiftSplit[4])),
+          isAllDay: true));
+    }
     setState(() {
-      events = MeetingDataSource(shiftList);
+      events = MeetingDataSource(meetingsList);
     });
   }
 
