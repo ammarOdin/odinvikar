@@ -105,7 +105,7 @@ class _State extends State<AdminCalendar> {
                 Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
                 Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
                 Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-                data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1, height: 50,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -122,62 +122,16 @@ class _State extends State<AdminCalendar> {
                         icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           // Rediger vagt
-
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: selectedDate, token: userToken))).then((value) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: data.get(FieldPath(const ['date'])), token: users.get(FieldPath(const ['token'])), userRef: userRef, details: data.get(FieldPath(const ['details'])), name: users.get(FieldPath(const ['name']))))).then((value) {
                             setState(() {
                               getFirestoreShift();
                             });});
-
-
-
-                          /*showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Rediger vagt"),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Tilføj nye detaljer nedenunder:"),
-                              actions: [
-                                TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
-                                TextButton(onPressed: () async {
-                                  if (_detailsKey.currentState!.validate()){
-                                    try{
-                                      await userRef.doc(data.id).update({'details': detailsController.text});
-                                      sendEditedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
-                                      Navigator.pop(context);Navigator.pop(context);
-                                      _showSnackBar(context,"Vagt redigeret", Colors.green);
-                                    } catch (e) {
-                                      _showSnackBar(context, "Fejl", Colors.red);
-                                    }
-                                  }
-                                }
-                                    , child: const Text("Godkend"))],);});*/
                         } else if (data.get(FieldPath(const ["awaitConfirmation"])) == 0){
                           // Tildel vagt
-
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: selectedDate, token: userToken))).then((value) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: data.get(FieldPath(const ['date'])), token: users.get(FieldPath(const ['token'])), userRef: userRef))).then((value) {
                             setState(() {
                               getFirestoreShift();
-                            });});
-
-                          /*showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Tildel vagt"),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Suppler med detaljer nedenunder (Tidsrum mm.):"),
-                              actions: [
-                                TextFormField(validator: validateDetails, controller: detailsController, decoration: const InputDecoration(icon: Icon(Icons.info), hintText: "Detaljer",),),
-                                TextButton(onPressed: () async {
-                                  if (_detailsKey.currentState!.validate()){
-                                    try{
-                                      await userRef.doc(data.id).update({'status': 'Afventer accept', 'isAccepted': true, 'color': '0xFFFF0000', 'details': detailsController.text, 'awaitConfirmation': 1});
-                                      Navigator.pop(context);Navigator.pop(context);
-                                      sendAssignedShiftNotification(users.get(FieldPath(const ["token"])), data.get(FieldPath(const ['date'])));
-                                      _showSnackBar(context,"Vagt tildelt", Colors.green);
-                                      getFirestoreShift();
-                                    } catch (e) {
-                                      _showSnackBar(context, "Fejl", Colors.red);
-                                    }
-                                  }
-                                }
-                                    , child: const Text("Tildel"))],);});*/
-                        }
+                            });});}
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                         showDialog(context: context, builder: (BuildContext context){

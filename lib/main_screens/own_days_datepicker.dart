@@ -206,81 +206,71 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                     ],
                   ),
                 ),
-                if (isSwitched == false) Center(child: Column(
-                  children: [
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                        Container(
-                          padding: EdgeInsets.only(right: 5),
-                          child: Column(
-                              children: [
-                                Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
-                                Container(
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white
-                                  ),
-                                  child: TextButton(onPressed: () async {
-                                    startTime = (await showTimePicker(initialTime: startTime, context: context))!;
-                                    setState(() {
-                                      startTime.format(context);
-                                      //startTimeList.replaceRange(0, 1, [start.format(context)]);
-                                  });
-                                    },
-                                  child: Text(startTime.format(context)),),
-                                ),
-                              ],
-                            ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Column(
+                if (isSwitched == false) Container(
+                  padding: EdgeInsets.only(top: 30, bottom: 20),
+                  child: Row(
+                    children: [
+                      TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Tidsrum")),
+                      const Spacer(),
+                      SizedBox(
+                        width: 200,
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
                               Container(
-                                padding: EdgeInsets.only(left: 5, right: 5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white
+                                padding: EdgeInsets.only(right: 5),
+                                child: Column(
+                                  children: [
+                                    Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
+                                    Container(
+                                      padding: EdgeInsets.only(left: 5, right: 5),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white
+                                      ),
+                                      child: TextButton(onPressed: () async {
+                                        startTime = (await showTimePicker(initialTime: startTime, context: context))!;
+                                        setState(() {
+                                          startTime.format(context);
+                                          //startTimeList.replaceRange(0, 1, [start.format(context)]);
+                                        });
+                                      },
+                                        child: Text(startTime.format(context)),),
+                                    ),
+                                  ],
                                 ),
-                                child: TextButton(onPressed: () async {
-                                  endTime = (await showTimePicker(initialTime: endTime, context: context))!;
-                                  setState(() {
-                                    endTime.format(context);
-                                    //endTimeList.replaceRange(0, 1, [end.format(context)]);
-                                  });
-                                  },
-                                  child: Text(endTime.format(context)),),
                               ),
-                            ],
-                          ),
+                              Container(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Column(
+                                  children: [
+                                    Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
+                                    Container(
+                                      padding: EdgeInsets.only(left: 5, right: 5),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white
+                                      ),
+                                      child: TextButton(onPressed: () async {
+                                        endTime = (await showTimePicker(initialTime: endTime, context: context))!;
+                                        setState(() {
+                                          endTime.format(context);
+                                          //endTimeList.replaceRange(0, 1, [end.format(context)]);
+                                        });
+                                      },
+                                        child: Text(endTime.format(context)),),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            ],),
                         ),
-
-                      ],),
-                    ),
-
-                    /*Column(
-                      children: <Widget>[
-                        Column(
-                          children: bodyElements,
-                        ),
-                      ],
-                    ),
-
-                    Container(
-                      padding: EdgeInsets.only(top: 30, bottom: 30),
-                      child: Center(
-                          child: ElevatedButton.icon(onPressed: (){
-                            /*setState(() {
-                              addBodyElement();
-                            });*/
-
-                          }, icon: Icon(Icons.add), label: Text("Tilføj Tidsrum"))),
-                    ),*/
-                ],)) else Container(),
+                      ),
+                    ],
+                  ),
+                ) else Container(),
 
                 Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: null, icon: Icon(Icons.add_comment_outlined), label: Text("Kommentar"))),
                 Container(
@@ -342,7 +332,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   });
                                 },
                                 icon: Icon(Icons.add_circle),
-                                label: Text("Tilføj Dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                                label: Text("Tilføj dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
               ]
           ),
       );

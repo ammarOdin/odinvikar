@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:odinvikar/main_screens/edit_shift_screen.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -91,6 +92,7 @@ class OwnDays extends State<OwnDaysScreen> {
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
     var userData = await databaseReference.collection(user!.uid).get();
+    var userRef = await databaseReference.collection(user!.uid);
     var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
     var adminRef = await databaseReference.collection('user').get();
     getDateTap = calendarTapDetails.date!;
@@ -104,7 +106,7 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
               Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\n Detaljer: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
               Row(
@@ -143,7 +145,26 @@ class OwnDays extends State<OwnDaysScreen> {
                         );});
                     }
                   }, icon: Icon(Icons.add_circle, color: Colors.green,), label: Text("Accepter", style: TextStyle(color: Colors.green),)),),),
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
+
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Rediger dag", style: TextStyle(color: Colors.orange),) , icon: const Icon(Icons.edit, color: Colors.orange,), onPressed: (){
+                    if (data.get(FieldPath(const ["isAccepted"])) == true){
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Slet dag"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Vagten er allerede tildelt. Du kan ikke redigere dagen."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: data.get(FieldPath(const ['date'])), userRef: userRef, details: data.get(FieldPath(const ['time']))))).then((value) {
+                        setState(() {
+                          getFirestoreShift();
+                        });});
+                    }
+                  },), ),),
+                 /* SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
                     if (data.get(FieldPath(const ["isAccepted"])) == true){
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
@@ -167,9 +188,10 @@ class OwnDays extends State<OwnDaysScreen> {
                           ],
                         );});
                     }
-                    },), ),),
+                  },), ),),*/
                 ],
               ),
+
             ],);
           });
         }
@@ -250,7 +272,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     setState(() {
                     getFirestoreShift();
                   });});
-                  }, icon: const Icon(Icons.add_circle), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj Dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
+                  }, icon: const Icon(Icons.add_circle, color: Colors.greenAccent,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         side: const BorderSide(color: Colors.blue)
@@ -258,7 +280,7 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.edit), label: const Align(alignment: Alignment.centerLeft, child: Text("Rediger Dage")),
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete, color: Colors.red,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dage")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),

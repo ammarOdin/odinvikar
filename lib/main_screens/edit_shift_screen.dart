@@ -1,21 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
-class AdminEditShiftScreen extends StatefulWidget {
+class EditShiftScreen extends StatefulWidget {
   final String date;
-  final String token;
-  final String name;
   final String details;
   final CollectionReference<Map<String, dynamic>> userRef;
-  const AdminEditShiftScreen({Key? key, required this.date, required this.token, required this.userRef, required this.details, required this.name}) : super(key: key);
+  const EditShiftScreen({Key? key, required this.date, required this.userRef, required this.details}) : super(key: key);
 
   @override
-  State<AdminEditShiftScreen> createState() => _EditShiftScreenState();
+  State<EditShiftScreen> createState() => _EditShiftScreenState();
 }
 
-class _EditShiftScreenState extends State<AdminEditShiftScreen> {
+class _EditShiftScreenState extends State<EditShiftScreen> {
 
+  bool isSwitched = false;
   late TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
   late TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
 
@@ -30,14 +28,6 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
     }
   }
 
-  Future<void> sendEditedShiftNotification(String token, String date) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('editShiftNotif');
-    await callable.call(<String, dynamic>{
-      'token': token,
-      'date': date
-    });
-  }
-
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
@@ -47,7 +37,6 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        toolbarHeight: kToolbarHeight + 2,
         leading: BackButton(color: Colors.white),
       ),
       body: ListView(
@@ -64,7 +53,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Center(
-                  child: Text(widget.name + "'s "+ "vagt \n", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
+                  child: Text("Rediger vagt \n", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
                 ),
                 Center(
                   child: Text("Dato: "+widget.date + "\n" + "Tidsrum: " + widget.details, style: TextStyle(fontSize: 18, color: Colors.white),),
@@ -79,10 +68,31 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
 
           const Divider(thickness: 1),
           Container(
-            padding: EdgeInsets.only(top: 30, bottom: 20),
+            padding: EdgeInsets.only(top: 10, bottom: 20),
             child: Row(
               children: [
                 TextButton.icon(onPressed: null, icon: Icon(Icons.access_time), label: Text("Varighed")),
+                const Spacer(),
+                SizedBox(
+                  width: 200,
+                  child: SwitchListTile(
+                    title: const Text("Hele dagen"),
+                    value: isSwitched,
+                    onChanged: (bool value) {
+                      setState((){
+                        isSwitched = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isSwitched == false) Container(
+            padding: EdgeInsets.only(top: 30, bottom: 20),
+            child: Row(
+              children: [
+                TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Tidsrum")),
                 const Spacer(),
                 SizedBox(
                   width: 200,
@@ -142,7 +152,8 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                 ),
               ],
             ),
-          ),
+          ) else Container(),
+
 
           Container(
               padding: EdgeInsets.only(top: 10),
@@ -174,13 +185,27 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                       )
                   )),
                   onPressed: () async {
+                    var comment = commentController.text;
+                    var timeRange = '';
+                    var starting = startTime.format(context);
+                    var ending = endTime.format(context);
+
+                    if (isSwitched == false){
+                      timeRange = '$starting - $ending';
+                    } else if (isSwitched == true){
+                      timeRange = 'Hele dagen';
+                    }
+                    if (commentController.text == "" || commentController.text.isEmpty){
+                      comment = "Ingen";
+                    }
+
                     if (_commentKey.currentState!.validate()){
                       try{
                         await widget.userRef.doc(widget.date).update({
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + commentController.text
+                          'time': timeRange,
+                          'comment': comment
                         });
                         Navigator.pop(context);Navigator.pop(context);
-                        sendEditedShiftNotification(widget.token, widget.date.toString());
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
                         _showSnackBar(context, "Fejl", Colors.red);

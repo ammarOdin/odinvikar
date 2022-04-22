@@ -62,7 +62,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       top: MediaQuery.of(context).size.height / 30),
                   child: const Center(
                       child: Text(
-                        "Dine Dage",
+                        "Dine dage",
                         style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ))),
               Container(
@@ -99,7 +99,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(left: 10),
                   child: Icon(Icons.circle, color: Colors.red, size: 16,),
                 ),
-                Text(" Afventer Accept", style: TextStyle(fontSize: 12),)
+                Text(" Afventer accept", style: TextStyle(fontSize: 12),)
               ],
             ),
             Row(
@@ -109,7 +109,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(left: 10),
                   child: Icon(Icons.circle, color: Colors.green, size: 16,),
                 ),
-                Text(" Godkendt Vagt", style: TextStyle(fontSize: 12),)
+                Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
               ],
             ),
           ],
