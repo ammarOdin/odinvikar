@@ -33,7 +33,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
       shrinkWrap: true,
       children: [
         Container(
-          height: MediaQuery.of(context).size.height / 5,
+          height: MediaQuery.of(context).size.height / 4,
           padding: EdgeInsets.only(bottom: 30),
           color: Colors.blue,
           child: ListView(
