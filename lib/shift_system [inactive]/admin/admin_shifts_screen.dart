@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:odinvikar/shift_system/admin/admin_add_shift.dart';
+import 'package:odinvikar/shift_system [inactive]/admin/admin_add_shift.dart';
 
 import '../../card_assets.dart';
 

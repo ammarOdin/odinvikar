@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:odinvikar/admin/admin_assign_shift.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'admin_edit_shift.dart';
 
 class AdminCalendar extends StatefulWidget {
   const AdminCalendar({Key? key}) : super(key: key);
@@ -25,6 +28,9 @@ class _State extends State<AdminCalendar> {
 
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
+
+  late DateTime selectedDate = initialDate();
+  String userToken = "";
 
   final detailsController = TextEditingController();
   final GlobalKey<FormState> _detailsKey = GlobalKey<FormState>();
@@ -79,22 +85,6 @@ class _State extends State<AdminCalendar> {
     }
   }
 
-  Future<void> sendAssignedShiftNotification(String token, String date) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('addShiftNotif');
-    await callable.call(<String, dynamic>{
-      'token': token,
-      'date': date
-    });
-  }
-
-  Future<void> sendEditedShiftNotification(String token, String date) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('editShiftNotif');
-    await callable.call(<String, dynamic>{
-      'token': token,
-      'date': date
-    });
-  }
-
   // awaitConfirmation = 0 -> User added a shift
   // awaitConfirmation = 1 -> Admin assigned shift, not accepted by user
   // awaitConfirmation = 2 -> User accepted assigned shift by admin
@@ -131,7 +121,16 @@ class _State extends State<AdminCalendar> {
                           child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger vagt", style: TextStyle(color: Colors.orange),):const Text("Tildel vagt", style: TextStyle(color: Colors.green),),
                         icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
-                          showDialog(context: context, builder: (BuildContext context){
+                          // Rediger vagt
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: selectedDate, token: userToken))).then((value) {
+                            setState(() {
+                              getFirestoreShift();
+                            });});
+
+
+
+                          /*showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Rediger vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                               content: Text("Tilføj nye detaljer nedenunder:"),
@@ -149,9 +148,16 @@ class _State extends State<AdminCalendar> {
                                     }
                                   }
                                 }
-                                    , child: const Text("Godkend"))],);});
+                                    , child: const Text("Godkend"))],);});*/
                         } else if (data.get(FieldPath(const ["awaitConfirmation"])) == 0){
-                          showDialog(context: context, builder: (BuildContext context){
+                          // Tildel vagt
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: selectedDate, token: userToken))).then((value) {
+                            setState(() {
+                              getFirestoreShift();
+                            });});
+
+                          /*showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(title: Text("Tildel vagt"),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                               content: Text("Suppler med detaljer nedenunder (Tidsrum mm.):"),
@@ -170,7 +176,7 @@ class _State extends State<AdminCalendar> {
                                     }
                                   }
                                 }
-                                    , child: const Text("Tildel"))],);});
+                                    , child: const Text("Tildel"))],);});*/
                         }
                       },), ),),
                       SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Slet", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
@@ -208,29 +214,6 @@ class _State extends State<AdminCalendar> {
       }
     }
   }
-
-  /*Future<void> getFirestoreShift() async {
-    var userRef = await databaseReference.collection('user').get();
-    List<String> shiftList = [];
-
-    for (var users in userRef.docs){
-      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
-      QuerySnapshot shiftSnapshot = await shiftRef.get();
-      for (var shifts in shiftSnapshot.docs){
-        shiftList.add(shifts.id+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-      }
-    }
-
-    List<Meeting> list = shiftList.map((e)=> Meeting(eventName: e.substring(18),
-        from: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
-        to: DateFormat('dd-MM-yyyy').parse(e.substring(0,10)),
-        background: DateTime.now().isAfter(DateFormat('dd-MM-yyyy').parse(e.substring(0,10)).add(const Duration(days: 1))) ? Colors.grey : Colors.indigoAccent,
-        isAllDay: true)).toList();
-
-    setState(() {
-      events = MeetingDataSource(list);
-    });
-  }*/
 
   Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
