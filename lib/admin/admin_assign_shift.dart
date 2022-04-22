@@ -163,13 +163,17 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                     )
                 )),
                 onPressed: () async {
+                  var comment = commentController.text;
+                  if (commentController.text == "" || commentController.text.isEmpty){
+                    comment = "Ingen";
+                  }
                   if (_commentKey.currentState!.validate()){
                     try{
                       await widget.userRef.doc(widget.date).update({
                         'status': 'Afventer accept',
                         'isAccepted': true,
                         'color': '0xFFFF0000',
-                        'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + commentController.text,
+                        'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + comment,
                         'awaitConfirmation': 1});
                       Navigator.pop(context);Navigator.pop(context);
                       sendAssignedShiftNotification(widget.token, widget.date.toString());

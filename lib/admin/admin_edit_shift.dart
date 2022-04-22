@@ -174,10 +174,14 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                       )
                   )),
                   onPressed: () async {
+                    var comment = commentController.text;
+                    if (commentController.text == "" || commentController.text.isEmpty){
+                      comment = "Ingen";
+                    }
                     if (_commentKey.currentState!.validate()){
                       try{
                         await widget.userRef.doc(widget.date).update({
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + commentController.text
+                          'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + comment
                         });
                         Navigator.pop(context);Navigator.pop(context);
                         sendEditedShiftNotification(widget.token, widget.date.toString());
