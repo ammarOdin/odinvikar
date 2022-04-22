@@ -106,7 +106,7 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
               const Divider(thickness: 1),
               Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(20), child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
               Row(
