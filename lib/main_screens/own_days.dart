@@ -102,11 +102,15 @@ class OwnDays extends State<OwnDaysScreen> {
         if (data.get(FieldPath(const ["date"])) == tapDate){
           showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
-              Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-              Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"]))))),
+              Container(padding: EdgeInsets.only(left: 54.5),child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
+              Container(padding: EdgeInsets.only(left: 54.5, bottom: 20),child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"])))),
               const Divider(thickness: 1),
-              Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(20), child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              Container(
+                padding: EdgeInsets.only(top: 5),
+                alignment: Alignment.center,
+                child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
+              Container(padding: EdgeInsets.only(left: 54.5, top: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(20), child: Center(child: Text("Tidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
               Row(

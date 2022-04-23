@@ -173,7 +173,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                         'status': 'Afventer accept',
                         'isAccepted': true,
                         'color': '0xFFFF0000',
-                        'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + comment,
+                        'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
                         'awaitConfirmation': 1});
                       Navigator.pop(context);Navigator.pop(context);
                       sendAssignedShiftNotification(widget.token, widget.date.toString());

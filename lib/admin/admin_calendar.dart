@@ -102,10 +102,15 @@ class _State extends State<AdminCalendar> {
           if (appointmentDetails.eventName == users.get(FieldPath(const ["name"])) && data.get(FieldPath(const ["date"])) == tapDate){
             showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
-                Center(child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-                Container(padding: EdgeInsets.all(30), child: Center(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
-                Container(child: Center(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(20), child: Center(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+                Container(padding: EdgeInsets.only(left: 54.5),child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
+                Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
+                Container(padding: EdgeInsets.only(left: 54.5, bottom: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+                const Divider(thickness: 1,),
+                Container(
+                  padding: EdgeInsets.only(top: 5),
+                  alignment: Alignment.center,
+                  child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(30), child: Center(child: Text("Tidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1, height: 50,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -122,7 +127,7 @@ class _State extends State<AdminCalendar> {
                         icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           // Rediger vagt
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: data.get(FieldPath(const ['date'])), token: users.get(FieldPath(const ['token'])), userRef: userRef, details: data.get(FieldPath(const ['details'])), name: users.get(FieldPath(const ['name']))))).then((value) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: data.get(FieldPath(const ['date'])), token: users.get(FieldPath(const ['token'])), userRef: userRef, name: users.get(FieldPath(const ['name']))))).then((value) {
                             setState(() {
                               getFirestoreShift();
                             });});

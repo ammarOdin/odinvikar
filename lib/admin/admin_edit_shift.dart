@@ -6,9 +6,8 @@ class AdminEditShiftScreen extends StatefulWidget {
   final String date;
   final String token;
   final String name;
-  final String details;
   final CollectionReference<Map<String, dynamic>> userRef;
-  const AdminEditShiftScreen({Key? key, required this.date, required this.token, required this.userRef, required this.details, required this.name}) : super(key: key);
+  const AdminEditShiftScreen({Key? key, required this.date, required this.token, required this.userRef, required this.name}) : super(key: key);
 
   @override
   State<AdminEditShiftScreen> createState() => _EditShiftScreenState();
@@ -51,12 +50,12 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
         leading: BackButton(color: Colors.white),
       ),
       body: ListView(
-        physics: ClampingScrollPhysics(),
+        //physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height / 3.5,
+            height: MediaQuery.of(context).size.height / 4,
             padding: EdgeInsets.only(bottom: 30),
             color: Colors.blue,
             child: ListView(
@@ -67,7 +66,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                   child: Text(widget.name + "'s "+ "vagt \n", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
                 ),
                 Center(
-                  child: Text("Dato: "+widget.date + "\n" + "Tidsrum: " + widget.details, style: TextStyle(fontSize: 18, color: Colors.white),),
+                  child: Text("Dato: "+widget.date, style: TextStyle(fontSize: 18, color: Colors.white),),
                 ),
               ],
             ),
@@ -181,7 +180,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                     if (_commentKey.currentState!.validate()){
                       try{
                         await widget.userRef.doc(widget.date).update({
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\nDetaljer: " + comment
+                          'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment
                         });
                         Navigator.pop(context);Navigator.pop(context);
                         sendEditedShiftNotification(widget.token, widget.date.toString());
