@@ -104,13 +104,13 @@ class _State extends State<AdminCalendar> {
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
                 Container(padding: EdgeInsets.only(left: 54.5),child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
                 Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
-                Container(padding: EdgeInsets.only(left: 54.5, bottom: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+                Container(padding: EdgeInsets.only(left: 52, bottom: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
                 const Divider(thickness: 1,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
                   alignment: Alignment.center,
                   child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
-                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(30), child: Center(child: Text("Tidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1, height: 50,),
                 Container(
                   padding: EdgeInsets.only(top: 5),

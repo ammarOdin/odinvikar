@@ -109,8 +109,8 @@ class OwnDays extends State<OwnDaysScreen> {
                 padding: EdgeInsets.only(top: 5),
                 alignment: Alignment.center,
                 child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
-              Container(padding: EdgeInsets.only(left: 54.5, top: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.all(20), child: Center(child: Text("Tidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              Container(padding: EdgeInsets.only(left: 52, top: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
               Row(
