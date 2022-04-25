@@ -176,8 +176,18 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                       ],
                                     );});
                                   } else {
-                                    document.reference.delete();
-                                    _showSnackBar(context, "Vagt slettet", Colors.green);
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Slet dag"),
+                                      content: const Text("Er du sikker på at slette dagen?"),
+                                      actions: [
+                                        TextButton(onPressed: () {
+                                          document.reference.delete();
+                                          Navigator.pop(context);
+                                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                                      ],
+                                    );});
                                   }
                                 },
                                 backgroundColor: Colors.red,
@@ -246,8 +256,18 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                       ],
                                     );});
                                   } else {
-                                    document.reference.delete();
-                                    _showSnackBar(context, "Vagt slettet", Colors.green);
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Slet dag"),
+                                      content: const Text("Er du sikker på at slette dagen?"),
+                                      actions: [
+                                        TextButton(onPressed: () {
+                                          document.reference.delete();
+                                          Navigator.pop(context);
+                                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                                      ],
+                                    );});
                                   }
                                   },
                                 backgroundColor: Colors.red,

@@ -37,6 +37,7 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        toolbarHeight: kToolbarHeight + 2,
         leading: BackButton(color: Colors.white),
       ),
       body: ListView(
