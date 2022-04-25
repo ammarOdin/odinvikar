@@ -17,7 +17,7 @@ class AdminHomeScreen extends StatefulWidget {
 class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
   get users => FirebaseFirestore.instance.collection('user');
-  final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
+  final databaseReference = FirebaseFirestore.instance;
   late TabController _controller;
 
   @override
@@ -63,29 +63,38 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
   }*/
 
   Future<List> getUserInfo() async {
+    var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
     List<String> todayList = [];
     List<String> tomorrowList = [];
 
-    QuerySnapshot usersSnapshot = await usersRef.get();
-    for (var users in usersSnapshot.docs){
-      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
-      QuerySnapshot shiftSnapshot = await shiftRef.get();
-      for (var shifts in shiftSnapshot.docs){
-        if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-          todayList.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-        } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
-          tomorrowList.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-        }
+    for (var users in userRef.docs){
+      var shiftRef = await databaseReference.collection(users.id).get();
+      for (var shifts in shiftRef.docs){
+        entireShift.add(shifts.data()['date'] + ";"
+            + shifts.data()['status'] + ";"
+            + users.get(FieldPath(const ['phone'])) + ";"
+            + users.get(FieldPath(const ['name'])) + ";"
+            + shifts.data()['awaitConfirmation'].toString()
+        );
       }
     }
+
+    for (var shifts in entireShift){
+      List shiftSplit = shifts.split(";");
+      if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
+        todayList.add(shiftSplit[3]);
+      } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
+        tomorrowList.add(shiftSplit[3]);
+      }
+    }
+
     if (_controller.index == 0){
       return todayList;
     } else if (_controller.index == 1){
       return tomorrowList;
-    } else {
-      return [];
     }
+    return [];
   }
 
   @override
