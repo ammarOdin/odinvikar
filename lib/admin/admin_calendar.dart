@@ -176,8 +176,8 @@ class _State extends State<AdminCalendar> {
 
   Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
-    List<Meeting> separatedShiftList = [];
     List<String> entireShift = [];
+    List<Meeting> separatedShiftList = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();

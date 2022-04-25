@@ -63,9 +63,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
   }*/
 
   Future<List> getUserInfo() async {
-    List<String> separatedShiftList = [];
     List<String> entireShift = [];
-
     List<String> todayList = [];
     List<String> tomorrowList = [];
 
