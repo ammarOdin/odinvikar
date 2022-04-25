@@ -39,7 +39,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List> getNames() async {
+  /*Future<List> getNames() async {
     List<String> userID = [];
     List<String> userID2 = [];
     QuerySnapshot usersSnapshot = await usersRef.get();
@@ -60,6 +60,34 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       return userID2;
     }
     return [];
+  }*/
+
+  Future<List> getUserInfo() async {
+    List<String> separatedShiftList = [];
+    List<String> entireShift = [];
+
+    List<String> todayList = [];
+    List<String> tomorrowList = [];
+
+    QuerySnapshot usersSnapshot = await usersRef.get();
+    for (var users in usersSnapshot.docs){
+      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
+      QuerySnapshot shiftSnapshot = await shiftRef.get();
+      for (var shifts in shiftSnapshot.docs){
+        if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
+          todayList.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
+        } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
+          tomorrowList.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
+        }
+      }
+    }
+    if (_controller.index == 0){
+      return todayList;
+    } else if (_controller.index == 1){
+      return tomorrowList;
+    } else {
+      return [];
+    }
   }
 
   @override
@@ -136,7 +164,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
         Container(
           padding: EdgeInsets.only(top: 10),
-          child: FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
+          child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
             if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
               return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
                 color: Colors.blue,

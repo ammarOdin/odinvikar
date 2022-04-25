@@ -176,13 +176,13 @@ class _State extends State<AdminCalendar> {
 
   Future<void> getFirestoreShift() async {
     var userRef = await databaseReference.collection('user').get();
-    List<Meeting> meetingsList = [];
-    List<String> shiftList = [];
+    List<Meeting> separatedShiftList = [];
+    List<String> entireShift = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
       for (var shifts in shiftRef.docs){
-        shiftList.add(shifts.data()['date'] + ";"
+        entireShift.add(shifts.data()['date'] + ";"
             + shifts.data()['status'] + ";"
             + users.get(FieldPath(const ['phone'])) + ";"
             + users.get(FieldPath(const ['name'])) + ";"
@@ -190,16 +190,16 @@ class _State extends State<AdminCalendar> {
       }
     }
 
-    for (var shifts in shiftList){
+    for (var shifts in entireShift){
       List shiftSplit = shifts.split(";");
-      meetingsList.add(Meeting(eventName: shiftSplit[3],
+      separatedShiftList.add(Meeting(eventName: shiftSplit[3],
           from: DateFormat('dd-MM-yyyy').parse(shiftSplit[0]),
           to: DateFormat('dd-MM-yyyy').parse(shiftSplit[0]),
           background: calendarColor(shiftSplit[0], int.parse(shiftSplit[4])),
           isAllDay: true));
     }
     setState(() {
-      events = MeetingDataSource(meetingsList);
+      events = MeetingDataSource(separatedShiftList);
     });
   }
 
