@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 import 'package:week_of_year/week_of_year.dart';
@@ -141,7 +142,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               stream: unsortedShift.snapshots() ,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (!snapshot.hasData){
-                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    color: Colors.blue,
+                    size: 50,
+                  ));
                 }else if (snapshot.data!.docs.isEmpty){
                   return Container(
                     padding: const EdgeInsets.all(50),

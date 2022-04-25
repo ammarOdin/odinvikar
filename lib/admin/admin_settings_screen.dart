@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
@@ -301,7 +302,10 @@ class _State extends State<AdminSettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return const CircularProgressIndicator.adaptive();
+                          return SpinKitCubeGrid(
+                            color: Colors.blue,
+                            size: 50,
+                          );
                         }
                     ),),
               ),
@@ -414,7 +418,10 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    color: Colors.blue,
+                    size: 50,
+                  )));
                 }
             ),
           ],
@@ -430,7 +437,10 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    color: Colors.blue,
+                    size: 50,
+                  )));
                 }
             ),
           ],
@@ -465,7 +475,10 @@ class _State extends State<AdminSettingsScreen> {
                 stream: usersRef.snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData){
-                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                      color: Colors.blue,
+                      size: 50,
+                    )));
                   } else if (snapshot.data!.docs.isEmpty){
                     return Container(
                       padding: const EdgeInsets.only(top: 10, bottom: 30),

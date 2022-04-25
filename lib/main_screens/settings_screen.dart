@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/main_screens/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:validators/validators.dart';
@@ -99,7 +100,7 @@ class _State extends State<SettingsScreen> {
                     if (validForm){
                       switch(reference){
                         case "phone":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Telefonnummer Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
+                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt telefonnummer gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
                         }
                         break;
                         case "email":{
@@ -121,7 +122,7 @@ class _State extends State<SettingsScreen> {
                                   FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
                                   usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt!", Colors.green); Navigator.pop(context); Navigator.pop(context);
                                   }
-                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){_showSnackBar(context, "Forkert adgangskode!", Colors.red);} else if (e.code == "invalid-email"){ _showSnackBar(context, "Forkert E-mail!", Colors.red);} else if (e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else { _showSnackBar(context, "Fejlkode " + e.code, Colors.red);}}
+                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){_showSnackBar(context, "Forkert adgangskode!", Colors.red);} else if (e.code == "invalid-email"){ _showSnackBar(context, "Forkert e-mail!", Colors.red);} else if (e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else { _showSnackBar(context, "Fejlkode " + e.code, Colors.red);}}
                                 }
                               }, child: const Text("Godkend")),
                           ],),
@@ -184,7 +185,10 @@ class _State extends State<SettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                            color: Colors.blue,
+                            size: 50,
+                          )));
                         }
                     ),),
               ),
@@ -283,7 +287,7 @@ class _State extends State<SettingsScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(padding: const EdgeInsets.only(bottom: 20), child: const Center(child: Text("Mine Oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
+            Container(padding: const EdgeInsets.only(bottom: 20), child: const Center(child: Text("Mine oplysninger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),),),
             Container(padding: const EdgeInsets.only(bottom: 20), child: Center(child: TextButton(onPressed: (){
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
@@ -293,7 +297,7 @@ class _State extends State<SettingsScreen> {
               ),
                 body: Column(
                   children: [
-                    Container(padding: const EdgeInsets.only(bottom: 20, top: 20) , child: const Center(child: Text("Rediger Bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
+                    Container(padding: const EdgeInsets.only(bottom: 20, top: 20) , child: const Center(child: Text("Rediger bruger", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)))),
                     updateUserField(user!.uid, 'phone', "Telefon", phoneController),
                     updateUserField(user!.uid, 'email', "E-mail", updatedEmailController),
                   ],
@@ -314,7 +318,10 @@ class _State extends State<SettingsScreen> {
                       alignment: Alignment.centerLeft,
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    color: Colors.blue,
+                    size: 50,
+                  )));
                 }
             ),
           ],
@@ -332,7 +339,10 @@ class _State extends State<SettingsScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive()));
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    color: Colors.blue,
+                    size: 50,
+                  )));
                 }
             ),
           ],
@@ -346,10 +356,10 @@ class _State extends State<SettingsScreen> {
                   return Row(
                     children: [
                       Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
+                        return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
                           TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
-                          child: const Text("Nulstil Adgangskode")))),
+                          child: const Text("Nulstil adgangskode")))),
                       /*Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,

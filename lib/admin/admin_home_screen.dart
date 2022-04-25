@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,7 +138,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           padding: EdgeInsets.only(top: 10),
           child: FutureBuilder(future: getNames(), builder: (context, AsyncSnapshot<List> snapshot){
             if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                color: Colors.blue,
+                size: 50,
+                //controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1500)),
+              ));
             } else if (snapshot.data!.isEmpty) {
               return Container(
                 padding: const EdgeInsets.all(50),

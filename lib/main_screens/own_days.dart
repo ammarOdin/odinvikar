@@ -2,6 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/main_screens/edit_shift_screen.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -321,7 +322,10 @@ class OwnDays extends State<OwnDaysScreen> {
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                  color: Colors.blue,
+                  size: 50,
+                ));
               } else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -376,7 +380,10 @@ class OwnDays extends State<OwnDaysScreen> {
                         )) ,),
                     ],);
                   } else {
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                      color: Colors.blue,
+                      size: 50,
+                    ));
                   }
                 }).toList(),);
             }),
