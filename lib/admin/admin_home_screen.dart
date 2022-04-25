@@ -147,7 +147,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 ),),
               );
             }
-            return Column(children: snapshot.data!.map<Widget>((e) => AvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Se mere", onPressed: () {
+            return Column(children: snapshot.data!.map<Widget>((e) => AdminAvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Se mere", onPressed: () {
               showDialog(context: context, builder: (BuildContext context){
                 return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(18)),), children: [
                   Row(

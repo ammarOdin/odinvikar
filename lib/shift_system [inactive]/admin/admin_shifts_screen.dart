@@ -54,7 +54,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> {
         ),
         const Divider(thickness: 1, height: 25,),
 
-        StreamBuilder(
+        /*StreamBuilder(
             stream: vagter.snapshots() ,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
@@ -103,7 +103,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> {
                 }).toList(),
               );
 
-            }),
+            }),*/
       ],
     );
   }

@@ -205,7 +205,7 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
                           'time': timeRange,
                           'comment': comment
                         });
-                        Navigator.pop(context);Navigator.pop(context);
+                        Navigator.pop(context);
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
                         _showSnackBar(context, "Fejl", Colors.red);

@@ -66,7 +66,8 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
             child: const Text("Ledige Vagter",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
           const Divider(thickness: 1, height: 25,),
-          StreamBuilder(
+
+          /*StreamBuilder(
               stream: vagter.snapshots() ,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (!snapshot.hasData){
@@ -112,7 +113,7 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                   }).toList(),
                 );
 
-              }),
+              }),*/
           ElevatedButton(onPressed: () async {
             await getUser();
           }, child: Text("test")),

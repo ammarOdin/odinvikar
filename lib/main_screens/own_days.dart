@@ -102,15 +102,15 @@ class OwnDays extends State<OwnDaysScreen> {
         if (data.get(FieldPath(const ["date"])) == tapDate){
           showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
-              Container(padding: EdgeInsets.only(left: 54.5),child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-              Container(padding: EdgeInsets.only(left: 54.5, bottom: 20),child: Text("\n Egen kommentar: " + data.get(FieldPath(const ["comment"])))),
+              Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + data.get(FieldPath(const ["time"])))),
+              Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nEgen kommentar: " + data.get(FieldPath(const ["comment"])))),
               const Divider(thickness: 1),
               Container(
                 padding: EdgeInsets.only(top: 5),
                 alignment: Alignment.center,
                 child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
-              Container(padding: EdgeInsets.only(left: 52, top: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+              Container(padding: EdgeInsets.only(left: 30, top: 20), child: Container(child: Text("\nStatus: " + data.get(FieldPath(const ["status"]))))),
+              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 30), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
               const Divider(thickness: 1, height: 50,),
 
               Row(
@@ -150,11 +150,11 @@ class OwnDays extends State<OwnDaysScreen> {
                     }
                   }, icon: Icon(Icons.add_circle, color: Colors.green,), label: Text("Accepter", style: TextStyle(color: Colors.green),)),),),
 
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Rediger dag", style: TextStyle(color: Colors.orange),) , icon: const Icon(Icons.edit, color: Colors.orange,), onPressed: (){
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Rediger", style: TextStyle(color: Colors.orange),) , icon: const Icon(Icons.edit, color: Colors.orange,), onPressed: (){
                     if (data.get(FieldPath(const ["isAccepted"])) == true){
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: const Text("Slet dag"),
+                          title: const Text("Rediger dag"),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           content: const Text("Vagten er allerede tildelt. Du kan ikke redigere dagen."),
                           actions: [
@@ -200,7 +200,6 @@ class OwnDays extends State<OwnDaysScreen> {
           });
         }
       }
-
     }
   }
 
@@ -284,7 +283,7 @@ class OwnDays extends State<OwnDaysScreen> {
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete, color: Colors.red,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dage")),
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete, color: Colors.red,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dag")),
                   style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),

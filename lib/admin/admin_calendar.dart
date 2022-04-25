@@ -102,15 +102,15 @@ class _State extends State<AdminCalendar> {
           if (appointmentDetails.eventName == users.get(FieldPath(const ["name"])) && data.get(FieldPath(const ["date"])) == tapDate){
             showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
-                Container(padding: EdgeInsets.only(left: 54.5),child: Text("\n Kan arbejde: " + data.get(FieldPath(const ["time"])))),
-                Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\n Kommentar: " + data.get(FieldPath(const ["comment"]))))),
-                Container(padding: EdgeInsets.only(left: 52, bottom: 20), child: Container(child: Text("\n Status: " + data.get(FieldPath(const ["status"]))))),
+                Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + data.get(FieldPath(const ["time"])))),
+                Container(padding: EdgeInsets.only(left: 30), child: Container(child: Text("\nKommentar: " + data.get(FieldPath(const ["comment"]))))),
+                Container(padding: EdgeInsets.only(left: 30, bottom: 20), child: Container(child: Text("\nStatus: " + data.get(FieldPath(const ["status"]))))),
                 const Divider(thickness: 1,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
                   alignment: Alignment.center,
                   child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
-                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 54.5), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
+                data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 30), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
                 const Divider(thickness: 1, height: 50,),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -123,7 +123,7 @@ class _State extends State<AdminCalendar> {
                     children: [
                       SimpleDialogOption(
                         child: Align(alignment: Alignment.centerLeft,
-                          child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger vagt", style: TextStyle(color: Colors.orange),):const Text("Tildel vagt", style: TextStyle(color: Colors.green),),
+                          child: TextButton.icon(label: data.get(FieldPath(const ["isAccepted"])) == true ? const Text("Rediger", style: TextStyle(color: Colors.orange),):const Text("Tildel vagt", style: TextStyle(color: Colors.green),),
                         icon: data.get(FieldPath(const ["isAccepted"])) == true ? const Icon(Icons.edit, color: Colors.orange,):const Icon(Icons.add_circle, color: Colors.green,) , onPressed: (){
                         if (data.get(FieldPath(const ["isAccepted"])) == true){
                           // Rediger vagt

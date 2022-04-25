@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
 import 'package:week_of_year/week_of_year.dart';
 
 import '../card_assets.dart';
+import 'edit_shift_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -43,6 +45,15 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+
+  String getDayOfWeek(DateTime date){
+    Intl.defaultLocale = 'da';
+    return DateFormat('EEEE').format(date);
+  }
+
+  void _showSnackBar(BuildContext context, String text, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,16 +155,66 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   return Column(
                     children: snapshot.data!.docs.map((document){
                       if (document['week'] == DateTime.now().weekOfYear) {
-                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Dato: " + document['date']),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: document['isAccepted'] == true ?
-                              Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                              Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
-                              actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                  , child: const Text("OK"))],);});
-                        });
+                        return Slidable(
+                          //key: const ValueKey(0),
+                          endActionPane: ActionPane(
+                            motion: DrawerMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Slet dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke slette den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    document.reference.delete();
+                                    _showSnackBar(context, "Vagt slettet", Colors.green);
+                                  }
+                                },
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                                label: 'Slet',
+                              ),
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Rediger dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                    });});
+                                  }
+                                },
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                                label: 'Rediger',
+                              ),
+                            ],
+                          ),
+                          child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                            showDialog(context: context, builder: (BuildContext context){
+                              return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                content: document['isAccepted'] == true ?
+                                Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                                actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                    , child: const Text("OK"))],);});
+                          }),
+                        );
                       } else {
                         return Container();
                       }
@@ -164,17 +225,66 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                     children: snapshot.data!.docs.map((document){
                       var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
                       if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
-                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 20,), text: document['date'], subtitle: " Se Mere", onPressed: () {
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(title: Text("Dato: " + document['date']),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: document['isAccepted'] == true ?
-                              Text("Status: " + document['status']+ "\n\nDetaljer: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                              Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
-                              actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                  , child: const Text("OK"))],);});
-
-                        });
+                        return Slidable(
+                          //key: const ValueKey(0),
+                          endActionPane: ActionPane(
+                            motion: DrawerMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Slet dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke slette den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    document.reference.delete();
+                                    _showSnackBar(context, "Vagt slettet", Colors.green);
+                                  }
+                                  },
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                                label: 'Slet',
+                              ),
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Rediger dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                    });});
+                                  }
+                                  },
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                                label: 'Rediger',
+                              ),
+                            ],
+                          ),
+                          child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                            showDialog(context: context, builder: (BuildContext context){
+                              return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                content: document['isAccepted'] == true ?
+                                Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                                actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                    , child: const Text("OK"))],);});
+                          }),
+                        );
                       } else {
                         return Container();
                       }

@@ -25,7 +25,7 @@ Future<void> main() async {
       options: FirebaseOptions(apiKey: "AIzaSyBU0I4h6PEocz7ZgT5Eb2FEo0tVSUD-jIM", appId: "1:320368504585:web:d6ecf3729dc524167aedd8", messagingSenderId: "320368504585", projectId: "odinvikar", storageBucket: "odinvikar.appspot.com"),
     );
   } else {
-    Firebase.initializeApp();
+    await Firebase.initializeApp();
   }
 
 

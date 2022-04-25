@@ -38,6 +38,7 @@ class _HomescreenState extends State<Dashboard> {
       ),
       body: SizedBox.expand(
         child: PageView(
+          physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
@@ -67,6 +68,7 @@ class _HomescreenState extends State<Dashboard> {
             topRight: Radius.circular(30.0),
           ),*/
           child: BottomNavigationBar(
+            enableFeedback: false,
             type: BottomNavigationBarType.fixed,
             currentIndex: _currentIndex,
             selectedItemColor: Colors.blue,
