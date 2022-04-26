@@ -182,7 +182,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                         await widget.userRef.doc(widget.date).update({
                           'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment
                         });
-                        Navigator.pop(context);Navigator.pop(context);
+                        Navigator.pop(context);
                         sendEditedShiftNotification(widget.token, widget.date.toString());
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {

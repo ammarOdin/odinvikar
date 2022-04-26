@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:odinvikar/admin/admin_edit_shift.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../card_assets.dart';
+import 'admin_assign_shift.dart';
 
 
 class AdminHomeScreen extends StatefulWidget {
@@ -39,42 +41,28 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  /*Future<List> getNames() async {
-    List<String> userID = [];
-    List<String> userID2 = [];
-    QuerySnapshot usersSnapshot = await usersRef.get();
-    for (var users in usersSnapshot.docs){
-      CollectionReference shiftRef = FirebaseFirestore.instance.collection(users.id);
-      QuerySnapshot shiftSnapshot = await shiftRef.get();
-      for (var shifts in shiftSnapshot.docs){
-        if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-          userID.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-        } else if (shifts.id == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
-          userID2.add(shifts.get(FieldPath(const ['color']))+users.get(FieldPath(const ['phone']))+users.get(FieldPath(const ['name'])));
-        }
-      }
-    }
-    if (_controller.index == 0){
-      return userID;
-    } else if (_controller.index == 1){
-      return userID2;
-    }
-    return [];
-  }*/
+  void _showSnackBar(BuildContext context, String text, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
 
   Future<List> getUserInfo() async {
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
-    List<String> todayList = [];
-    List<String> tomorrowList = [];
+    List<Slidable> todayList = [];
+    List<Slidable> tomorrowList = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
       for (var shifts in shiftRef.docs){
         entireShift.add(shifts.data()['date'] + ";"
             + shifts.data()['status'] + ";"
+            + shifts.data()['color'] + ";"
+            + shifts.data()['time'] + ";"
+            + shifts.data()['comment'] + ";"
             + users.get(FieldPath(const ['phone'])) + ";"
             + users.get(FieldPath(const ['name'])) + ";"
+            + users.get(FieldPath(const ['token'])) + ";"
+            + users.id + ";"
             + shifts.data()['awaitConfirmation'].toString()
         );
       }
@@ -83,9 +71,150 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     for (var shifts in entireShift){
       List shiftSplit = shifts.split(";");
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-        todayList.add(shiftSplit[3]);
+        todayList.add(
+            Slidable(
+              endActionPane: ActionPane(
+                motion: DrawerMotion(),
+                children: [
+                  SlidableAction(onPressed: (BuildContext context) {
+                    if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
+                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        title: Text("Tildel vagt"),
+                        content: const Text("En vagt er allerede tildelt på dagen."),
+                        actions: [
+                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                        ],
+                      );});
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
+                    }
+                  },
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    icon: Icons.add,),
+                  SlidableAction(onPressed: (BuildContext context) {
+                    if (int.parse(shiftSplit[9]) == 0){
+                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        title: Text("Rediger vagt"),
+                        content: const Text("Der er ikke tildelt en vagt. Du kan ikke redigere dagen."),
+                        actions: [
+                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                        ],
+                      );});
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
+                    }
+                  },
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    icon: Icons.edit,),
+                  SlidableAction(onPressed: (BuildContext context) {
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      title: Text("Slet dag"),
+                      content: const Text("Er du sikker på at slette dagen?"),
+                      actions: [
+                        TextButton(onPressed: () {
+                          FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
+                          Navigator.pop(context);
+                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                      ],
+                    );});
+                  },
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,),
+                ],
+              ),
+                child: AdminAvailableShiftCard(text: shiftSplit[6], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                  showDialog(context: context, builder: (BuildContext context){
+                    return SimpleDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      title: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5)),
+                      children: [
+                        Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + shiftSplit[3])),
+                        Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nKommentar: " + shiftSplit[4])),
+                        const Divider(thickness: 1),
+                        Container(
+                          padding: EdgeInsets.only(top: 5),
+                          alignment: Alignment.center,
+                          child: Text("Kontakt", style: TextStyle(fontWeight: FontWeight.bold),),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
+                          ],
+                        ),
+                      ],
+                  );});
+                }))
+        );
       } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
-        tomorrowList.add(shiftSplit[3]);
+        tomorrowList.add(
+            Slidable(
+                endActionPane: ActionPane(
+                  motion: DrawerMotion(),
+                  children: [
+                    SlidableAction(onPressed: (BuildContext context) {
+                      if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          title: Text("Tildel vagt"),
+                          content: const Text("En vagt er allerede tildelt på dagen."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
+                      }
+                    },
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      icon: Icons.add,),
+                    SlidableAction(onPressed: (BuildContext context) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
+                    },
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,),
+                    SlidableAction(onPressed: (BuildContext context) {
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          title: Text("Slet dag"),
+                          content: const Text("Er du sikker på at slette dagen?"),
+                          actions: [
+                            TextButton(onPressed: () {
+                              FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
+                              Navigator.pop(context);
+                              _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                            TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                          ],
+                        );});
+                    },
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,),
+                  ],
+                ),
+                child: AdminAvailableShiftCard(text: shiftSplit[6], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                  showDialog(context: context, builder: (BuildContext context){
+                    return SimpleDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      title: Text("Detaljer"),
+                      children: [
+                        Container(padding: EdgeInsets.only(left: 30), child: Text("\nKan arbejde: " + shiftSplit[3])),
+                        Container(padding: EdgeInsets.only(left: 30), child: Text("\nKommentar: " + shiftSplit[4])),
+                      ],
+                    );});
+                }))
+        );
       }
     }
 
@@ -108,6 +237,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
           color: Colors.blue,
           height: MediaQuery.of(context).size.height / 3,
           child: ListView(
+            physics: ClampingScrollPhysics(),
             children: [
               Container(
                   padding: EdgeInsets.only(
@@ -172,6 +302,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
         Container(
           padding: EdgeInsets.only(top: 10),
           child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
+            IconButton button = IconButton(
+              onPressed: () {
+                setState((){});
+              },
+              color: Colors.blue, icon: Icon(Icons.refresh),
+            );
             if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
               return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
                 color: Colors.blue,
@@ -187,31 +323,40 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 ),),
               );
             }
-            return Column(children: snapshot.data!.map<Widget>((e) => AdminAvailableShiftCard(text: e.substring(18), icon:Icon(Icons.circle, color: Color(int.parse(e.substring(0,10))), size: 20,), subtitle: "Se mere", onPressed: () {
-              showDialog(context: context, builder: (BuildContext context){
-                return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Kontakt - " + e.substring(18)),), children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel://" + e.substring(10,18));},), ),),
-                      SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + e.substring(10,18));},), ),),
-                    ],
-                  ),
-                  const Divider(thickness: 1),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    child: Text("Naviger til kalendersiden for yderligere info."
-                        ""),
-                  ),
-                ],);
-              });
-              }),
-            ).toList());
+            return ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 15, bottom: 5),
+                      child: Text("Opdater", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
+                    ),
+                    Spacer(),
+                    Container(
+                        padding: EdgeInsets.only(right: 10, bottom: 5),
+                        child: button),
+                  ],
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: snapshot.data?.length,
+                    itemBuilder: (context, index){
+                      Slidable shiftCard = snapshot.data?[index];
+                      return Column(
+                        children: <Widget>[
+                          shiftCard
+                        ],
+                      );
+                    }
+                ),
+              ],
+            );
           }),
         ),
       ],
     );
   }
 }
-

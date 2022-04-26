@@ -175,7 +175,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                         'color': '0xFFFF0000',
                         'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
                         'awaitConfirmation': 1});
-                      Navigator.pop(context);Navigator.pop(context);
+                      Navigator.pop(context);
                       sendAssignedShiftNotification(widget.token, widget.date.toString());
                       _showSnackBar(context,"Vagt tildelt", Colors.green);
                     } catch (e) {

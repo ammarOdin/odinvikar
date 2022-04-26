@@ -160,7 +160,6 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                     children: snapshot.data!.docs.map((document){
                       if (document['week'] == DateTime.now().weekOfYear) {
                         return Slidable(
-                          //key: const ValueKey(0),
                           endActionPane: ActionPane(
                             motion: DrawerMotion(),
                             children: [
@@ -224,7 +223,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                                 content: document['isAccepted'] == true ?
                                 Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
                                 actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                     , child: const Text("OK"))],);});
                           }),
@@ -240,7 +239,6 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
                       if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
                         return Slidable(
-                          //key: const ValueKey(0),
                           endActionPane: ActionPane(
                             motion: DrawerMotion(),
                             children: [
@@ -304,7 +302,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                                 content: document['isAccepted'] == true ?
                                 Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontakt på dagen."),
+                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
                                 actions: [TextButton(onPressed: () {Navigator.pop(context);}
                                     , child: const Text("OK"))],);});
                           }),
