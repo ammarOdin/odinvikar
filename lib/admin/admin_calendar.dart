@@ -211,53 +211,43 @@ class _State extends State<AdminCalendar> {
       backgroundColor: Colors.white,
       displacement: 70,
       edgeOffset: 0,
-      child: Scaffold(
-        body: SizedBox(
-          child: ListView(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 1.35,
-                width: MediaQuery.of(context).size.width,
-                child: SfCalendar(
-                  onTap: calendarTapped,
-                  /*loadMoreWidgetBuilder:
-                      (BuildContext context, LoadMoreCallback loadMoreAppointments) {
-                    return FutureBuilder<void>(
-                      future: getFirestoreShift(),
-                      builder: (context, snapShot) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height / 2,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator.adaptive());
-                      },
-                    );
-                  },*/
-                  view: CalendarView.month,
-                  firstDayOfWeek: 1,
-                  showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
-                    startHour: 7,
-                    endHour: 19,
-                    nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(
-                    showAgenda: true,
-                    agendaViewHeight: 150,
-                    agendaItemHeight: 35,
-                    agendaStyle: AgendaStyle(),
-                  ),
-                  //monthCellBuilder: monthCellBuilder,
-                  dataSource: events,
-                  cellBorderColor: Colors.transparent,
-                  selectionDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.blue, width: 2),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    shape: BoxShape.rectangle,),
-                ),
-              ),
-              ],
+      child: Container(
+        padding: EdgeInsets.only(top: 40),
+        child: SfCalendar(
+          onTap: calendarTapped,
+          /*loadMoreWidgetBuilder:
+                        (BuildContext context, LoadMoreCallback loadMoreAppointments) {
+                      return FutureBuilder<void>(
+                        future: getFirestoreShift(),
+                        builder: (context, snapShot) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height / 2,
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator.adaptive());
+                        },
+                      );
+                    },*/
+          view: CalendarView.month,
+          firstDayOfWeek: 1,
+          showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
+            startHour: 7,
+            endHour: 19,
+            nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
+          monthViewSettings: const MonthViewSettings(
+            showAgenda: true,
+            /*agendaViewHeight: 150,
+                      agendaItemHeight: 35,*/
+            agendaStyle: AgendaStyle(),
           ),
+          //monthCellBuilder: monthCellBuilder,
+          dataSource: events,
+          cellBorderColor: Colors.transparent,
+          selectionDecoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(color: Colors.blue, width: 2),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            shape: BoxShape.rectangle,),
         ),
       ),
     );
