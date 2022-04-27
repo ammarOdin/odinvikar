@@ -193,16 +193,26 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                     ],
                                   );});
                                 } else {
-                                  var adminRef = await databaseReference.collection('user').get();
-                                  var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Vil du acceptere vagten?"),
+                                    actions: [
+                                      TextButton(onPressed: () async {
+                                        var adminRef = await databaseReference.collection('user').get();
+                                        var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
 
-                                  document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                                  _showSnackBar(context, "Vagt accepteret", Colors.green);
-                                  for (var admins in adminRef.docs){
-                                    if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                                      sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
-                                    }
-                                  }
+                                        document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                        _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                        for (var admins in adminRef.docs){
+                                          if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                            sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                          }
+                                        }
+                                        Navigator.pop(context);
+                                      }, child: const Text("ACCEPTER", style: TextStyle(color: Colors.green),)) ,
+                                    ],
+                                  );});
                                 }
                               },
                                 backgroundColor: Colors.green,
@@ -285,7 +295,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           endActionPane: ActionPane(
                             motion: DrawerMotion(),
                             children: [
-                              SlidableAction(onPressed: (BuildContext context) async {
+                              SlidableAction(onPressed: (BuildContext context) {
                                 if (document['awaitConfirmation'] == 0){
                                   showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -305,16 +315,26 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                     ],
                                   );});
                                 } else {
-                                  var adminRef = await databaseReference.collection('user').get();
-                                  var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Vil du acceptere vagten?"),
+                                    actions: [
+                                      TextButton(onPressed: () async {
+                                        var adminRef = await databaseReference.collection('user').get();
+                                        var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
 
-                                  document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                                  _showSnackBar(context, "Vagt accepteret", Colors.green);
-                                  for (var admins in adminRef.docs){
-                                    if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                                      sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
-                                    }
-                                  }
+                                        document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                        _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                        for (var admins in adminRef.docs){
+                                          if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                            sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                          }
+                                        }
+                                        Navigator.pop(context);
+                                        }, child: const Text("ACCEPTER", style: TextStyle(color: Colors.green),)) ,
+                                    ],
+                                  );});
                                 }
                               },
                                 backgroundColor: Colors.green,
