@@ -236,8 +236,8 @@ class _State extends State<AdminCalendar> {
             nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
           monthViewSettings: const MonthViewSettings(
             showAgenda: true,
-            /*agendaViewHeight: 150,
-                      agendaItemHeight: 35,*/
+            agendaViewHeight: 150,
+            agendaItemHeight: 35,
             agendaStyle: AgendaStyle(),
           ),
           //monthCellBuilder: monthCellBuilder,

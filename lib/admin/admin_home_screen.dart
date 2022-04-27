@@ -368,7 +368,9 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     itemCount: snapshot.data?.length,
                     itemBuilder: (context, index){
                       Slidable shiftCard = snapshot.data?[index];
-                      return Column(
+                      return ListView(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
                         children: <Widget>[
                           shiftCard
                         ],
