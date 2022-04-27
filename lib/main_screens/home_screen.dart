@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -22,6 +23,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
   User? user = FirebaseAuth.instance.currentUser;
   get shift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false).orderBy('date', descending: false);
   get unsortedShift => FirebaseFirestore.instance.collection(user!.uid).orderBy('month', descending: false);
+  final databaseReference = FirebaseFirestore.instance;
   late TabController _controller;
 
   List months =
@@ -46,10 +48,18 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-
   String getDayOfWeek(DateTime date){
     Intl.defaultLocale = 'da';
     return DateFormat('EEEE').format(date);
+  }
+
+  Future<void> sendAcceptedShiftNotification(String token, String date, String name) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acceptShiftNotif');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date,
+      'name': name,
+    });
   }
 
   void _showSnackBar(BuildContext context, String text, Color color) {
@@ -163,6 +173,61 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           endActionPane: ActionPane(
                             motion: DrawerMotion(),
                             children: [
+                              SlidableAction(onPressed: (BuildContext context) async {
+                                if (document['awaitConfirmation'] == 0){
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Der er ikke tildelt en vagt."),
+                                    actions: [
+                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                    ],
+                                  );});
+                                } else if (document['awaitConfirmation'] == 2) {
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Der er allerede tildelt en vagt."),
+                                    actions: [
+                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                    ],
+                                  );});
+                                } else {
+                                  var adminRef = await databaseReference.collection('user').get();
+                                  var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+
+                                  document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                  _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                  for (var admins in adminRef.docs){
+                                    if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                      sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                    }
+                                  }
+                                }
+                              },
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                icon: Icons.check,),
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Rediger dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                    });});
+                                  }
+                                },
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                              ),
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
@@ -192,28 +257,6 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                 backgroundColor: Colors.red,
                                 foregroundColor: Colors.white,
                                 icon: Icons.delete,
-                                label: 'Slet',
-                              ),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Rediger dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
-                                  } else {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
-                                    });});
-                                  }
-                                },
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                                label: 'Rediger',
                               ),
                             ],
                           ),
@@ -242,6 +285,61 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           endActionPane: ActionPane(
                             motion: DrawerMotion(),
                             children: [
+                              SlidableAction(onPressed: (BuildContext context) async {
+                                if (document['awaitConfirmation'] == 0){
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Der er ikke tildelt en vagt."),
+                                    actions: [
+                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                    ],
+                                  );});
+                                } else if (document['awaitConfirmation'] == 2) {
+                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                    title: Text("Accepter vagt"),
+                                    content: const Text("Der er allerede tildelt en vagt."),
+                                    actions: [
+                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                    ],
+                                  );});
+                                } else {
+                                  var adminRef = await databaseReference.collection('user').get();
+                                  var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+
+                                  document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                  _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                  for (var admins in adminRef.docs){
+                                    if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                      sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                    }
+                                  }
+                                }
+                              },
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                icon: Icons.check,),
+                              SlidableAction(
+                                onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      title: Text("Rediger dag"),
+                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
+                                      actions: [
+                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                                      ],
+                                    );});
+                                  } else {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                    });});
+                                  }
+                                },
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                              ),
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
@@ -267,32 +365,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                       ],
                                     );});
                                   }
-                                  },
+                                },
                                 backgroundColor: Colors.red,
                                 foregroundColor: Colors.white,
                                 icon: Icons.delete,
-                                label: 'Slet',
-                              ),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Rediger dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
-                                  } else {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
-                                    });});
-                                  }
-                                  },
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                                label: 'Rediger',
                               ),
                             ],
                           ),

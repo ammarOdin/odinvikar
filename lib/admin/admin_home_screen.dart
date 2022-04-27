@@ -178,7 +178,18 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       foregroundColor: Colors.white,
                       icon: Icons.add,),
                     SlidableAction(onPressed: (BuildContext context) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
+                      if (int.parse(shiftSplit[9]) == 0){
+                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          title: Text("Rediger vagt"),
+                          content: const Text("Der er ikke tildelt en vagt. Du kan ikke redigere dagen."),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
+                          ],
+                        );});
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
+                      }
                     },
                       backgroundColor: Colors.orange,
                       foregroundColor: Colors.white,
@@ -207,10 +218,22 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Text("Detaljer"),
+                      title: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5)),
                       children: [
-                        Container(padding: EdgeInsets.only(left: 30), child: Text("\nKan arbejde: " + shiftSplit[3])),
-                        Container(padding: EdgeInsets.only(left: 30), child: Text("\nKommentar: " + shiftSplit[4])),
+                        Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + shiftSplit[3])),
+                        Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nKommentar: " + shiftSplit[4])),
+                        const Divider(thickness: 1),
+                        Container(
+                          padding: EdgeInsets.only(top: 5),
+                          alignment: Alignment.center,
+                          child: Text("Kontakt", style: TextStyle(fontWeight: FontWeight.bold),),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
+                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
+                          ],
+                        ),
                       ],
                     );});
                 }))

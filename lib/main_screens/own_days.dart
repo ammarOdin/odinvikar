@@ -169,34 +169,8 @@ class OwnDays extends State<OwnDaysScreen> {
                         });});
                     }
                   },), ),),
-                 /* SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Slet dag", style: TextStyle(color: Colors.red),) , icon: const Icon(Icons.delete, color: Colors.red,), onPressed: (){
-                    if (data.get(FieldPath(const ["isAccepted"])) == true){
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Slet dag"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Vagten er allerede tildelt. Kontakt din leder hvis du ikke kan arbejde."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
-                    } else {
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Slet dag"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Er du sikker på at slette dagen?"),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                            TextButton(onPressed: () {data.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, data.id + " Slettet", Colors.green); setState(() {});}
-                                , child: const Text("Slet"))
-                          ],
-                        );});
-                    }
-                  },), ),),*/
                 ],
               ),
-
             ],);
           });
         }
