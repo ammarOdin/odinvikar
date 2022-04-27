@@ -322,64 +322,68 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
         const Divider(thickness: 1),
 
-        Container(
-          padding: EdgeInsets.only(top: 10),
-          child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
-            IconButton button = IconButton(
-              onPressed: () {
-                setState((){});
-              },
-              color: Colors.blue, icon: Icon(Icons.refresh),
-            );
-            if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-              return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
-                color: Colors.blue,
-                size: 50,
-                //controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1500)),
-              ));
-            } else if (snapshot.data!.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(50),
-                child: const Center(child: Text(
-                  "Ingen vikarer",
-                  style: TextStyle(color: Colors.blue, fontSize: 18),
-                ),),
+        SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(top: 10),
+            child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
+              IconButton button = IconButton(
+                onPressed: () {
+                  setState((){});
+                },
+                color: Colors.blue, icon: Icon(Icons.refresh),
               );
-            }
-            return ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 5),
-                      child: Text("Opdater", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
-                    ),
-                    Spacer(),
-                    Container(
-                        padding: EdgeInsets.only(right: 10, bottom: 5),
-                        child: button),
-                  ],
-                ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (context, index){
-                      Slidable shiftCard = snapshot.data?[index];
-                      return ListView(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          shiftCard
-                        ],
-                      );
-                    }
-                ),
-              ],
-            );
-          }),
+              if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                  color: Colors.blue,
+                  size: 50,
+                  //controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1500)),
+                ));
+              } else if (snapshot.data!.isEmpty) {
+                return Container(
+                  padding: const EdgeInsets.all(50),
+                  child: const Center(child: Text(
+                    "Ingen vikarer",
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),),
+                );
+              }
+              return ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 15, bottom: 5),
+                        child: Text("Opdater", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
+                      ),
+                      Spacer(),
+                      Container(
+                          padding: EdgeInsets.only(right: 10, bottom: 5),
+                          child: button),
+                    ],
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index){
+                        Slidable shiftCard = snapshot.data?[index];
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              shiftCard
+                            ],
+                          ),
+                        );
+                      }
+                  ),
+                ],
+              );
+            }),
+          ),
         ),
       ],
     );
