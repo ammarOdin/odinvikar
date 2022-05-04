@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/main_screens/edit_shift_screen.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
+import 'package:odinvikar/main_screens/own_days_details.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -101,7 +102,9 @@ class OwnDays extends State<OwnDaysScreen> {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
         for (var data in userData.docs){
         if (data.get(FieldPath(const ["date"])) == tapDate){
-          showDialog(context: context, builder: (BuildContext context){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const OwnDaysDetailsScreen()));
+
+          /*showDialog(context: context, builder: (BuildContext context){
             return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
               Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + data.get(FieldPath(const ["time"])))),
               Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nEgen kommentar: " + data.get(FieldPath(const ["comment"])))),
@@ -172,7 +175,7 @@ class OwnDays extends State<OwnDaysScreen> {
                 ],
               ),
             ],);
-          });
+          });*/
         }
       }
     }

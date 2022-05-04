@@ -227,7 +227,7 @@ class _State extends State<SettingsScreen> {
                           }, child: const Text("Send"))
                       ],),
                   );
-                });} , icon: const Icon(Icons.feedback, color: Colors.blue,)),)
+                });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),)
           ],
         ),
 

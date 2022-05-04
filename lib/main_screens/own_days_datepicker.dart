@@ -128,28 +128,14 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
       //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        toolbarHeight: kToolbarHeight + 2,
-        leading: const BackButton(color: Colors.white,),
+        title: Text("Tilføj dag"),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios, size: 20,), onPressed: (){Navigator.pop(context);},)
     ),
       body: ListView(
           physics: ClampingScrollPhysics(),
           padding: const EdgeInsets.only(top: 0),
           shrinkWrap: true,
           children: [
-            Container(
-                  height: MediaQuery.of(context).size.height / 5,
-                  padding: EdgeInsets.only(bottom: 30),
-                  color: Colors.blue,
-                  child: ListView(
-                    padding: EdgeInsets.only(top: 40),
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      Center(
-                        child: Text("Tilføj dag", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-                      ),
-                    ],
-                  ),
-                ),
                 Container(
                   padding: EdgeInsets.only(top: 40, bottom: 10),
                   child: Row(
@@ -207,7 +193,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   ),
                 ),
                 if (isSwitched == false) Container(
-                  padding: EdgeInsets.only(top: 30, bottom: 20),
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
                   child: Row(
                     children: [
                       TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Tidsrum")),
@@ -292,7 +278,8 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                         Container(
                             padding: EdgeInsets.all(15),
                             height: 100,
-                            margin: EdgeInsets.only(left: 50, right: 50, top: 10),
+                            width: 250,
+                            margin: EdgeInsets.only(top: 20),
                             child: ElevatedButton.icon(
                                 style: ButtonStyle(shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
