@@ -94,88 +94,42 @@ class OwnDays extends State<OwnDaysScreen> {
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
     var userData = await databaseReference.collection(user!.uid).get();
-    var userRef = await databaseReference.collection(user!.uid);
-    var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
-    var adminRef = await databaseReference.collection('user').get();
     getDateTap = calendarTapDetails.date!;
 
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
         for (var data in userData.docs){
-        if (data.get(FieldPath(const ["date"])) == tapDate){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const OwnDaysDetailsScreen()));
+        if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) != 0){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+            date: data.id,
+            status: data.get(FieldPath(const ['status'])),
+            time: data.get(FieldPath(const ['time'])),
+            comment: data.get(FieldPath(const ['comment'])),
+            awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+            details: data.get(FieldPath(const ['details'])),
+            color: data.get(FieldPath(const ['color'])),
+            data: data,
 
-          /*showDialog(context: context, builder: (BuildContext context){
-            return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text("Tilgængelig"),), children: [
-              Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + data.get(FieldPath(const ["time"])))),
-              Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nEgen kommentar: " + data.get(FieldPath(const ["comment"])))),
-              const Divider(thickness: 1),
-              Container(
-                padding: EdgeInsets.only(top: 5),
-                alignment: Alignment.center,
-                child: Text("Vagt detaljer", style: TextStyle(fontWeight: FontWeight.bold),),),
-              Container(padding: EdgeInsets.only(left: 30, top: 20), child: Container(child: Text("\nStatus: " + data.get(FieldPath(const ["status"]))))),
-              data.get(FieldPath(const ["isAccepted"])) ? Container(padding: EdgeInsets.only(left: 30), child: Container(child: Text("\nTidsrum: " + data.get(FieldPath(const ["details"]))))) : Container(),
-              const Divider(thickness: 1, height: 50,),
+          ))).then((value) {
+            setState(() {
+              getFirestoreShift();
+            });
+          });
 
-              Row(
-                children: [
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(onPressed: (){
-                    var confirmation = data.get(FieldPath(const ["awaitConfirmation"]));
-                    if(confirmation == 0){
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Accepter vagt"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Du er ikke blevet tildelt en vagt endnu."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
-                    } else if (confirmation == 1){
-                      data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                      Navigator.pop(context);
-                      _showSnackBar(context, "Vagt accepteret", Colors.green);
-                      getFirestoreShift();
-                      for (var admins in adminRef.docs){
-                        if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                          sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), data.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
-                        }
-                      }
-                    } else if (confirmation == 2){
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Accepter vagt"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Vagten er allerede accepteret."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
-                    }
-                  }, icon: Icon(Icons.add_circle, color: Colors.green,), label: Text("Accepter", style: TextStyle(color: Colors.green),)),),),
+        } else if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) == 0){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+            date: data.id,
+            status: data.get(FieldPath(const ['status'])),
+            time: data.get(FieldPath(const ['time'])),
+            comment: data.get(FieldPath(const ['comment'])),
+            awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+            color: data.get(FieldPath(const ['color'])),
+            data: data,
 
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerRight, child: TextButton.icon(label: const Text("Rediger", style: TextStyle(color: Colors.orange),) , icon: const Icon(Icons.edit, color: Colors.orange,), onPressed: (){
-                    if (data.get(FieldPath(const ["isAccepted"])) == true){
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Rediger dag"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Vagten er allerede tildelt. Du kan ikke redigere dagen."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
-                    } else {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: data.get(FieldPath(const ['date'])), userRef: userRef, details: data.get(FieldPath(const ['time']))))).then((value) {
-                        setState(() {
-                          getFirestoreShift();
-                        });});
-                    }
-                  },), ),),
-                ],
-              ),
-            ],);
-          });*/
+          ))).then((value) {
+            setState(() {
+              getFirestoreShift();
+            });
+          });
         }
       }
     }
@@ -227,11 +181,11 @@ class OwnDays extends State<OwnDaysScreen> {
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,
-                    nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
+                    nonWorkingDays: [DateTime.saturday, DateTime.sunday]),
                   monthViewSettings: const MonthViewSettings(
                     showAgenda: true,
                     agendaViewHeight: 100,
-                    agendaItemHeight: 30,),
+                    agendaItemHeight: 35,),
                   //monthCellBuilder: monthCellBuilder,
                   dataSource: events,
                   cellBorderColor: Colors.transparent,
@@ -253,10 +207,10 @@ class OwnDays extends State<OwnDaysScreen> {
                     setState(() {
                     getFirestoreShift();
                   });});
-                  }, icon: const Icon(Icons.add_circle, color: Colors.greenAccent,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
+                  }, icon: const Icon(Icons.add_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        side: const BorderSide(color: Colors.blue)
+                        side: const BorderSide(color: Colors.green),
                     ))),),),
               Container(
                 height: 50,

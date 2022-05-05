@@ -63,7 +63,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             + users.get(FieldPath(const ['name'])) + ";"
             + users.get(FieldPath(const ['token'])) + ";"
             + users.id + ";"
-            + shifts.data()['awaitConfirmation'].toString()
+            + shifts.data()['awaitConfirmation'].toString() + ";"
         );
       }
     }
