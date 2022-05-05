@@ -207,21 +207,24 @@ class OwnDays extends State<OwnDaysScreen> {
                     setState(() {
                     getFirestoreShift();
                   });});
-                  }, icon: const Icon(Icons.add_circle, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ButtonStyle(shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: const BorderSide(color: Colors.green),
-                    ))),),),
+                  }, icon: const Icon(Icons.add_circle_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 16),
+                  primary: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),),),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete, color: Colors.red,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dag")),
-                  style: ButtonStyle(shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: const BorderSide(color: Colors.blue)
-                    )
-                )), ),),
+                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dag")),
+                  style: ElevatedButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 16),
+                    primary: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),),),
             ],
           ),
         ),

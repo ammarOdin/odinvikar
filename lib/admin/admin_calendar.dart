@@ -5,12 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
+import 'package:odinvikar/admin/admin_shift_details.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../main_screens/own_days_details.dart';
 import 'admin_edit_shift.dart';
 
 class AdminCalendar extends StatefulWidget {
@@ -100,7 +102,46 @@ class _State extends State<AdminCalendar> {
         var userRef = await databaseReference.collection(users.id);
         for (var data in userData.docs){
           if (appointmentDetails.eventName == users.get(FieldPath(const ["name"])) && data.get(FieldPath(const ["date"])) == tapDate){
-            showDialog(context: context, builder: (BuildContext context){
+            if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) != 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: data.id,
+                status: data.get(FieldPath(const ['status'])),
+                name: users.get(FieldPath(const ['name'])),
+                token: users.get(FieldPath(const ['token'])),
+                time: data.get(FieldPath(const ['time'])),
+                comment: data.get(FieldPath(const ['comment'])),
+                awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+                details: data.get(FieldPath(const ['details'])),
+                color: data.get(FieldPath(const ['color'])),
+                data: data,
+                userRef: userRef,
+
+              ))).then((value) {
+                setState(() {
+                  getFirestoreShift();
+                });
+              });
+            } else if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) == 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: data.id,
+                status: data.get(FieldPath(const ['status'])),
+                name: users.get(FieldPath(const ['name'])),
+                token: users.get(FieldPath(const ['token'])),
+                time: data.get(FieldPath(const ['time'])),
+                comment: data.get(FieldPath(const ['comment'])),
+                awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+                color: data.get(FieldPath(const ['color'])),
+                data: data,
+                userRef: userRef,
+
+              ))).then((value) {
+                setState(() {
+                  getFirestoreShift();
+                });
+              });
+            }
+
+            /*showDialog(context: context, builder: (BuildContext context){
               return SimpleDialog(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), title: Center(child: Text(data.get(FieldPath(const ["date"])) + " - "+users.get(FieldPath(const ["name"]))),), children: [
                 Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + data.get(FieldPath(const ["time"])))),
                 Container(padding: EdgeInsets.only(left: 30), child: Container(child: Text("\nKommentar: " + data.get(FieldPath(const ["comment"]))))),
@@ -150,10 +191,10 @@ class _State extends State<AdminCalendar> {
                     ],
                   ),
                 ),
-               /* SimpleDialogOption(child: TextButton(onPressed: () {
+               *//* SimpleDialogOption(child: TextButton(onPressed: () {
                   sendAssignedShiftNotification(users.get(FieldPath(const ["token"])));
                 },
-                  child: Text("Test notifikation"),),),*/
+                  child: Text("Test notifikation"),),),*//*
                 const Divider(thickness: 1),
                 Container(
                   padding: EdgeInsets.only(top: 5),
@@ -167,7 +208,7 @@ class _State extends State<AdminCalendar> {
                   ],
                 ),
               ],);
-            });
+            });*/
           }
         }
       }

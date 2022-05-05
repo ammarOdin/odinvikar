@@ -45,6 +45,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: kToolbarHeight + 2,
         backgroundColor: Colors.blue,
       leading: BackButton(color: Colors.white),
     ),
@@ -156,12 +157,13 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
             height: 100,
             margin: EdgeInsets.only(left: 50, right: 50, top: 30),
             child: ElevatedButton.icon(
-                style: ButtonStyle(shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(color: Colors.blue)
-                    )
-                )),
+                style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 16),
+                  primary: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
                 onPressed: () async {
                   var comment = commentController.text;
                   if (commentController.text == "" || commentController.text.isEmpty){
@@ -183,7 +185,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                     }
                   }
                 },
-                icon: Icon(Icons.add_circle),
+                icon: Icon(Icons.add_circle_outline),
                 label: Text("Tildel vagt", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
       ],
     ),
