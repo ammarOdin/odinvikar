@@ -27,6 +27,14 @@ class _HomescreenState extends State<Dashboard> {
     super.dispose();
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      _pageController.animateToPage(index,
+          duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,10 +81,7 @@ class _HomescreenState extends State<Dashboard> {
             currentIndex: _currentIndex,
             selectedItemColor: Colors.blue,
             unselectedItemColor: Colors.grey,
-            onTap: (index) {
-              setState(() => _currentIndex = index);
-              _pageController.jumpToPage(index);
-            },
+            onTap: _onItemTapped,
             items: const [
               BottomNavigationBarItem(
                   label: 'Oversigt',

@@ -69,163 +69,116 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: ClampingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 0),
-      shrinkWrap: true,
-      children: [
-        Container(
-          color: Colors.blue,
-          height: MediaQuery.of(context).size.height / 3,
-          child: ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 30),
-                  child: const Center(
+    return Scaffold(
+      body: ListView(
+        physics: ClampingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 0),
+        shrinkWrap: true,
+        children: [
+          Container(
+            color: Colors.blue,
+            height: MediaQuery.of(context).size.height / 3,
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 30),
+                    child: const Center(
+                        child: Text(
+                          "Dine dage",
+                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                        ))),
+                Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 40),
+                    child: Center(
                       child: Text(
-                        "Dine dage",
-                        style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
-                      ))),
-              Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 40),
-                  child: Center(
-                    child: Text(
-                      DateFormat('dd-MM-yyyy').format(DateTime.now()),
-                      style: const TextStyle(color: Colors.white, fontSize: 26),
-                    ),
-                  )
+                        DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                        style: const TextStyle(color: Colors.white, fontSize: 26),
+                      ),
+                    )
+                ),
+              ],
+            ),
+          ),
+          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Måned"), Tab(text: "Uge",)])),
+
+          Row(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                  ),
+                  Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.red, size: 16,),
+                  ),
+                  Text(" Afventer accept", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                  ),
+                  Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
+                ],
               ),
             ],
           ),
-        ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Måned"), Tab(text: "Uge",)])),
 
-        Row(
-          children: [
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.circle, color: Colors.orange, size: 16,),
-                ),
-                Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.circle, color: Colors.red, size: 16,),
-                ),
-                Text(" Afventer accept", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.circle, color: Colors.green, size: 16,),
-                ),
-                Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-          ],
-        ),
+          const Divider(thickness: 1),
 
-        const Divider(thickness: 1),
+          if (_controller.index == 0) Container(
+              padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+              child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+          if (_controller.index == 1) Container(
+              padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+              child: Text("Uge " + DateTime.now().weekOfYear.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
 
-        if (_controller.index == 0) Container(
-            padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-            child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
-        if (_controller.index == 1) Container(
-            padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-            child: Text("Uge " + DateTime.now().weekOfYear.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
-
-        Container(
-          padding: EdgeInsets.only(top: 10),
-          child: StreamBuilder(
-              stream: unsortedShift.snapshots() ,
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if (!snapshot.hasData){
-                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
-                    color: Colors.blue,
-                    size: 50,
-                  ));
-                }else if (snapshot.data!.docs.isEmpty){
-                  return Container(
-                    padding: const EdgeInsets.all(50),
-                    child: const Center(child: Text(
-                      "Ingen Vagter",
-                      style: TextStyle(color: Colors.blue, fontSize: 18),
-                    ),),
-                  );
-                }
-                if (_controller.index == 1){
-                  return Column(
-                    children: snapshot.data!.docs.map((document){
-                      if (document['week'] == DateTime.now().weekOfYear) {
-                        return Slidable(
-                          endActionPane: ActionPane(
-                            motion: DrawerMotion(),
-                            children: [
-                              SlidableAction(onPressed: (BuildContext context) async {
-                                if (document['awaitConfirmation'] == 0){
-                                  Fluttertoast.showToast(
-                                      msg: "Der er ikke tildelt en vagt.",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0
-                                  );
-                                } else if (document['awaitConfirmation'] == 2) {
-                                  Fluttertoast.showToast(
-                                      msg: "Der er allerede tildelt en vagt.",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0
-                                  );
-                                } else {
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Vil du acceptere vagten?"),
-                                    actions: [
-                                      TextButton(onPressed: () async {
-                                        var adminRef = await databaseReference.collection('user').get();
-                                        var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
-
-                                        document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                                        _showSnackBar(context, "Vagt accepteret", Colors.green);
-                                        for (var admins in adminRef.docs){
-                                          if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                                            sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
-                                          }
-                                        }
-                                        Navigator.pop(context);
-                                      }, child: const Text("ACCEPTER", style: TextStyle(color: Colors.green),)) ,
-                                    ],
-                                  );});
-                                }
-                              },
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                icon: Icons.check,),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+          Container(
+            padding: EdgeInsets.only(top: 10),
+            child: StreamBuilder(
+                stream: unsortedShift.snapshots() ,
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                  if (!snapshot.hasData){
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                      color: Colors.blue,
+                      size: 50,
+                    ));
+                  }else if (snapshot.data!.docs.isEmpty){
+                    return Container(
+                      padding: const EdgeInsets.all(50),
+                      child: const Center(child: Text(
+                        "Ingen Vagter",
+                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                      ),),
+                    );
+                  }
+                  if (_controller.index == 1){
+                    return Column(
+                      children: snapshot.data!.docs.map((document){
+                        if (document['week'] == DateTime.now().weekOfYear) {
+                          return Slidable(
+                            endActionPane: ActionPane(
+                              motion: DrawerMotion(),
+                              children: [
+                                SlidableAction(onPressed: (BuildContext context) async {
+                                  if (document['awaitConfirmation'] == 0){
                                     Fluttertoast.showToast(
-                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                        msg: "Der er ikke tildelt en vagt.",
                                         toastLength: Toast.LENGTH_LONG,
                                         gravity: ToastGravity.BOTTOM,
                                         timeInSecForIosWeb: 2,
@@ -233,20 +186,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                         textColor: Colors.white,
                                         fontSize: 16.0
                                     );
-                                  } else {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
-                                    });});
-                                  }
-                                },
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                              ),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                  } else if (document['awaitConfirmation'] == 2) {
                                     Fluttertoast.showToast(
-                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                        msg: "Der er allerede tildelt en vagt.",
                                         toastLength: Toast.LENGTH_LONG,
                                         gravity: ToastGravity.BOTTOM,
                                         timeInSecForIosWeb: 2,
@@ -257,101 +199,112 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                   } else {
                                     showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Slet dag"),
-                                      content: const Text("Er du sikker på at slette dagen?"),
+                                      title: Text("Accepter vagt"),
+                                      content: const Text("Vil du acceptere vagten?"),
                                       actions: [
-                                        TextButton(onPressed: () {
-                                          document.reference.delete();
-                                          Navigator.pop(context);
-                                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
-                                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
-                                      ],
-                                    );});
-                                  }
-                                },
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                              ),
-                            ],
-                          ),
-                          child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                            showDialog(context: context, builder: (BuildContext context){
-                              return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: document['isAccepted'] == true ?
-                                Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
-                                actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                    , child: const Text("OK"))],);});
-                          }),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }).toList(),
-                  );
-                } else if (_controller.index == 0){
-                  return Column(
-                    children: snapshot.data!.docs.map((document){
-                      var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
-                      if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
-                        return Slidable(
-                          endActionPane: ActionPane(
-                            motion: DrawerMotion(),
-                            children: [
-                              SlidableAction(onPressed: (BuildContext context) {
-                                if (document['awaitConfirmation'] == 0){
-                                  Fluttertoast.showToast(
-                                      msg: "Der er ikke tildelt en vagt.",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0
-                                  );
-                                } else if (document['awaitConfirmation'] == 2) {
-                                  Fluttertoast.showToast(
-                                      msg: "Der er allerede tildelt en vagt.",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0
-                                  );
-                                } else {
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Vil du acceptere vagten?"),
-                                    actions: [
-                                      TextButton(onPressed: () async {
-                                        var adminRef = await databaseReference.collection('user').get();
-                                        var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+                                        TextButton(onPressed: () async {
+                                          var adminRef = await databaseReference.collection('user').get();
+                                          var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
 
-                                        document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                                        _showSnackBar(context, "Vagt accepteret", Colors.green);
-                                        for (var admins in adminRef.docs){
-                                          if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                                            sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                          document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                          _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                          for (var admins in adminRef.docs){
+                                            if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                              sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                            }
                                           }
-                                        }
-                                        Navigator.pop(context);
+                                          Navigator.pop(context);
                                         }, child: const Text("ACCEPTER", style: TextStyle(color: Colors.green),)) ,
-                                    ],
-                                  );});
-                                }
-                              },
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                icon: Icons.check,),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                      ],
+                                    );});
+                                  }
+                                },
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.check,),
+                                SlidableAction(
+                                  onPressed: (BuildContext context) {
+                                    if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                      Fluttertoast.showToast(
+                                          msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 2,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    } else {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                      });});
+                                    }
+                                  },
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.edit,
+                                ),
+                                SlidableAction(
+                                  onPressed: (BuildContext context) {
+                                    if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                      Fluttertoast.showToast(
+                                          msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 2,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    } else {
+                                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                        title: Text("Slet dag"),
+                                        content: const Text("Er du sikker på at slette dagen?"),
+                                        actions: [
+                                          TextButton(onPressed: () {
+                                            document.reference.delete();
+                                            Navigator.pop(context);
+                                            _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                                          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                                        ],
+                                      );});
+                                    }
+                                  },
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                ),
+                              ],
+                            ),
+                            child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                              showDialog(context: context, builder: (BuildContext context){
+                                return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  content: document['isAccepted'] == true ?
+                                  Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                                  Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
+                                  actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                      , child: const Text("OK"))],);});
+                            }),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    );
+                  } else if (_controller.index == 0){
+                    return Column(
+                      children: snapshot.data!.docs.map((document){
+                        var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
+                        if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
+                          return Slidable(
+                            endActionPane: ActionPane(
+                              motion: DrawerMotion(),
+                              children: [
+                                SlidableAction(onPressed: (BuildContext context) {
+                                  if (document['awaitConfirmation'] == 0){
                                     Fluttertoast.showToast(
-                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                        msg: "Der er ikke tildelt en vagt.",
                                         toastLength: Toast.LENGTH_LONG,
                                         gravity: ToastGravity.BOTTOM,
                                         timeInSecForIosWeb: 2,
@@ -359,20 +312,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                         textColor: Colors.white,
                                         fontSize: 16.0
                                     );
-                                  } else {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
-                                    });});
-                                  }
-                                },
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                              ),
-                              SlidableAction(
-                                onPressed: (BuildContext context) {
-                                  if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                  } else if (document['awaitConfirmation'] == 2) {
                                     Fluttertoast.showToast(
-                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                        msg: "Der er allerede tildelt en vagt.",
                                         toastLength: Toast.LENGTH_LONG,
                                         gravity: ToastGravity.BOTTOM,
                                         timeInSecForIosWeb: 2,
@@ -383,46 +325,106 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                   } else {
                                     showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Slet dag"),
-                                      content: const Text("Er du sikker på at slette dagen?"),
+                                      title: Text("Accepter vagt"),
+                                      content: const Text("Vil du acceptere vagten?"),
                                       actions: [
-                                        TextButton(onPressed: () {
-                                          document.reference.delete();
+                                        TextButton(onPressed: () async {
+                                          var adminRef = await databaseReference.collection('user').get();
+                                          var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+
+                                          document.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                                          _showSnackBar(context, "Vagt accepteret", Colors.green);
+                                          for (var admins in adminRef.docs){
+                                            if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                              sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), document.get(FieldPath(const ["date"])), userNameRef.get(FieldPath(const ["name"])));
+                                            }
+                                          }
                                           Navigator.pop(context);
-                                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
-                                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                                          }, child: const Text("ACCEPTER", style: TextStyle(color: Colors.green),)) ,
                                       ],
                                     );});
                                   }
                                 },
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                              ),
-                            ],
-                          ),
-                          child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                            showDialog(context: context, builder: (BuildContext context){
-                              return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: document['isAccepted'] == true ?
-                                Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
-                                actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                    , child: const Text("OK"))],);});
-                          }),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }).toList(),
-                  );
-                } else {
-                  return Container();
-                }
-              }),
-        ),
-      ],
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.check,),
+                                SlidableAction(
+                                  onPressed: (BuildContext context) {
+                                    if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                      Fluttertoast.showToast(
+                                          msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 2,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    } else {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
+                                      });});
+                                    }
+                                  },
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.edit,
+                                ),
+                                SlidableAction(
+                                  onPressed: (BuildContext context) {
+                                    if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
+                                      Fluttertoast.showToast(
+                                          msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 2,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    } else {
+                                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                        title: Text("Slet dag"),
+                                        content: const Text("Er du sikker på at slette dagen?"),
+                                        actions: [
+                                          TextButton(onPressed: () {
+                                            document.reference.delete();
+                                            Navigator.pop(context);
+                                            _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                                          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
+                                        ],
+                                      );});
+                                    }
+                                  },
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                ),
+                              ],
+                            ),
+                            child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                              showDialog(context: context, builder: (BuildContext context){
+                                return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  content: document['isAccepted'] == true ?
+                                  Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
+                                  Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
+                                  actions: [TextButton(onPressed: () {Navigator.pop(context);}
+                                      , child: const Text("OK"))],);});
+                            }),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
