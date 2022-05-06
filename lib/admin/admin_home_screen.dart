@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_edit_shift.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,14 +79,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 children: [
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        title: Text("Tildel vagt"),
-                        content: const Text("En vagt er allerede tildelt på dagen."),
-                        actions: [
-                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                        ],
-                      );});
+                      Fluttertoast.showToast(
+                          msg: "En vagt er allerede tildelt.",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
                     }
@@ -95,14 +97,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.add,),
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 0){
-                      showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        title: Text("Rediger vagt"),
-                        content: const Text("Der er ikke tildelt en vagt. Du kan ikke redigere dagen."),
-                        actions: [
-                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                        ],
-                      );});
+                      Fluttertoast.showToast(
+                          msg: "Der er ikke tildelt en vagt endnu. Du kan ikke redigere dagen.",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
                     }
@@ -162,14 +165,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   children: [
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          title: Text("Tildel vagt"),
-                          content: const Text("En vagt er allerede tildelt på dagen."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
+                        Fluttertoast.showToast(
+                            msg: "En vagt er allerede tildelt.",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
                       }
@@ -179,14 +183,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.add,),
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 0){
-                        showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          title: Text("Rediger vagt"),
-                          content: const Text("Der er ikke tildelt en vagt. Du kan ikke redigere dagen."),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                          ],
-                        );});
+                        Fluttertoast.showToast(
+                            msg: "Der er ikke tildelt en vagt endnu. Du kan ikke redigere den.",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
                       }

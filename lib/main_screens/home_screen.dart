@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:week_of_year/week_of_year.dart';
@@ -175,23 +176,25 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               SlidableAction(onPressed: (BuildContext context) async {
                                 if (document['awaitConfirmation'] == 0){
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Der er ikke tildelt en vagt."),
-                                    actions: [
-                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                    ],
-                                  );});
+                                  Fluttertoast.showToast(
+                                      msg: "Der er ikke tildelt en vagt.",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 2,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
                                 } else if (document['awaitConfirmation'] == 2) {
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Der er allerede tildelt en vagt."),
-                                    actions: [
-                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                    ],
-                                  );});
+                                  Fluttertoast.showToast(
+                                      msg: "Der er allerede tildelt en vagt.",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 2,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
                                 } else {
                                   showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -221,14 +224,15 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Rediger dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
+                                    Fluttertoast.showToast(
+                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
                                   } else {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
                                     });});
@@ -241,14 +245,15 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Slet dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke slette den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
+                                    Fluttertoast.showToast(
+                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
                                   } else {
                                     showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -297,23 +302,25 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               SlidableAction(onPressed: (BuildContext context) {
                                 if (document['awaitConfirmation'] == 0){
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Der er ikke tildelt en vagt."),
-                                    actions: [
-                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                    ],
-                                  );});
+                                  Fluttertoast.showToast(
+                                      msg: "Der er ikke tildelt en vagt.",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 2,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
                                 } else if (document['awaitConfirmation'] == 2) {
-                                  showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    title: Text("Accepter vagt"),
-                                    content: const Text("Der er allerede tildelt en vagt."),
-                                    actions: [
-                                      TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                    ],
-                                  );});
+                                  Fluttertoast.showToast(
+                                      msg: "Der er allerede tildelt en vagt.",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 2,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
                                 } else {
                                   showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -343,14 +350,15 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Rediger dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke redigere den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
+                                    Fluttertoast.showToast(
+                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke redigere den.",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
                                   } else {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: document['date'], userRef: FirebaseFirestore.instance.collection(user!.uid), details: document['time']))).then((value) {setState(() {
                                     });});
@@ -363,14 +371,15 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               SlidableAction(
                                 onPressed: (BuildContext context) {
                                   if (document['awaitConfirmation'] == 1 || document['awaitConfirmation'] == 2){
-                                    showDialog(context: context, builder: (BuildContext context){return AlertDialog(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      title: Text("Slet dag"),
-                                      content: const Text("En vagt er tildelt på dagen. Du kan ikke slette den."),
-                                      actions: [
-                                        TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                      ],
-                                    );});
+                                    Fluttertoast.showToast(
+                                        msg: "Der er tildelt en vagt på dagen. Du kan ikke slette den.",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
                                   } else {
                                     showDialog(context: context, builder: (BuildContext context){return AlertDialog(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
