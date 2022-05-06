@@ -24,6 +24,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   final databaseReference = FirebaseFirestore.instance;
 
+  late String time;
+  late String comment;
+
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
 
@@ -48,6 +51,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   @override
   void initState() {
+    time = widget.time;
+    comment = widget.comment;
     super.initState();
   }
 
@@ -71,13 +76,11 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
               );
             } else {
               var userRef = await databaseReference.collection(user!.uid);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time))).then((value) {
-                setState(() {
-                  widget.date;
-                  widget.status;
-                  widget.time;
-                  widget.comment;
-                });});
+              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
+              setState(() {
+                time = result[0];
+                comment = result[1];
+              });
             }
           }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
         ],
@@ -144,7 +147,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: Text("Kan arbejde", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                    Container(child: Text(widget.time, style: TextStyle(color: Colors.grey),))
+                    Container(child: Text(time, style: TextStyle(color: Colors.grey),))
                   ],
                 )
               ],
@@ -166,7 +169,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                         child: Text("Egen kommentar", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                     Container(
                         width: MediaQuery.of(context).size.width/1.2,
-                        child: Text(widget.comment, style: TextStyle(color: Colors.grey),))
+                        child: Text(comment, style: TextStyle(color: Colors.grey),))
                   ],
                 )
               ],
@@ -225,12 +228,35 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 ),
               ],
             ),
-          ) else Container(),
+          ) else Container(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 50),
+            height: 100,
+            width: 250,
+            child: ElevatedButton.icon(
+                onPressed: () async {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(title: Text("Slet dag"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      content: Text("Er du sikker på at slette dagen?"),
+                      actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  _showSnackBar(context, "Vagt slettet", Colors.green);}
+                          , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                },
+                style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 16),
+                  primary: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
+                label: Text("Slet dag")),
+          ),
 
           // Accept button
           if (widget.awaitConfirmation == 1) Container(
-            padding: EdgeInsets.only(left: 70, right: 70, top: 50),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 50),
             height: 100,
+            width: 250,
             child: ElevatedButton.icon(
                 onPressed: () async {
                   widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
@@ -248,7 +274,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   textStyle: const TextStyle(fontSize: 16),
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 icon: Icon(Icons.check, color: Colors.white, size: 18,),

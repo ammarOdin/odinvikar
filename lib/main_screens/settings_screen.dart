@@ -239,7 +239,7 @@ class _State extends State<SettingsScreen> {
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
           child: ElevatedButton.icon(onPressed: () {showContactInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   side: const BorderSide(color: Colors.blue)
               )
           )),),),
@@ -250,7 +250,7 @@ class _State extends State<SettingsScreen> {
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); _showSnackBar(context, "Logget ud", Colors.grey); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   side: const BorderSide(color: Colors.blue)
               )
           )),),),

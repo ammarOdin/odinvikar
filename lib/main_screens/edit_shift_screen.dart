@@ -38,7 +38,7 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         toolbarHeight: kToolbarHeight + 2,
-        leading: BackButton(color: Colors.white),
+        leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),)
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),
@@ -176,16 +176,19 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
 
           Container(
               padding: EdgeInsets.all(15),
-              height: 100,
-              margin: EdgeInsets.only(left: 50, right: 50, top: 30),
+              height: 80,
+              width: 250,
+              margin: EdgeInsets.only(top: 20),
               child: ElevatedButton.icon(
-                  style: ButtonStyle(shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          side: const BorderSide(color: Colors.blue)
-                      )
-                  )),
+                  style: ElevatedButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 16),
+                    primary: Colors.orange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () async {
+                    List<String> stateUpdater = [];
                     var comment = commentController.text;
                     var timeRange = '';
                     var starting = startTime.format(context);
@@ -206,15 +209,16 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
                           'time': timeRange,
                           'comment': comment
                         });
-                        Navigator.pop(context);
+                        stateUpdater.add(timeRange); stateUpdater.add(comment);
+                        Navigator.pop(context, stateUpdater);
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
                         _showSnackBar(context, "Fejl", Colors.red);
                       }
                     }
                   },
-                  icon: Icon(Icons.edit),
-                  label: Text("Rediger vagt", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                  icon: Icon(Icons.edit_outlined),
+                  label: Text("Rediger vagt", style: TextStyle(fontSize: 18),))),
         ],
       ),
     );

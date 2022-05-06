@@ -277,16 +277,17 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   //Spacer(),
                         Container(
                             padding: EdgeInsets.all(15),
-                            height: 100,
+                            height: 80,
                             width: 250,
                             margin: EdgeInsets.only(top: 20),
                             child: ElevatedButton.icon(
-                                style: ButtonStyle(shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        side: const BorderSide(color: Colors.blue)
-                                    )
-                                )),
+                                style: ElevatedButton.styleFrom(
+                                  textStyle: const TextStyle(fontSize: 16),
+                                  primary: Colors.green,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                                 onPressed: () async {
                                   final f = DateFormat('dd-MM-yyyy');
                                   var pickedDate = f.format(_pickedDay!);
@@ -318,7 +319,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                     }
                                   });
                                 },
-                                icon: Icon(Icons.add_circle),
+                                icon: Icon(Icons.add_circle_outline),
                                 label: Text("Tilføj dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
               ]
           ),

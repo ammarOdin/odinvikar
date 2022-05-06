@@ -211,7 +211,7 @@ class OwnDays extends State<OwnDaysScreen> {
                   textStyle: const TextStyle(fontSize: 16),
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),),),
               Container(
@@ -222,7 +222,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     textStyle: const TextStyle(fontSize: 16),
                     primary: Colors.red,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),),),
             ],

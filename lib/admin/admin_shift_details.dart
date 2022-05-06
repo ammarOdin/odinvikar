@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
-import 'package:odinvikar/shift_system%20%5Binactive%5D/admin/admin_add_shift.dart';
 
 import 'admin_edit_shift.dart';
 
@@ -26,6 +25,11 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
 
+  late String status;
+  late String? details ;
+  late String color ;
+  late String awaitConfirmation ;
+
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -39,6 +43,10 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
 
   @override
   void initState() {
+    status = widget.status;
+    details = widget.details;
+    color = widget.color;
+    awaitConfirmation = widget.awaitConfirmation.toString();
     super.initState();
   }
 
@@ -50,10 +58,23 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
         title: Text(widget.name + "'s vagt"),
         actions: [
           IconButton(onPressed: () async {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token))).then((value) {
+            if (awaitConfirmation != "0"){
+              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
               setState(() {
+                details = result[0];
+              });
+            } else {
+              Fluttertoast.showToast(
+                  msg: "Der er ikke tildelt en vagt endnu.",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
 
-              });});
           }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
@@ -99,7 +120,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                     Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: Text("Status", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                    Container(child: Text(widget.status, style: TextStyle(color: Color(int.parse(widget.color)), fontWeight: FontWeight.w500),))
+                    Container(child: Text(status, style: TextStyle(color: Color(int.parse(color)), fontWeight: FontWeight.w500),))
                   ],
                 )
               ],
@@ -148,7 +169,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
             ),
           ),
 
-          if (widget.awaitConfirmation == 1 || widget.awaitConfirmation == 2) Container(
+          if (awaitConfirmation == "1" || awaitConfirmation == "2") Container(
             padding: EdgeInsets.only(top: 20),
             child: ListView(
               shrinkWrap: true,
@@ -170,7 +191,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           Container(
                               padding: EdgeInsets.only(bottom: 5),
                               child: Text("Tidsrum", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                          Container(child: Text(widget.details!.substring(0,11), style: TextStyle(color: Colors.grey),))
+                          Container(child: Text(details!.substring(0,11), style: TextStyle(color: Colors.grey),))
                         ],
                       )
                     ],
@@ -192,7 +213,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                               child: Text("Detaljer", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                           Container(
                               width: MediaQuery.of(context).size.width/1.2,
-                              child: Text(widget.details!.substring(22), style: TextStyle(color: Colors.grey),))
+                              child: Text(details!.substring(22), style: TextStyle(color: Colors.grey),))
                         ],
                       )
                     ],
@@ -203,54 +224,64 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
           ) else Container(),
 
           // Accept button
-          if (widget.awaitConfirmation == 0) Row(
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 50, top: 50),
-                height: 100,
-                child: ElevatedButton.icon(
-                    onPressed: () async {
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(title: Text("Slet dag"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                          actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
-                              , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 16),
-                      primary: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                    label: Text("Slet vagt")),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20, top: 50),
-                height: 100,
-                child: ElevatedButton.icon(
-                    onPressed: () async {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: widget.date, token: widget.token, userRef: widget.userRef))).then((value) {
+          if (awaitConfirmation == "0") Container(
+            padding: EdgeInsets.only(left: 5, top: 50),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  height: 80,
+                  width: 200,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: widget.date, token: widget.token, userRef: widget.userRef)));
                         setState(() {
-
-                        });});
-                    },
-                    style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 16),
-                      primary: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
+                          details = result[0];
+                          status = result[1];
+                          color = result[2];
+                          awaitConfirmation = result[3];
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ),
-                    icon: Icon(Icons.check, color: Colors.white, size: 18,),
-                    label: Text("Tildel vagt")),
-              ),
-            ],
+                      icon: Icon(Icons.check, color: Colors.white, size: 18,),
+                      label: Text("Tildel vagt")),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20, left: 5),
+                  height: 80,
+                  width: 200,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Slet dag"),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
+                            actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                                , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
+                      label: Text("Slet vagt")),
+                ),
+
+              ],
+            ),
           ) else Container(
-            padding: EdgeInsets.only(left: 70, right: 70, top: 50),
+            padding: EdgeInsets.only(left: 15, right: 15, top: 50),
             height: 100,
+            width: 250,
             child: ElevatedButton.icon(
                 onPressed: () async {
                   showDialog(context: context, builder: (BuildContext context){
@@ -264,7 +295,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                   textStyle: const TextStyle(fontSize: 16),
                   primary: Colors.red,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),

@@ -45,29 +45,15 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: kToolbarHeight + 2,
         backgroundColor: Colors.blue,
-      leading: BackButton(color: Colors.white),
+      title: Text("Tildel vagt"),
+      leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),),
     ),
     body: ListView(
       physics: ClampingScrollPhysics(),
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       children: [
-        Container(
-          height: MediaQuery.of(context).size.height / 4,
-          padding: EdgeInsets.only(bottom: 30),
-          color: Colors.blue,
-          child: ListView(
-            padding: EdgeInsets.only(top: 40),
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              Center(
-                child: Text("Tildel vagt", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-              ),
-            ],
-          ),
-        ),
         Container(
           padding: EdgeInsets.only(top: 30, bottom: 20),
           child: Row(
@@ -153,18 +139,19 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
           ),),
 
         Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.only(top: 50, right: 15, left: 15),
             height: 100,
-            margin: EdgeInsets.only(left: 50, right: 50, top: 30),
+            width: 250,
             child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 16),
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 onPressed: () async {
+                  List <String> stateUpdater = [];
                   var comment = commentController.text;
                   if (commentController.text == "" || commentController.text.isEmpty){
                     comment = "Ingen";
@@ -177,7 +164,11 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                         'color': '0xFFFF0000',
                         'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
                         'awaitConfirmation': 1});
-                      Navigator.pop(context);
+                      stateUpdater.add(startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment);
+                      stateUpdater.add('Afventer accept');
+                      stateUpdater.add('0xFFFF0000');
+                      stateUpdater.add("1");
+                      Navigator.pop(context, stateUpdater);
                       sendAssignedShiftNotification(widget.token, widget.date.toString());
                       _showSnackBar(context,"Vagt tildelt", Colors.green);
                     } catch (e) {
@@ -186,7 +177,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                   }
                 },
                 icon: Icon(Icons.add_circle_outline),
-                label: Text("Tildel vagt", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                label: Text("Tildel vagt", style: TextStyle(fontSize: 18),))),
       ],
     ),
     );

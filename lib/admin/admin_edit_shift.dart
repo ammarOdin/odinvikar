@@ -47,7 +47,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         toolbarHeight: kToolbarHeight + 2,
-        leading: BackButton(color: Colors.white),
+        leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),)
       ),
       body: ListView(
         //physics: ClampingScrollPhysics(),
@@ -162,17 +162,18 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
             ),),
 
           Container(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.only(top: 50, left: 15, right: 15),
               height: 100,
-              margin: EdgeInsets.only(left: 50, right: 50, top: 30),
               child: ElevatedButton.icon(
-                  style: ButtonStyle(shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          side: const BorderSide(color: Colors.blue)
-                      )
-                  )),
+                  style: ElevatedButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 16),
+                    primary: Colors.orange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () async {
+                    List <String> stateUpdater = [];
                     var comment = commentController.text;
                     if (commentController.text == "" || commentController.text.isEmpty){
                       comment = "Ingen";
@@ -182,7 +183,8 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                         await widget.userRef.doc(widget.date).update({
                           'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment
                         });
-                        Navigator.pop(context);
+                        stateUpdater.add(startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment);
+                        Navigator.pop(context, stateUpdater);
                         sendEditedShiftNotification(widget.token, widget.date.toString());
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
@@ -190,8 +192,8 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                       }
                     }
                   },
-                  icon: Icon(Icons.edit),
-                  label: Text("Rediger vagt", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+                  icon: Icon(Icons.edit_outlined),
+                  label: Text("Rediger vagt", style: TextStyle(fontSize: 18),))),
         ],
       ),
     );
