@@ -223,15 +223,16 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
             ),
           ) else Container(),
 
-          // Accept button
+          // Assign/Delete shift button
           if (awaitConfirmation == "0") Container(
             padding: EdgeInsets.only(left: 5, top: 50),
             child: Row(
               children: [
+                // Assign
                 Container(
                   padding: EdgeInsets.only(top: 20, bottom: 20),
                   height: 80,
-                  width: 200,
+                  width: MediaQuery.of(context).size.width / 2-2.5,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: widget.date, token: widget.token, userRef: widget.userRef)));
@@ -252,10 +253,11 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                       icon: Icon(Icons.check, color: Colors.white, size: 18,),
                       label: Text("Tildel vagt")),
                 ),
+                // Delete
                 Container(
-                  padding: EdgeInsets.only(top: 20, bottom: 20, left: 5),
+                  padding: EdgeInsets.only(top: 20, bottom: 20, right: 5, left: 5),
                   height: 80,
-                  width: 200,
+                  width: MediaQuery.of(context).size.width / 2-2.5,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         showDialog(context: context, builder: (BuildContext context){
