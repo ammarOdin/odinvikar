@@ -251,7 +251,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      icon: Icon(Icons.check, color: Colors.white, size: 18,),
+                      icon: Icon(Icons.add, color: Colors.white, size: 18,),
                       label: Text("Tildel vagt")),
                 ),
                 // Delete

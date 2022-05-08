@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,7 +52,7 @@ class _LoginState extends State<LoginScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: ListView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [
@@ -89,14 +91,27 @@ class _LoginState extends State<LoginScreen> {
                   margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
                   child: ElevatedButton.icon(onPressed: () async {
                     if (_key.currentState!.validate()){
+                      showDialog(barrierDismissible: false, context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          content: SpinKitFoldingCube(
+                            color: Colors.blue,
+                          ),
+                        );
+                      });
                       try{
                         await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                        _showSnackBar(context, "Logget Ind", Colors.green);
+                        User? user = FirebaseAuth.instance.currentUser;
+                        FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
+                        Navigator.pop(context);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthenticationWrapper()));
                       } on FirebaseAuthException catch(e){
                         if(e.code == "user-not-found"){
+                          Navigator.pop(context);
                           _showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);
                         } else {
+                          Navigator.pop(context);
                           _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}
                       }
                     }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ButtonStyle(shape: MaterialStateProperty.all(
@@ -104,7 +119,8 @@ class _LoginState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                           side: const BorderSide(color: Colors.blue)
                       )
-                  )),),),
+                  )),),
+                ),
                 Form(
                   key: _resetKey,
                   child: TextButton(onPressed: () async {

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:odinvikar/main_screens/edit_shift_screen.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:odinvikar/main_screens/own_days_details.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -214,7 +213,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),),),
-              Container(
+              /*Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dag")),
@@ -224,7 +223,7 @@ class OwnDays extends State<OwnDaysScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                  ),),),
+                  ),),),*/
             ],
           ),
         ),
@@ -256,7 +255,7 @@ class OwnDays extends State<OwnDaysScreen> {
             stream: shift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
                   color: Colors.blue,
                   size: 50,
                 ));
@@ -314,7 +313,7 @@ class OwnDays extends State<OwnDaysScreen> {
                         )) ,),
                     ],);
                   } else {
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
                       color: Colors.blue,
                       size: 50,
                     ));

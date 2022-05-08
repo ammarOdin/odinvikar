@@ -154,7 +154,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                 stream: unsortedShift.snapshots() ,
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                   if (!snapshot.hasData){
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
                       color: Colors.blue,
                       size: 50,
                     ));
