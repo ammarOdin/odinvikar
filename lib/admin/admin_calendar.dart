@@ -88,19 +88,21 @@ class _State extends State<AdminCalendar> {
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
 
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
-      /*showDialog(context: context, builder: (BuildContext context){
+      showDialog(barrierDismissible: false, context: context, builder: (BuildContext context){
         return AlertDialog(
+          elevation: 0,
           backgroundColor: Colors.transparent,
           content: SpinKitFoldingCube(
             color: Colors.blue,
           ),
         );
-      });*/
+      });
       for (var users in userRef.docs){
         var userData = await databaseReference.collection(users.id).get();
         var userRef = await databaseReference.collection(users.id);
         for (var data in userData.docs){
           if (appointmentDetails.eventName == users.get(FieldPath(const ["name"])) && data.get(FieldPath(const ["date"])) == tapDate){
+            Navigator.pop(context);
             if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) != 0){
               Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
                 date: data.id,
@@ -175,47 +177,49 @@ class _State extends State<AdminCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-            padding: EdgeInsets.only(top: 40),
-            child: SfCalendar(
-              onTap: calendarTapped,
-              view: CalendarView.month,
-              firstDayOfWeek: 1,
-              showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
-                startHour: 7,
-                endHour: 19,
-                nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-              monthViewSettings: const MonthViewSettings(
-                showAgenda: true,
-                agendaViewHeight: 150,
-                agendaItemHeight: 35,
-                agendaStyle: AgendaStyle(),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+              padding: EdgeInsets.only(top: 40),
+              child: SfCalendar(
+                onTap: calendarTapped,
+                view: CalendarView.month,
+                firstDayOfWeek: 1,
+                showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
+                  startHour: 7,
+                  endHour: 19,
+                  nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
+                monthViewSettings: const MonthViewSettings(
+                  showAgenda: true,
+                  agendaViewHeight: 150,
+                  agendaItemHeight: 35,
+                  agendaStyle: AgendaStyle(),
+                ),
+                //monthCellBuilder: monthCellBuilder,
+                dataSource: events,
+                cellBorderColor: Colors.transparent,
+                selectionDecoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(color: Colors.blue, width: 2),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  shape: BoxShape.rectangle,),
               ),
-              //monthCellBuilder: monthCellBuilder,
-              dataSource: events,
-              cellBorderColor: Colors.transparent,
-              selectionDecoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(color: Colors.blue, width: 2),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                shape: BoxShape.rectangle,),
             ),
-          ),
-        loading ? Stack(
-          children: [
-            Opacity(
-              opacity: 0.5,
-                child: Container(color: Colors.black)),
-            Center(
-                  child: SpinKitFoldingCube(
-                    color: Colors.blue,
-                    size: 50,
-              )),
-          ],
-        ) : Container(),
-      ],
+          loading ? Stack(
+            children: [
+              Opacity(
+                opacity: 0.5,
+                  child: Container(color: Colors.black)),
+              Center(
+                    child: SpinKitFoldingCube(
+                      color: Colors.blue,
+                      size: 50,
+                )),
+            ],
+          ) : Container(),
+        ],
+      ),
     );
   }
 }
@@ -251,17 +255,6 @@ class MeetingDataSource extends CalendarDataSource {
     return appointments![index].isAllDay;
   }
 
-  @override
-  Future<void> handleLoadMore(DateTime startDate, DateTime endDate) async {
-    final List<Appointment> shifts = <Appointment>[];
-    DateTime appStartDate = startDate;
-    DateTime appEndDate = endDate;
-
-    while(appStartDate.isBefore(appEndDate)){
-
-    }
-
-  }
 }
 
 class Meeting {
