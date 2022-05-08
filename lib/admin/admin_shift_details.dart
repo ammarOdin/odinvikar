@@ -30,7 +30,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   late String color ;
   late String awaitConfirmation ;
 
-
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
@@ -74,7 +73,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                   fontSize: 16.0
               );
             }
-
           }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),

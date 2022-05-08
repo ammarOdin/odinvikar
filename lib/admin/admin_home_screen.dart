@@ -338,10 +338,9 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 color: Colors.blue, icon: Icon(Icons.refresh),
               );
               if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitCubeGrid(
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
                   color: Colors.blue,
                   size: 50,
-                  //controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1500)),
                 ));
               } else if (snapshot.data!.isEmpty) {
                 return Container(
