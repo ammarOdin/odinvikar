@@ -181,9 +181,15 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                     if (_commentKey.currentState!.validate()){
                       try{
                         await widget.userRef.doc(widget.date).update({
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment
+                          'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
+                          'color': "0xFFFF0000",
+                          'awaitConfirmation': 1,
+                          'status': "Afventer accept"
                         });
                         stateUpdater.add(startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment);
+                        stateUpdater.add("1");
+                        stateUpdater.add('Afventer accept');
+                        stateUpdater.add('0xFFFF0000');
                         Navigator.pop(context, stateUpdater);
                         sendEditedShiftNotification(widget.token, widget.date.toString());
                         _showSnackBar(context,"Vagt redigeret", Colors.green);

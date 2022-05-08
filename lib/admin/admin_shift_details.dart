@@ -61,6 +61,9 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
               final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
               setState(() {
                 details = result[0];
+                awaitConfirmation = result[1];
+                status = result[2];
+                color = result[3];
               });
             } else {
               Fluttertoast.showToast(

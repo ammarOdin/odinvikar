@@ -86,7 +86,7 @@ export const editShiftNotif = functions.https.onCall(async (data, context)=>{
     token: token,
     notification: {
       title: "Vagt Redigeret",
-      body: "Din vagt d. "+date+" er blevet redigeret. Se i app for detaljer.",
+      body: "Din vagt d. "+date+" er blevet redigeret. Accepter i app'en.",
     },
   };
 
