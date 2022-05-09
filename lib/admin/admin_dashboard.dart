@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_calendar.dart';
-import 'package:odinvikar/admin/admin_contact_screen.dart';
+import '../shift_system/admin/admin_shifts_screen.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
 
@@ -57,8 +57,7 @@ class _HomescreenState extends State<AdminDashboard> {
           children: const <Widget>[
             AdminHomeScreen(),
             AdminCalendar(),
-            //AdminShiftsScreen(),
-            AdminContactScreen(),
+            AdminShiftsScreen(),
             AdminSettingsScreen(),
           ],
         ),
@@ -88,7 +87,7 @@ class _HomescreenState extends State<AdminDashboard> {
             items: const [
               BottomNavigationBarItem(
                   label: 'Oversigt',
-                  icon: Icon(Icons.home)
+                  icon: Icon(Icons.home_outlined)
               ),
               BottomNavigationBarItem(
                   label: 'Kalender',
@@ -99,12 +98,12 @@ class _HomescreenState extends State<AdminDashboard> {
                   icon: Icon(Icons.work_outline)
               ),*/
               BottomNavigationBarItem(
-                  label: 'Telefonliste',
-                  icon: Icon(Icons.account_box)
+                  label: 'Vagtbanken',
+                  icon: Icon(Icons.work_outline)
               ),
               BottomNavigationBarItem(
                   label: 'Indstillinger',
-                  icon: Icon(Icons.settings)
+                  icon: Icon(Icons.settings_outlined)
               ),
             ],
           ),

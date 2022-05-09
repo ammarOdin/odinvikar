@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/card_assets.dart';
-import 'package:odinvikar/shift_system [inactive]/shifts_bank.dart';
+import 'package:odinvikar/shift_system/shifts_bank.dart';
 
 class ShiftScreen extends StatefulWidget {
   const ShiftScreen({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _ShiftScreenState extends State<ShiftScreen> {
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
               Spacer(),
               Container(
-                child: IconButton(icon: Icon(Icons.work, color: Colors.blue,), onPressed: () {
+                child: IconButton(icon: Icon(Icons.work_outline, color: Colors.blue,), onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftBankScreen()));},) ,),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/settings_screen.dart';
+import '../shift_system/shifts_screen.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
 
@@ -54,7 +55,7 @@ class _HomescreenState extends State<Dashboard> {
           children: const <Widget>[
             HomeScreen(),
             OwnDaysScreen(),
-            //ShiftScreen(),
+            ShiftScreen(),
             SettingsScreen(),
           ],
         ),
@@ -85,19 +86,19 @@ class _HomescreenState extends State<Dashboard> {
             items: const [
               BottomNavigationBarItem(
                   label: 'Oversigt',
-                  icon: Icon(Icons.home)
+                  icon: Icon(Icons.home_outlined)
               ),
               BottomNavigationBarItem(
                   label: 'Kalender',
                   icon: Icon(Icons.today_outlined)
               ),
-              /*BottomNavigationBarItem(
-                  label: 'Vagter',
+              BottomNavigationBarItem(
+                  label: 'Vagtbanken',
                   icon: Icon(Icons.work_outline)
-              ),*/
+              ),
               BottomNavigationBarItem(
                   label: 'Profil',
-                  icon: Icon(Icons.account_box)
+                  icon: Icon(Icons.account_box_outlined)
               ),
             ],
           ),
