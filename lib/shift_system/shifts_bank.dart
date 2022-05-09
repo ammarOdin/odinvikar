@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../card_assets.dart';
+
 class ShiftBankScreen extends StatefulWidget {
   const ShiftBankScreen({Key? key}) : super(key: key);
 
@@ -66,7 +68,7 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
           const Divider(thickness: 1, height: 25,),
 
-          /*StreamBuilder(
+          StreamBuilder(
               stream: vagter.snapshots() ,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                 if (!snapshot.hasData){
@@ -84,7 +86,7 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                   children: snapshot.data!.docs.map((document){
                     if (document['isTaken'] == false){
                       return FutureBuilder(future: getUser(), builder: (context, AsyncSnapshot<String> snapshot){
-                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.green, size: 20,), text: "Ledig: " + document['date'], subtitle: " Detaljer", onPressed: () {
+                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.green, size: 20,), text: "Ledig: " + document['date'], onPressed: () {
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(
                               title: Text("Vagt Detaljer: " + document['date']),
@@ -103,7 +105,7 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                                       Navigator.pop(context);
                                     }, child: const Text("OK"))],);});
                               }, child: const Text("Tag Vagt"))],);});
-                        });
+                        }, icon2: Icon(Icons.more_horiz), day: 'Test',);
                       });
                     } else {
                       return Container();
@@ -112,10 +114,10 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
                   }).toList(),
                 );
 
-              }),*/
-          ElevatedButton(onPressed: () async {
+              }),
+       /*   ElevatedButton(onPressed: () async {
             await getUser();
-          }, child: Text("test")),
+          }, child: Text("test")),*/
         ],
       ),
     );
