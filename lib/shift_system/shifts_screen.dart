@@ -76,12 +76,6 @@ class _ShiftScreenState extends State<ShiftScreen> {
                       if (document['userID'] == user!.uid){
                         return ShiftCard(text: document['date'], subtitle: "Detaljer", onPressed: () {
 
-                          /*showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-                              title: Text("Vagt Detaljer: " + document['date']),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              content: Text("Tid: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nSåfremt du ikke kan arbejde, kontakt din leder for at få fjernet vagten. \n\n Se Aula for detaljer om din vagt."),
-                              actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK"))],);});*/
                         });
                       } else {
                         return Container();

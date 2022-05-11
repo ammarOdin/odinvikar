@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AdminAddShiftScreen extends StatefulWidget {
   const AdminAddShiftScreen({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
   late TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
   late TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
   bool isSwitched = false;
+  late DateTime? _pickedDay = DateTime.now();
+
 
 
   final commentController = TextEditingController();
@@ -20,6 +24,17 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  DateTime initialDate() {
+    if (DateTime.now().weekday == DateTime.saturday){
+      return DateTime.now().add(const Duration(days: 2));
+    } else if (DateTime.now().weekday == DateTime.sunday){
+      return DateTime.now().add(const Duration(days: 1));
+    } else {
+      return DateTime.now();
+
+    }
   }
 
   String? validateComment(String? input){
@@ -43,6 +58,40 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [
+          Container(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Row(
+              children: [
+                TextButton.icon(onPressed: null, icon: Icon(Icons.date_range), label: Text("Dato")),
+                const Spacer(),
+                Container(
+                  padding: EdgeInsets.only(right: 20),
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ButtonStyle(shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: const BorderSide(color: Colors.blue)
+                        )
+                    )),
+                    onPressed: () async {
+                      _pickedDay = (await showDatePicker(
+                          locale : const Locale("da","DA"),
+                          selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
+                          context: context,
+                          confirmText: "Vælg dag",
+                          cancelText: "Annuller",
+                          initialDate: initialDate(),
+                          firstDate: initialDate(),
+                          lastDate: DateTime.now().add(const Duration(days: 90))))!;
+                      setState(() {
+                        _pickedDay;
+                      });
+                    }, child: Text('${DateFormat('dd-MM-yyyy').format(_pickedDay!)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
+                ),
+              ],
+            ),
+          ),
           Container(
             padding: EdgeInsets.only(top: 30, bottom: 20),
             child: Row(
@@ -159,26 +208,32 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                     ),
                   ),
                   onPressed: () async {
-                    List <String> stateUpdater = [];
                     var comment = commentController.text;
                     if (commentController.text == "" || commentController.text.isEmpty){
                       comment = "Ingen";
                     }
+                    final f = DateFormat('dd-MM-yyyy');
+                    var pickedDate = f.format(_pickedDay!);
+                    var acute = isSwitched ? true : false;
+                    var timeRange = startTime.format(context) + "-" + endTime.format(context);
+
+
                     if (_commentKey.currentState!.validate()){
                       try{
-                        /*await widget.userRef.doc(widget.date).update({
-                          'status': 'Afventer accept',
-                          'isAccepted': true,
-                          'color': '0xFFFF0000',
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
-                          'awaitConfirmation': 1});
-                        stateUpdater.add(startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment);
-                        stateUpdater.add('Afventer accept');
-                        stateUpdater.add('0xFFFF0000');
-                        stateUpdater.add("1");
-                        Navigator.pop(context, stateUpdater);
-                        sendAssignedShiftNotification(widget.token, widget.date.toString());
-                        _showSnackBar(context,"Vagt tildelt", Colors.green);*/
+                        FirebaseFirestore.instance.collection('shifts').doc().set({
+                          'awaitConfirmation': 0,
+                          'color': '0xFFFFA500',
+                          'comment': comment,
+                          'date': pickedDate,
+                          'isAcute': acute,
+                          'isTaken': false,
+                          'status': 'Tilgængelig',
+                          'time': timeRange,
+                          'userID': ''
+                        });
+                        Navigator.pop(context);
+                        //sendAssignedShiftNotification(widget.token, widget.date.toString());
+                        _showSnackBar(context,"Vagt tilføjet", Colors.green);
                       } catch (e) {
                         _showSnackBar(context, "Fejl", Colors.red);
                       }
@@ -186,6 +241,13 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                   },
                   icon: Icon(Icons.add_circle_outline),
                   label: Text("Tilføj vagt", style: TextStyle(fontSize: 18),))),
+
+          Container(
+            padding: EdgeInsets.all(15),
+            child: Text("Ved at tilføje denne vagt, gør du den tilgængelig for alle vikarer. "
+                "En vikar vil byde på den, og du skal derefter acceptere buddet før vagten godkendes.",
+            style: TextStyle(color: Colors.grey),),
+          ),
         ],
       ),
     );

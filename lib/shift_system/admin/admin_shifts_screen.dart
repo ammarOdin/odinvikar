@@ -102,12 +102,12 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
               return Column(
                 children: snapshot.data!.docs.map((document){
                   if (document["isTaken"] == true && _controller.index == 1){
-                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.red, size: 18,),text: document['date'], onPressed: () {
+                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
                         userRef: FirebaseFirestore.instance.collection('user'),
                         date: document['date'],
-                        token: "",
-                        name: "",
+                        token: "FCM Token",
+                        name: "Navn",
                         time: document['time'],
                         data: document.id,
                         status: document['status'],
@@ -115,18 +115,9 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                         color: document['color'],
                         comment: document['comment'],
                       )));
-                      /*showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          title: Text("Vagt Detaljer: " + document['date']),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: Text("Tid: " + document['time'] + "\n\nKommentar: " + document['comment'] + "\n\nTaget af: " + document['name']),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")),
-                            TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("SLET", style: TextStyle(color: Colors.red),))
-                          ],);});*/
-                    }, icon2: Icon(Icons.more_horiz), day: 'Test',);
+                    }, icon2: Icon(Icons.more_horiz), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),);
                   } else if (document["isTaken"] == false && _controller.index == 0) {
-                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Colors.green, size: 18,),text: document['date'], onPressed: () {
+                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
                         userRef: FirebaseFirestore.instance.collection('user'),
                         date: document['date'],
@@ -138,7 +129,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                         comment: document['comment'],
                       )));
 
-                    }, day: 'Test', icon2: Icon(Icons.more_horiz),);
+                    }, day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), icon2: Icon(Icons.more_horiz),);
                   } else {
                     return Container();
                   }
