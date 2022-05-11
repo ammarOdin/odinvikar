@@ -199,7 +199,6 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
                         stateUpdater.add(startTime.format(context) + "-" + endTime.format(context));
                         stateUpdater.add(isSwitched ? true.toString() : false.toString());
                         stateUpdater.add(comment);
-                        print(stateUpdater);
                         Navigator.pop(context, stateUpdater);
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
