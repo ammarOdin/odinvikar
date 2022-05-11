@@ -62,7 +62,7 @@ class _State extends State<AdminSettingsScreen> {
         if (documentSnapshot.exists){
           _showSnackBar(context, "Bruger findes allerede!", Colors.red);
         } else if (!documentSnapshot.exists){
-          await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
+          await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text, 'token': ''});
           _showSnackBar(context, "Bruger oprettet!", Colors.green);
           emailController.clear();
           passwordController.clear();

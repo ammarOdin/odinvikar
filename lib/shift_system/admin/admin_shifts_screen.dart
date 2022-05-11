@@ -17,16 +17,13 @@ class AdminShiftsScreen extends StatefulWidget {
 class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProviderStateMixin {
 
   get vagter => FirebaseFirestore.instance.collection("shifts");
-  get user => FirebaseFirestore.instance.collection("user");
   late TabController _controller;
+  final databaseReference = FirebaseFirestore.instance;
 
   @override
   void initState(){
     _controller = TabController(length: 2, vsync: this);
     _controller.addListener((){
-      /*if (kDebugMode) {
-        print('my index is '+ _controller.index.toString());
-      }*/
       setState(() {
       });
     });
@@ -107,8 +104,8 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
                         userRef: FirebaseFirestore.instance.collection('user'),
                         date: document['date'],
-                        token: user.doc(document['userID']).get(FieldPath(const ['token'])),
-                        name: user.doc(document['userID']).get(FieldPath(const ['name'])),
+                        token: document['token'],
+                        name: document['name'],
                         time: document['time'],
                         acute: document['isAcute'],
                         data: document.id,

@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/card_assets.dart';
+import 'package:odinvikar/shift_system/shift_details.dart';
 import 'package:odinvikar/shift_system/shifts_bank.dart';
+import 'package:intl/intl.dart';
+
 
 class ShiftScreen extends StatefulWidget {
   const ShiftScreen({Key? key}) : super(key: key);
@@ -16,6 +19,11 @@ class _ShiftScreenState extends State<ShiftScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   get vagter => FirebaseFirestore.instance.collection("shifts");
 
+
+  String getDayOfWeek(DateTime date){
+    Intl.defaultLocale = 'da';
+    return DateFormat('EEEE').format(date);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +82,20 @@ class _ShiftScreenState extends State<ShiftScreen> {
                   return Column(
                     children: snapshot.data!.docs.map((document){
                       if (document['userID'] == user!.uid){
-                        return ShiftCard(text: document['date'], subtitle: "Detaljer", onPressed: () {
-
-                        });
+                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), icon2: Icon(Icons.more_horiz), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'], onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
+                            date: document['date'],
+                            comment: document['comment'],
+                            time: document['time'],
+                            name: document['name'],
+                            token: document['token'],
+                            data: document.id,
+                            status: document['status'],
+                            awaitConfirmation: document['awaitConfirmation'],
+                            acute: document['isAcute'],
+                            color: document['color'] ,
+                          )));
+                        },);
                       } else {
                         return Container();
                       }

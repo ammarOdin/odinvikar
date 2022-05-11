@@ -122,4 +122,89 @@ export const acceptShiftNotif = functions.https.onCall(async (data, context)=>{
       });
 });
 
+export const deletedShiftNotif = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagt Slettet",
+      body: "Vagten d. "+date+" er blevet slettet.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const acceptShiftSys = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagtbanken",
+      body: "Dit bud på d. "+date+" er blevet accepteret.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const shiftOfferNotif = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const name = data.name;
+  const message = {
+    token: token,
+    notification: {
+      title: "Bud på vagt",
+      body: name+" har budt på vagten d. "+date+".",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const shiftCreated = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagtbanken",
+      body: "En vagt er blevet oprettet til d."+date+" inde under Vagtbanken.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
 

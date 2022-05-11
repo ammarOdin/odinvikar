@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +31,22 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
+  Future<void> sendDeletedShiftNotification(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deletedShiftNotif');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date,
+    });
+  }
+
+  Future<void> sendAcceptedShiftNotification(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acceptShiftSys');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date,
+    });
+  }
+
 
   String getDayOfWeek(DateTime date){
     Intl.defaultLocale = 'da';
@@ -56,7 +73,10 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
         actions: [
           IconButton(onPressed: () async {
             if (awaitConfirmation != "2"){
-              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftSystemScreen(date: widget.date, docID: widget.data, comment: widget.comment)));
+              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftSystemScreen(
+                  date: widget.date,
+                  docID: widget.data,
+                  comment: widget.comment)));
               setState(() {
                 var acuteState = result[1];
                 if (acuteState == 'true'){
@@ -124,7 +144,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                     Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: Text("Vagttype", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                    Container(child: Text(acute? "AKUT" : "IKKE-AKUT", style: TextStyle(color: acute?  Colors.red : Colors.blue, fontWeight: FontWeight.w500),))
+                    Container(child: Text(acute? "AKUT" : "IKKE-AKUT", style: TextStyle(color: acute?  Colors.red : Colors.blue, fontWeight: FontWeight.bold),))
                   ],
                 )
               ],
@@ -202,7 +222,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                 Center(
                   child: Text("Vagtoplysninger", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
                 ),
-                // Timerange
+                // Booked person name
                 Container(
                   padding: EdgeInsets.only(top: 20),
                   child: Row(
@@ -226,8 +246,72 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
             ),
           ) else Container(),
 
-          // Delete shift button
-          Container(
+          if (awaitConfirmation == "1") Container(
+            padding: EdgeInsets.only(left: 5, top: 50),
+            child: Row(
+              children: [
+                // Accept
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  height: 80,
+                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        FirebaseFirestore.instance.collection('shifts').doc(widget.data).update({
+                          'awaitConfirmation' : 2,
+                          'color': '0xFF4CAF50',
+                          'status': 'Godkendt'
+                        });
+                        // send notification that shift accepted
+                        sendAcceptedShiftNotification(widget.token!, widget.date);
+                        Navigator.pop(context);
+                        _showSnackBar(context, "Vagt godkendt", Colors.green);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.check, color: Colors.white, size: 18,),
+                      label: Text("Accepter")),
+                ),
+                // Delete
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20, right: 5, left: 5),
+                  height: 80,
+                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Slet dag"),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
+                            actions: [TextButton(onPressed: () {
+                              FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);
+                              if (awaitConfirmation != "0"){
+                                // send notification that shift deleted
+                                sendDeletedShiftNotification(widget.token!, widget.date);
+                              }
+                            }
+                                , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
+                      label: Text("Slet vagt")),
+                ),
+
+              ],
+            ),
+            // Delete
+          ) else Container(
             padding: EdgeInsets.only(left: 15, right: 15, top: 50),
             height: 100,
             width: 250,
@@ -239,7 +323,10 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                       content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                       actions: [TextButton(onPressed: () {
                         FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);
-                        // send notification
+                        if (awaitConfirmation != "0"){
+                          // send notification that shift deleted
+                          sendDeletedShiftNotification(widget.token!, widget.date);
+                        }
                         }
                           , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                 },

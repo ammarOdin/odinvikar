@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,10 +21,19 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
+  final databaseReference = FirebaseFirestore.instance;
 
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  Future<void> sendAddedShiftNotification(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('shiftCreated');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date
+    });
   }
 
   DateTime initialDate() {
@@ -229,13 +239,21 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                           'isTaken': false,
                           'status': 'Tilgængelig',
                           'time': timeRange,
-                          'userID': ''
+                          'userID': '',
+                          'name': '',
+                          'token': ''
                         });
                         Navigator.pop(context);
-                        //sendAssignedShiftNotification(widget.token, widget.date.toString());
+                        // send notification to all users that shift has been added
+                        var userRef = await databaseReference.collection('user').get();
+                        for (var users in userRef.docs){
+                          if (users.get(FieldPath(const ["isAdmin"])) == false){
+                            sendAddedShiftNotification(users.get(FieldPath(const ["token"])), pickedDate);
+                          }
+                        }
                         _showSnackBar(context,"Vagt tilføjet", Colors.green);
                       } catch (e) {
-                        _showSnackBar(context, "Fejl", Colors.red);
+                        _showSnackBar(context, "Fejl" + e.toString(), Colors.red);
                       }
                     }
                   },
