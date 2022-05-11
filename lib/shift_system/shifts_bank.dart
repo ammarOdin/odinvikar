@@ -21,7 +21,7 @@ class _ShiftBankScreenState extends State<ShiftBankScreen> {
   }
 
   User? user = FirebaseAuth.instance.currentUser;
-  get vagter => FirebaseFirestore.instance.collection("shifts");
+  get vagter => FirebaseFirestore.instance.collection("shifts").orderBy('date', descending: false);
 
   final CollectionReference vagterRef = FirebaseFirestore.instance.collection("shifts");
   final CollectionReference userInfo = FirebaseFirestore.instance.collection('user');

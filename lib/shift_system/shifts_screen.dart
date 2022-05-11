@@ -17,7 +17,7 @@ class ShiftScreen extends StatefulWidget {
 class _ShiftScreenState extends State<ShiftScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
-  get vagter => FirebaseFirestore.instance.collection("shifts");
+  get vagter => FirebaseFirestore.instance.collection("shifts").orderBy('date', descending: false);
 
 
   String getDayOfWeek(DateTime date){

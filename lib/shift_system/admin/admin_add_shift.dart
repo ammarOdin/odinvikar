@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:week_of_year/date_week_extensions.dart';
+
 
 class AdminAddShiftScreen extends StatefulWidget {
   const AdminAddShiftScreen({Key? key}) : super(key: key);
@@ -225,6 +227,9 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                     final f = DateFormat('dd-MM-yyyy');
                     var pickedDate = f.format(_pickedDay!);
                     var acute = isSwitched ? true : false;
+                    var pickedMonth = _pickedDay?.month;
+                    var pickedWeek = _pickedDay?.weekOfYear;
+
                     var timeRange = startTime.format(context) + "-" + endTime.format(context);
 
 
@@ -235,6 +240,8 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                           'color': '0xFFFFA500',
                           'comment': comment,
                           'date': pickedDate,
+                          'month': pickedMonth,
+                          'week': pickedWeek,
                           'isAcute': acute,
                           'isTaken': false,
                           'status': 'Tilgængelig',

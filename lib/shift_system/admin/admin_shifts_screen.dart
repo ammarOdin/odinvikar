@@ -16,7 +16,7 @@ class AdminShiftsScreen extends StatefulWidget {
 
 class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProviderStateMixin {
 
-  get vagter => FirebaseFirestore.instance.collection("shifts");
+  get vagter => FirebaseFirestore.instance.collection("shifts").orderBy('date', descending: false);
   late TabController _controller;
   final databaseReference = FirebaseFirestore.instance;
 
