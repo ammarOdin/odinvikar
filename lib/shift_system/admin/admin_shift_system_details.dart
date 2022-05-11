@@ -6,11 +6,12 @@ import 'admin_edit_shift_system.dart';
 
 class AdminShiftSystemDetailsScreen extends StatefulWidget {
   final String date, status, time, comment, color, data;
+  final bool acute;
   final String?  name, token;
   final CollectionReference<Map<String, dynamic>> userRef;
   final int awaitConfirmation;
   const AdminShiftSystemDetailsScreen({Key? key, required this.date, required this.status, required this.time, required this.comment, required this.color,
-    required this.data, required this.awaitConfirmation, this.name, this.token, required this.userRef}) : super(key: key);
+    required this.data, required this.awaitConfirmation, required this.acute, this.name, this.token, required this.userRef}) : super(key: key);
 
   @override
   State<AdminShiftSystemDetailsScreen> createState() => _AdminShiftDetailsScreenState();
@@ -22,9 +23,8 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
 
-  late String status;
-  late String color ;
-  late String awaitConfirmation ;
+  late String status, color, awaitConfirmation, time, comment;
+  late bool acute;
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -38,8 +38,11 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
 
   @override
   void initState() {
+    time = widget.time;
     status = widget.status;
+    acute = widget.acute;
     color = widget.color;
+    comment = widget.comment;
     awaitConfirmation = widget.awaitConfirmation.toString();
     super.initState();
   }
@@ -53,11 +56,17 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
         actions: [
           IconButton(onPressed: () async {
             if (awaitConfirmation != "2"){
-              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftSystemScreen(date: widget.date, userRef: widget.userRef, name: widget.name!, token: widget.token!)));
+              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftSystemScreen(date: widget.date, docID: widget.data, comment: widget.comment)));
               setState(() {
-                awaitConfirmation = result[1];
-                status = result[2];
-                color = result[3];
+                var acuteState = result[1];
+                if (acuteState == 'true'){
+                  acuteState = true;
+                } else {
+                  acuteState = false;
+                }
+                time = result[0];
+                acute = acuteState;
+                comment = result[2];
               });
             } else {
               Fluttertoast.showToast(
@@ -101,6 +110,26 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
               ],
             ),
           ),
+          // if shift is acute
+          Container(
+            padding: EdgeInsets.only(top: 20),
+            child: Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.only(right: 10, left: 5),
+                    child: Icon(Icons.work_outline, color: Colors.grey,)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text("Vagttype", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                    Container(child: Text(acute? "AKUT" : "IKKE-AKUT", style: TextStyle(color: acute?  Colors.red : Colors.blue, fontWeight: FontWeight.w500),))
+                  ],
+                )
+              ],
+            ),
+          ),
           // Status
           Container(
             padding: EdgeInsets.only(top: 20),
@@ -135,7 +164,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                     Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: Text("Tidsrum", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                    Container(child: Text(widget.time, style: TextStyle(color: Colors.grey),))
+                    Container(child: Text(time, style: TextStyle(color: Colors.grey),))
                   ],
                 )
               ],
@@ -157,7 +186,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                         child: Text("Kommentar", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                     Container(
                         width: MediaQuery.of(context).size.width/1.2,
-                        child: Text(widget.comment, style: TextStyle(color: Colors.grey),))
+                        child: Text(comment, style: TextStyle(color: Colors.grey),))
                   ],
                 )
               ],
@@ -210,6 +239,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                       content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                       actions: [TextButton(onPressed: () {
                         FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);
+                        // send notification
                         }
                           , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                 },

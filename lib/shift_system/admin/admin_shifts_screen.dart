@@ -17,6 +17,7 @@ class AdminShiftsScreen extends StatefulWidget {
 class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProviderStateMixin {
 
   get vagter => FirebaseFirestore.instance.collection("shifts");
+  get user => FirebaseFirestore.instance.collection("user");
   late TabController _controller;
 
   @override
@@ -106,9 +107,10 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
                         userRef: FirebaseFirestore.instance.collection('user'),
                         date: document['date'],
-                        token: "FCM Token",
-                        name: "Navn",
+                        token: user.doc(document['userID']).get(FieldPath(const ['token'])),
+                        name: user.doc(document['userID']).get(FieldPath(const ['name'])),
                         time: document['time'],
+                        acute: document['isAcute'],
                         data: document.id,
                         status: document['status'],
                         awaitConfirmation: document['awaitConfirmation'],
@@ -124,6 +126,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                         time: document['time'],
                         data: document.id,
                         status: document['status'],
+                        acute: document['isAcute'],
                         awaitConfirmation: document['awaitConfirmation'],
                         color: document['color'],
                         comment: document['comment'],

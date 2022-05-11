@@ -3,11 +3,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
 class AdminEditShiftSystemScreen extends StatefulWidget {
-  final String date;
-  final String token;
-  final String name;
-  final CollectionReference<Map<String, dynamic>> userRef;
-  const AdminEditShiftSystemScreen({Key? key, required this.date, required this.token, required this.userRef, required this.name}) : super(key: key);
+  final String date, docID, comment;
+  const AdminEditShiftSystemScreen({Key? key, required this.date, required this.docID, required this.comment}) : super(key: key);
 
   @override
   State<AdminEditShiftSystemScreen> createState() => _EditShiftScreenState();
@@ -21,6 +18,7 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
+  late String comment;
 
   String? validateComment(String? input){
     if (input!.contains(new RegExp(r'^[#$^*():{}|<>]+$'))){
@@ -28,6 +26,12 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
     } else {
       return null;
     }
+  }
+
+  @override
+  void initState(){
+    comment = widget.comment;
+    super.initState();
   }
 
   Future<void> sendEditedShiftNotification(String token, String date) async {
@@ -47,6 +51,7 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.blue,
+          title: Text("Rediger vagt"),
           toolbarHeight: kToolbarHeight + 2,
           leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),)
       ),
@@ -55,23 +60,6 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height / 4,
-            padding: EdgeInsets.only(bottom: 30),
-            color: Colors.blue,
-            child: ListView(
-              padding: EdgeInsets.only(top: 40),
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Center(
-                  child: Text("Rediger vagt", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-                ),
-                Center(
-                  child: Text("Dato", style: TextStyle(fontSize: 18, color: Colors.white),),
-                ),
-              ],
-            ),
-          ),
           Container(
               padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
               child: Text("Indtast nye oplysninger", style:TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),)
@@ -134,7 +122,6 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
                             ],
                           ),
                         ),
-
                       ],),
                   ),
                 ),
@@ -195,24 +182,25 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
                   ),
                   onPressed: () async {
                     List <String> stateUpdater = [];
+                    var acute = isSwitched ? true : false;
                     var comment = commentController.text;
                     if (commentController.text == "" || commentController.text.isEmpty){
-                      comment = "Ingen";
+                      comment = widget.comment;
+                    } else {
+                      comment = commentController.text;
                     }
                     if (_commentKey.currentState!.validate()){
                       try{
-                        await widget.userRef.doc(widget.date).update({
-                          'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment,
-                          'color': "0xFFFF0000",
-                          'awaitConfirmation': 1,
-                          'status': "Afventer accept"
+                        await FirebaseFirestore.instance.collection('shifts').doc(widget.docID).update({
+                          'time': startTime.format(context) + "-" + endTime.format(context),
+                          'isAcute' : acute,
+                          'comment': comment
                         });
-                        stateUpdater.add(startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: " + comment);
-                        stateUpdater.add("1");
-                        stateUpdater.add('Afventer accept');
-                        stateUpdater.add('0xFFFF0000');
+                        stateUpdater.add(startTime.format(context) + "-" + endTime.format(context));
+                        stateUpdater.add(isSwitched ? true.toString() : false.toString());
+                        stateUpdater.add(comment);
+                        print(stateUpdater);
                         Navigator.pop(context, stateUpdater);
-                        sendEditedShiftNotification(widget.token, widget.date.toString());
                         _showSnackBar(context,"Vagt redigeret", Colors.green);
                       } catch (e) {
                         _showSnackBar(context, "Fejl", Colors.red);
