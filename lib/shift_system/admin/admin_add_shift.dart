@@ -244,7 +244,7 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                           'week': pickedWeek,
                           'isAcute': acute,
                           'isTaken': false,
-                          'status': 'Tilgængelig',
+                          'status': 'Ledig',
                           'time': timeRange,
                           'userID': '',
                           'name': '',

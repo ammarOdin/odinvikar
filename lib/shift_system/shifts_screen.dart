@@ -65,6 +65,41 @@ class _ShiftScreenState extends State<ShiftScreen> {
           ),
           const Divider(thickness: 1, height: 25,),
 
+          Row(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                  ),
+                  Text(" Ledig", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.red, size: 16,),
+                  ),
+                  Text(" Afventer accept", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                  ),
+                  Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+            ],
+          ),
+
           StreamBuilder(
               stream: vagter.snapshots() ,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){

@@ -19,6 +19,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
   get vagter => FirebaseFirestore.instance.collection("shifts").orderBy('date', descending: false);
   late TabController _controller;
   final databaseReference = FirebaseFirestore.instance;
+  String dropdownValue = 'One';
 
   @override
   void initState(){
@@ -68,6 +69,15 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
           padding: EdgeInsets.only(top:10),
           child: Row(
             children: [
+              DropdownButton<String>(
+                value: dropdownValue,
+
+                onChanged: (String? value) {
+                setState(() {
+                dropdownValue = value!;
+              });}, items: [
+
+              ], icon: Icon(Icons.keyboard_arrow_down), ),
               Container(padding: const EdgeInsets.only(left: 20, ),
                 child: const Text("Udbudte Vagter",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
@@ -82,61 +92,103 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
 
         Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Ledige vagter"), Tab(text: "Bookede vagter",)])),
 
+        Container(
+          padding: EdgeInsets.only(bottom: 10, top: 10),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                  ),
+                  Text(" Ledig", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.red, size: 16,),
+                  ),
+                  Text(" Afventer accept", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                  ),
+                  Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
+                ],
+              ),
+            ],
+          ),
+        ),
 
-        StreamBuilder(
-            stream: vagter.snapshots() ,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(color: Colors.blue,));
-              }else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen Vagter",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
+        const Divider(thickness: 1, height: 15,),
+
+        Container(
+          padding: EdgeInsets.only(bottom: 10, top: 10),
+          child: StreamBuilder(
+              stream: vagter.snapshots() ,
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                if (!snapshot.hasData){
+                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(color: Colors.blue,));
+                }else if (snapshot.data!.docs.isEmpty){
+                  return Container(
+                    padding: const EdgeInsets.all(50),
+                    child: const Center(child: Text(
+                      "Ingen Vagter",
+                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                    ),),
+                  );
+                }
+                return Column(
+                  children: snapshot.data!.docs.map((document){
+                    if (document["isTaken"] == true && _controller.index == 1){
+                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
+                          userRef: FirebaseFirestore.instance.collection('user'),
+                          date: document['date'],
+                          token: document['token'],
+                          name: document['name'],
+                          time: document['time'],
+                          acute: document['isAcute'],
+                          data: document.id,
+                          status: document['status'],
+                          awaitConfirmation: document['awaitConfirmation'],
+                          color: document['color'],
+                          comment: document['comment'],
+                        )));
+                      }, icon2: Icon(Icons.more_horiz), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),);
+                    } else if (document["isTaken"] == false && _controller.index == 0) {
+                      return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
+                          userRef: FirebaseFirestore.instance.collection('user'),
+                          date: document['date'],
+                          time: document['time'],
+                          data: document.id,
+                          status: document['status'],
+                          acute: document['isAcute'],
+                          awaitConfirmation: document['awaitConfirmation'],
+                          color: document['color'],
+                          comment: document['comment'],
+                        )));
+
+                      }, day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), icon2: Icon(Icons.more_horiz),);
+                    } else {
+                      return Container();
+                    }
+                  }).toList(),
                 );
-              }
-              return Column(
-                children: snapshot.data!.docs.map((document){
-                  if (document["isTaken"] == true && _controller.index == 1){
-                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
-                        userRef: FirebaseFirestore.instance.collection('user'),
-                        date: document['date'],
-                        token: document['token'],
-                        name: document['name'],
-                        time: document['time'],
-                        acute: document['isAcute'],
-                        data: document.id,
-                        status: document['status'],
-                        awaitConfirmation: document['awaitConfirmation'],
-                        color: document['color'],
-                        comment: document['comment'],
-                      )));
-                    }, icon2: Icon(Icons.more_horiz), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),);
-                  } else if (document["isTaken"] == false && _controller.index == 0) {
-                    return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),text: document['date'], onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftSystemDetailsScreen(
-                        userRef: FirebaseFirestore.instance.collection('user'),
-                        date: document['date'],
-                        time: document['time'],
-                        data: document.id,
-                        status: document['status'],
-                        acute: document['isAcute'],
-                        awaitConfirmation: document['awaitConfirmation'],
-                        color: document['color'],
-                        comment: document['comment'],
-                      )));
 
-                    }, day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), icon2: Icon(Icons.more_horiz),);
-                  } else {
-                    return Container();
-                  }
-                }).toList(),
-              );
-
-            }),
+              }),
+        ),
       ],
     );
   }
