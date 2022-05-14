@@ -44,7 +44,7 @@ class _State extends State<AdminCalendar> {
   @override
   void initState() {
     getFirestoreShift().then((results) {
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
       });
     });

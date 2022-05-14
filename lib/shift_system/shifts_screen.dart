@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/card_assets.dart';
 import 'package:odinvikar/shift_system/shift_details.dart';
-import 'package:odinvikar/shift_system/shifts_bank.dart';
 import 'package:intl/intl.dart';
+import 'package:week_of_year/date_week_extensions.dart';
 
 
 class ShiftScreen extends StatefulWidget {
@@ -14,15 +14,36 @@ class ShiftScreen extends StatefulWidget {
   State<ShiftScreen> createState() => _ShiftScreenState();
 }
 
-class _ShiftScreenState extends State<ShiftScreen> {
+class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin {
 
   User? user = FirebaseAuth.instance.currentUser;
   get vagter => FirebaseFirestore.instance.collection("shifts").orderBy('date', descending: false);
+  late String dropdownValue;
+  late TabController _controller;
+
+  void initState(){
+    _controller = TabController(length: 2, vsync: this);
+    _controller.addListener((){
+      setState(() {
+      });
+    });
+    dropdownValue = getDropdownValue();
+    super.initState();
+  }
 
 
   String getDayOfWeek(DateTime date){
     Intl.defaultLocale = 'da';
     return DateFormat('EEEE').format(date);
+  }
+
+  String getDropdownValue(){
+    if (DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday){
+      var val = DateTime.now().weekOfYear + 1;
+      return val.toString();
+    } else {
+      return DateTime.now().weekOfYear.toString();
+    }
   }
 
   @override
@@ -49,21 +70,8 @@ class _ShiftScreenState extends State<ShiftScreen> {
               ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(top:10),
-            child: Row(
-              children: [
-                Container(padding: const EdgeInsets.only(left: 20, ),
-                  child: const Text("Mine Vagter",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-                Spacer(),
-                Container(
-                  child: IconButton(icon: Icon(Icons.work_outline, color: Colors.blue,), onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftBankScreen()));},) ,),
-              ],
-            ),
-          ),
-          const Divider(thickness: 1, height: 25,),
+
+          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Mine vagter"), Tab(text: "Ledige vagter",)])),
 
           Row(
             children: [
@@ -100,6 +108,25 @@ class _ShiftScreenState extends State<ShiftScreen> {
             ],
           ),
 
+          Container(
+            padding: EdgeInsets.only(top: 15, bottom: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(child: Text("Uge  ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),),
+                DropdownButton<String>(
+                  underline: Container(color: Colors.grey, height: 1,),
+                  value: getDropdownValue(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue = value!;
+                    });},
+                  items: [for (var num = 0; num <= 52; num++) DropdownMenuItem(child: Text(num.toString()), value: num.toString())],
+                  icon: Icon(Icons.keyboard_arrow_down), ),
+              ],
+            ),
+          ),
+
           StreamBuilder(
               stream: vagter.snapshots() ,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -116,8 +143,15 @@ class _ShiftScreenState extends State<ShiftScreen> {
                 }
                   return Column(
                     children: snapshot.data!.docs.map((document){
-                      if (document['userID'] == user!.uid){
-                        return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), icon2: Icon(Icons.more_horiz), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'], onPressed: (){
+                      if (document['userID'] == user!.uid && _controller.index == 0 && document['week'].toString() == dropdownValue.toString()){
+                        return ShiftSystemCard(
+                          icon: Icon(Icons.circle,
+                          color: Color(int.parse(document['color'])), size: 18,),
+                          icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
+                          day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
+                          text: document['date'],
+                          time: document['time'],
+                          onPressed: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
                             date: document['date'],
                             comment: document['comment'],
@@ -131,6 +165,26 @@ class _ShiftScreenState extends State<ShiftScreen> {
                             color: document['color'] ,
                           )));
                         },);
+                      } else if (document['awaitConfirmation'] != 2 /*&& document['week'] >= DateTime.now().weekOfYear*/ &&  _controller.index == 1 && document['week'].toString() == dropdownValue.toString()){
+                        return ShiftSystemCard(
+                          icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),
+                          icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
+                          day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
+                          text: document['date'],
+                          time: document['time'],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
+                              date: document['date'],
+                              comment: document['comment'],
+                              time: document['time'],
+                              name: document['name'],
+                              data: document.id,
+                              status: document['status'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              acute: document['isAcute'],
+                              color: document['color'] ,
+                            )));
+                          },);
                       } else {
                         return Container();
                       }
