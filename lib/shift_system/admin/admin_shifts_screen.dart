@@ -117,9 +117,6 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                 ),
                 Spacer(),
                 IconButton(icon: Icon(Icons.add_circle, color: Colors.green, size: 30,), onPressed: () {
-                  var weeknumber = int.parse(dropdownValue);
-                  print("Start Date  " + DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (weeknumber - 1))).toString());
-                  print("End Date  " + DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (weeknumber - 1) + 4)).toString());
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddShiftScreen()));},)
               ],
             ),
