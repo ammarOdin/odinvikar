@@ -207,4 +207,25 @@ export const shiftCreated = functions.https.onCall(async (data, context)=>{
       });
 });
 
+export const summonedUser = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "Tilkaldt arbejde",
+      body: "Du er blevet tilkaldt til arbejde d. "+date,
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
 

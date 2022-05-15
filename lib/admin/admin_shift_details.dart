@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -29,9 +30,18 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   late String? details ;
   late String color ;
   late String awaitConfirmation ;
+  bool isChecked = false;
 
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
+  }
+
+  Future<void> sendSummonedUser(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('summonedUser');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date
+    });
   }
 
 
@@ -233,7 +243,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                 Container(
                   padding: EdgeInsets.only(top: 20, bottom: 20),
                   height: 80,
-                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: widget.date, token: widget.token, userRef: widget.userRef)));
@@ -245,7 +255,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 16),
+                        textStyle: const TextStyle(fontSize: 14),
                         primary: Colors.green,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -258,7 +268,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                 Container(
                   padding: EdgeInsets.only(top: 20, bottom: 20, right: 5, left: 5),
                   height: 80,
-                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         showDialog(context: context, builder: (BuildContext context){
@@ -269,7 +279,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
                       style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 16),
+                        textStyle: const TextStyle(fontSize: 14),
                         primary: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -277,6 +287,47 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                       ),
                       icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
                       label: Text("Slet vagt")),
+                ),
+
+                // Summoned
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  height: 80,
+                  width: MediaQuery.of(context).size.width / 3.1,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Tilkaldt vikar"),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Du har tilkaldt vikaren telefonisk, og status på vikaren ændres. Denne handling kan ikke fortrydes."),
+                            actions: [TextButton(onPressed: () async {
+                              await widget.userRef.doc(widget.date).update({
+                                'status': 'Tilkaldt',
+                                'isAccepted': true,
+                                'color': '0xFF4CAF50',
+                                'awaitConfirmation': 2,
+                                'details' : "Tilkaldt              Ingen"
+                              });
+                              sendSummonedUser(widget.token, widget.date);
+                              setState(() {
+                                status = "Tilkaldt";
+                                color = "0xFF4CAF50";
+                                awaitConfirmation = "2";
+                              });
+                              Navigator.pop(context); Navigator.pop(context);
+                              _showSnackBar(context, "Vikar status ændret", Colors.green);
+                              }
+                                , child: const Text("SKIFT STATUS", style: TextStyle(color: Colors.blue),))],); });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 14),
+                        primary: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.add_ic_call, color: Colors.white, size: 18,),
+                      label: Text("Tilkald")),
                 ),
 
               ],

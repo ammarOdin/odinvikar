@@ -259,7 +259,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
             width: 250,
             child: ElevatedButton.icon(
                 onPressed: () async {
-                  widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                  await widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
                   Navigator.pop(context);
                   _showSnackBar(context, "Vagt accepteret", Colors.green);
                   var adminRef = await databaseReference.collection('user').get();
