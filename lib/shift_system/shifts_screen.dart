@@ -109,20 +109,27 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
           ),
 
           Container(
-            padding: EdgeInsets.only(top: 15, bottom: 5),
+            padding: EdgeInsets.only(left: 15, top: 10, bottom: 5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(child: Text("Uge  ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),),
                 DropdownButton<String>(
                   underline: Container(color: Colors.grey, height: 1,),
-                  value: getDropdownValue(),
+                  value: dropdownValue,
                   onChanged: (String? value) {
                     setState(() {
                       dropdownValue = value!;
                     });},
                   items: [for (var num = 0; num <= 52; num++) DropdownMenuItem(child: Text(num.toString()), value: num.toString())],
                   icon: Icon(Icons.keyboard_arrow_down), ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Text(DateFormat('dd-MM').format(DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (int.parse(dropdownValue) - 1)))).toString()
+                      + " til "
+                      + DateFormat('dd-MM').format(DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (int.parse(dropdownValue) - 1) + 4))).toString()),
+                ),
               ],
             ),
           ),

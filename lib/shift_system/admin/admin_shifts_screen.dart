@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import '../../card_assets.dart';
 import 'admin_add_shift.dart';
@@ -22,6 +21,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
   late TabController _controller;
   final databaseReference = FirebaseFirestore.instance;
   late String dropdownValue;
+
 
   @override
   void initState(){
@@ -117,6 +117,9 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                 ),
                 Spacer(),
                 IconButton(icon: Icon(Icons.add_circle, color: Colors.green, size: 30,), onPressed: () {
+                  var weeknumber = int.parse(dropdownValue);
+                  print("Start Date  " + DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (weeknumber - 1))).toString());
+                  print("End Date  " + DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (weeknumber - 1) + 4)).toString());
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddShiftScreen()));},)
               ],
             ),
@@ -132,7 +135,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                 Container(child: Text("Uge  ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),),
                 DropdownButton<String>(
                   underline: Container(color: Colors.grey, height: 1,),
-                  value: getDropdownValue(),
+                  value: dropdownValue,
                   onChanged: (String? value) {
                     setState(() {
                       dropdownValue = value!;
@@ -142,7 +145,9 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                 Spacer(),
                 Container(
                   padding: EdgeInsets.only(right: 15),
-                  child: Text("16-05 til 20-05"),
+                  child: Text(DateFormat('dd-MM').format(DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (int.parse(dropdownValue) - 1)))).toString()
+                      + " til "
+                      + DateFormat('dd-MM').format(DateTime(DateTime.now().year, 1, 3, 0, 0).add(Duration(days: 7 * (int.parse(dropdownValue) - 1) + 4))).toString()),
                 ),
               ],
             ),

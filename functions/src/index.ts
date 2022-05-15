@@ -193,7 +193,7 @@ export const shiftCreated = functions.https.onCall(async (data, context)=>{
     token: token,
     notification: {
       title: "Vagtbanken",
-      body: "En vagt er blevet oprettet til d."+date+" inde under Vagtbanken.",
+      body: "En vagt er blevet oprettet til d. "+date+" inde under Vagtbanken.",
     },
   };
 
