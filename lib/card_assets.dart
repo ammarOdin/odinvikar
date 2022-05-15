@@ -149,6 +149,7 @@ class AvailableShiftCard extends StatelessWidget {
 
 class AdminAvailableShiftCard extends StatelessWidget {
   final String text;
+  final String time;
   final String subtitle;
   final Icon icon;
   final Function() onPressed;
@@ -157,6 +158,7 @@ class AdminAvailableShiftCard extends StatelessWidget {
       {required this.text,
         required this.subtitle,
         required this.icon,
+        required this.time,
         required this.onPressed,
         Key? key})
       : super(key: key);
@@ -167,7 +169,7 @@ class AdminAvailableShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 100,
+        height: 110,
         padding: const EdgeInsets.only(top: 5, bottom: 5),
         margin: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
@@ -181,15 +183,30 @@ class AdminAvailableShiftCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  )),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(text,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      )),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 15, top: 10),
+                  child: Text(time,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      )),
+                ),
+              ],
             ),
             const Spacer(),
             Text(

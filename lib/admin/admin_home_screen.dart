@@ -133,7 +133,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.delete,),
                 ],
               ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " + shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -219,7 +219,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.delete,),
                   ],
                 ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " +  shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
