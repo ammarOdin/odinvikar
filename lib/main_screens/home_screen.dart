@@ -11,6 +11,7 @@ import 'package:week_of_year/week_of_year.dart';
 
 import '../card_assets.dart';
 import 'edit_shift_screen.dart';
+import 'own_days_details.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -277,14 +278,32 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               ],
                             ),
                             child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                              showDialog(context: context, builder: (BuildContext context){
-                                return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                  content: document['isAccepted'] == true ?
-                                  Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                  Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
-                                  actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                      , child: const Text("OK"))],);});
+                              if (document['awaitConfirmation'] != 0){
+                                var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                                  date: document.id,
+                                  status: document['status'],
+                                  time: document['time'],
+                                  comment: document['comment'],
+                                  awaitConfirmation: document['awaitConfirmation'],
+                                  details: document['details'],
+                                  color: document['color'],
+                                  data: reference,
+
+                                )));
+                              } else if (document['awaitConfirmation'] == 0){
+                                var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                                  date: document.id,
+                                  status: document['status'],
+                                  time: document['time'],
+                                  comment: document['comment'],
+                                  awaitConfirmation: document['awaitConfirmation'],
+                                  color: document['color'],
+                                  data: reference,
+
+                                )));
+                              }
                             }),
                           );
                         } else {
@@ -403,14 +422,32 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               ],
                             ),
                             child: AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                              showDialog(context: context, builder: (BuildContext context){
-                                return AlertDialog(title: Center(child: Text("Dato: " + document['date'])),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                  content: document['isAccepted'] == true ?
-                                  Text("Status: " + document['status']+ "\n\nTidsrum: " + document['details'] + "\n\nEgen kommentar: " + document['comment']) :
-                                  Text("\n\nStatus: " + document['status'] + "\n\nKan arbejde: " + document['time'] + "\n\nEgen kommentar: " + document['comment'] + "\n\nHvis du ikke er tildelt en vagt, kan du stadig blive kontaktet på dagen."),
-                                  actions: [TextButton(onPressed: () {Navigator.pop(context);}
-                                      , child: const Text("OK"))],);});
+                              if (document['awaitConfirmation'] != 0){
+                                var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                                  date: document.id,
+                                  status: document['status'],
+                                  time: document['time'],
+                                  comment: document['comment'],
+                                  awaitConfirmation: document['awaitConfirmation'],
+                                  details: document['details'],
+                                  color: document['color'],
+                                  data: reference,
+
+                                )));
+                              } else if (document['awaitConfirmation'] == 0){
+                                var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                                  date: document.id,
+                                  status: document['status'],
+                                  time: document['time'],
+                                  comment: document['comment'],
+                                  awaitConfirmation: document['awaitConfirmation'],
+                                  color: document['color'],
+                                  data: reference,
+
+                                )));
+                              }
                             }),
                           );
                         } else {
