@@ -65,6 +65,7 @@ Future<void> main() async {
               channel.id,
               channel.name,
               icon: android.smallIcon,
+              styleInformation: BigTextStyleInformation(""),
             ),
           ));
     }
