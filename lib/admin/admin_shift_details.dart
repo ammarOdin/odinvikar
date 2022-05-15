@@ -313,6 +313,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                                 status = "Tilkaldt";
                                 color = "0xFF4CAF50";
                                 awaitConfirmation = "2";
+                                details = "Tilkaldt              Ingen";
                               });
                               Navigator.pop(context); Navigator.pop(context);
                               _showSnackBar(context, "Vikar status ændret", Colors.green);

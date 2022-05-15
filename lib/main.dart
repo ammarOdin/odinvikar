@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
@@ -175,6 +176,7 @@ class AuthenticationWrapper extends StatelessWidget {
     });
     return admin;
   }
+
   @override
   Widget build(BuildContext context) {
     /*if (screen == false){
@@ -184,12 +186,7 @@ class AuthenticationWrapper extends StatelessWidget {
     } else {
       return const LoginScreen();
     }*/
-
-    if (kIsWeb){
-      return FutureBuilder(builder: (context, snapshot) => const RegisterPage());
-    } else {
-      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
-    }
+    return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
   }
 }
 
