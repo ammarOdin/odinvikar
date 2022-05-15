@@ -59,10 +59,6 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,9 +162,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   if (_controller.index == 1){
                     return Column(
                       children: snapshot.data!.docs.map((document){
-                        if (document['week'] == DateTime.now().weekOfYear) {
-                          return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                            if (document['awaitConfirmation'] != 0){
+                        if (document['week'] == DateTime.now().weekOfYear && document['awaitConfirmation'] != 0) {
+                          return AvailableShiftCard(time: document['details'].substring(0,11), icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
                               var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
                               Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
                                 date: document.id,
@@ -179,20 +174,20 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                                 details: document['details'],
                                 color: document['color'],
                                 data: reference,
-
                               )));
-                            } else if (document['awaitConfirmation'] == 0){
-                              var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
-                                date: document.id,
-                                status: document['status'],
-                                time: document['time'],
-                                comment: document['comment'],
-                                awaitConfirmation: document['awaitConfirmation'],
-                                color: document['color'],
-                                data: reference,
-                              )));
-                            }
+                          });
+                        } else if (document['week'] == DateTime.now().weekOfYear && document['awaitConfirmation'] == 0 ) {
+                          return AvailableShiftCard(time: "Tilgængelig", icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                            var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                              date: document.id,
+                              status: document['status'],
+                              time: document['time'],
+                              comment: document['comment'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              color: document['color'],
+                              data: reference,
+                            )));
                           });
                         } else {
                           return Container();
@@ -202,34 +197,32 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   } else if (_controller.index == 0){
                     return Column(
                       children: snapshot.data!.docs.map((document){
-                        var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
-                        if (document['month'] == DateTime.now().month && DateTime.now().isBefore(docDate)) {
-                          return AvailableShiftCard(icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
-                            if (document['awaitConfirmation'] != 0){
-                              var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
-                                date: document.id,
-                                status: document['status'],
-                                time: document['time'],
-                                comment: document['comment'],
-                                awaitConfirmation: document['awaitConfirmation'],
-                                details: document['details'],
-                                color: document['color'],
-                                data: reference,
-                              )));
-                            } else if (document['awaitConfirmation'] == 0){
-                              var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
-                                date: document.id,
-                                status: document['status'],
-                                time: document['time'],
-                                comment: document['comment'],
-                                awaitConfirmation: document['awaitConfirmation'],
-                                color: document['color'],
-                                data: reference,
-
-                              )));
-                            }
+                        if (document['month'] == DateTime.now().month && document['awaitConfirmation'] != 0) {
+                          return AvailableShiftCard(time: document['details'].substring(0,11), icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                            var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                              date: document.id,
+                              status: document['status'],
+                              time: document['time'],
+                              comment: document['comment'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              details: document['details'],
+                              color: document['color'],
+                              data: reference,
+                            )));
+                          });
+                        } else if (document['month'] == DateTime.now().month && document['awaitConfirmation'] == 0) {
+                          return AvailableShiftCard(time: "Tilgængelig", icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
+                            var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                              date: document.id,
+                              status: document['status'],
+                              time: document['time'],
+                              comment: document['comment'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              color: document['color'],
+                              data: reference,
+                            )));
                           });
                         } else {
                           return Container();

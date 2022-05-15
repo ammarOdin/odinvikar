@@ -62,6 +62,7 @@ class ShiftCard extends StatelessWidget {
 class AvailableShiftCard extends StatelessWidget {
   final String text;
   final String day;
+  final String time;
   final Icon icon;
   final Icon icon2;
   final Function() onPressed;
@@ -71,6 +72,7 @@ class AvailableShiftCard extends StatelessWidget {
         required this.day,
         required this.icon,
         required this.icon2,
+        required this.time,
         required this.onPressed,
         Key? key})
       : super(key: key);
@@ -81,7 +83,7 @@ class AvailableShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 100,
+        height: 120,
         padding: const EdgeInsets.only(top: 5, bottom: 5),
         margin: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
@@ -95,29 +97,41 @@ class AvailableShiftCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 15, top: 20),
-                  child: Text(day,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 15, top: 10),
-                  child: Text(text,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      )),
-                ),
-              ],
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 15, top: 20),
+                    child: Text(day,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        )),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 15, top: 10),
+                    child: Text(text,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        )),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 15, top: 10),
+                    child: Text(time,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        )),
+                  ),
+                ],
+              ),
             ),
             const Spacer(),
             Container(
