@@ -38,6 +38,14 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
     });
   }
 
+  Future<void> sendAcuteShiftNotification(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acuteShift');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date
+    });
+  }
+
   DateTime initialDate() {
     if (DateTime.now().weekday == DateTime.saturday){
       return DateTime.now().add(const Duration(days: 2));
@@ -254,8 +262,10 @@ class _AssignShiftScreenState extends State<AdminAddShiftScreen> {
                         // send notification to all users that shift has been added
                         var userRef = await databaseReference.collection('user').get();
                         for (var users in userRef.docs){
-                          if (users.get(FieldPath(const ["isAdmin"])) == false){
+                          if (users.get(FieldPath(const ["isAdmin"])) == false && acute == false){
                             sendAddedShiftNotification(users.get(FieldPath(const ["token"])), pickedDate);
+                          } else if (users.get(FieldPath(const ["isAdmin"])) == false && acute == true){
+                            sendAcuteShiftNotification(users.get(FieldPath(const ["token"])), pickedDate);
                           }
                         }
                         _showSnackBar(context,"Vagt tilføjet", Colors.green);

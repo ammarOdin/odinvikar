@@ -193,7 +193,28 @@ export const shiftCreated = functions.https.onCall(async (data, context)=>{
     token: token,
     notification: {
       title: "Vagtbanken",
-      body: "En vagt er blevet oprettet til d. "+date+" inde under Vagtbanken.",
+      body: "En vagt er blevet oprettet til d. "+date+" i Vagtbanken.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
+export const acuteShift = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "AKUT VAGT",
+      body: "En akut vagt er blevet oprettet til d. "+date+" i Vagtbanken.",
     },
   };
 
