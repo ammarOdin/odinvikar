@@ -18,7 +18,7 @@ class ShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 100,
+        height: 50,
         padding: const EdgeInsets.only(top: 15, bottom: 15, right: 15),
         margin: const EdgeInsets.only(bottom: 8, left: 10, right: 10),
         decoration: BoxDecoration(
@@ -88,6 +88,7 @@ class AvailableShiftCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
@@ -174,6 +175,7 @@ class AdminAvailableShiftCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
@@ -256,6 +258,7 @@ class ShiftSystemCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 5),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
@@ -374,6 +377,4 @@ class InfoCard extends StatelessWidget {
     );
 
   }
-
-
 }
