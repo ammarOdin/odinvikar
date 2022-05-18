@@ -18,6 +18,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
   late String dropdownValue;
+  List times = [];
 
   @override
   initState(){
@@ -29,8 +30,29 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     return months[DateTime.now().month - 1];
   }
 
-  calculateHours(int startTime, int endTime){
-    
+  calculateHours(String month) async {
+    var assignedShiftsRef = await FirebaseFirestore.instance.collection(user!.uid).get();
+    var shiftsystemRef = await FirebaseFirestore.instance.collection('shifts').get();
+
+    List shiftsystemList = [];
+    List assignedShiftList = [];
+
+    // save assigned shifts
+    for (var assignedShifts in assignedShiftsRef.docs){
+      int assignedMonth = assignedShifts.get(FieldPath(const ["month"]));
+      if (month == assignedMonth && assignedShifts.get(FieldPath(const ["awaitConfirmation"])) != 0){
+        assignedShiftList.add(assignedShifts.get(FieldPath(const['details'])));
+      }
+    }
+    // save shiftsystem shifts
+    for (var shiftSystemShifts in shiftsystemRef.docs){
+      if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid){
+        shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+      }
+    }
+
+    print("bookede vagter for " + month + " " + shiftsystemList.toString());
+    print("tildelte vagter for " + month + " " + assignedShiftList.toString());
   }
 
   @override
@@ -95,8 +117,8 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
               }
               return Column(
                 children: snapshot.data!.docs.map((document){
-                  if (months[document['month'] - 1] == dropdownValue){
-                    return ShiftCard(onPressed: (){}, text: document['date'].substring(0,5), subtitle: document['status'],);
+                  if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2){
+                    return ShiftCard(onPressed: (){calculateHours(dropdownValue);}, text: document['date'].substring(0,5), subtitle: document['status'],);
                   } else {
                     return Container();
                   }
