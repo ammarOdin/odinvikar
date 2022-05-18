@@ -94,7 +94,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
-          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Måned"), Tab(text: "Uge",)])),
+          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Uge"), Tab(text: "Måned",)])),
 
           Row(
             children: [
@@ -133,10 +133,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
           const Divider(thickness: 1),
 
-          if (_controller.index == 0) Container(
+          if (_controller.index == 1) Container(
               padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
               child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
-          if (_controller.index == 1) Container(
+          if (_controller.index == 0) Container(
               padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
               child: Text("Uge " + DateTime.now().weekOfYear.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
 
@@ -159,7 +159,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       ),),
                     );
                   }
-                  if (_controller.index == 1){
+                  if (_controller.index == 0){
                     return Column(
                       children: snapshot.data!.docs.map((document){
                         if (document['week'] == DateTime.now().weekOfYear && document['awaitConfirmation'] != 0) {
@@ -194,10 +194,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         }
                       }).toList(),
                     );
-                  } else if (_controller.index == 0){
+                  } else if (_controller.index == 1){
                     return Column(
                       children: snapshot.data!.docs.map((document){
-                        if (document['month'] == DateTime.now().month && document['awaitConfirmation'] != 0) {
+                        if (document['month'] == DateTime.now().month && document['awaitConfirmation'] != 0 && DateTime.now().isBefore(DateFormat('dd-MM-yyyy').parse(document['date']))) {
                           return AvailableShiftCard(time: document['details'].substring(0,11), icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
                             var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
                             Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
