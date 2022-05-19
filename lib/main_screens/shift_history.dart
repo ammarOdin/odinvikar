@@ -100,7 +100,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
       totalHours = bookedHours + assignedHours;
       totalMin = bookedMinutes + assignedMinutes;
 
-      return totalHours + totalMin;
+      return totalHours.toString() +" timer og "+totalMin.toString() + " minutter";
   }
 
   @override
@@ -130,9 +130,23 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
             ),
           ),
 
-          Container(
-            padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Timer:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+          FutureBuilder(
+            future: calculateHours(dropdownValue),
+            builder: (context, snapshot) {
+              if (snapshot.hasData){
+                return Container(
+                  padding: EdgeInsets.only(left: 10, bottom: 10),
+                  child: Text("Timer: " + snapshot.data.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                );
+              } else if (!snapshot.hasData) {
+                return Container(
+                  padding: EdgeInsets.only(left: 10, bottom: 10),
+                  child: Text("Timer: ingen", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                );
+              } else {
+                return Container();
+              }
+            }
           ),
 
           Container(
