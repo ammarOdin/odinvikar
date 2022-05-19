@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/card_assets.dart';
+import 'package:intl/intl.dart';
+
 
 class ShiftHistoryScreen extends StatefulWidget {
   const ShiftHistoryScreen({Key? key}) : super(key: key);
@@ -37,22 +39,68 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     List shiftsystemList = [];
     List assignedShiftList = [];
 
+    List shiftsystemHours = [];
+    List shiftsystemMin = [];
+    List assignedShiftHours = [];
+    List assignedShiftMin = [];
+
+    var totalHours;
+    var totalMin;
+
     // save assigned shifts
     for (var assignedShifts in assignedShiftsRef.docs){
-      int assignedMonth = assignedShifts.get(FieldPath(const ["month"]));
+      String assignedMonth = months[assignedShifts.get(FieldPath(const ["month"])) - 1];
       if (month == assignedMonth && assignedShifts.get(FieldPath(const ["awaitConfirmation"])) != 0){
-        assignedShiftList.add(assignedShifts.get(FieldPath(const['details'])));
+        if (assignedShifts.get(FieldPath(const['details'])) != ""){
+          assignedShiftList.add(assignedShifts.get(FieldPath(const['details'])).substring(0,11));
+        }
       }
     }
     // save shiftsystem shifts
     for (var shiftSystemShifts in shiftsystemRef.docs){
-      if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid){
+      String shiftMonth = months[shiftSystemShifts.get(FieldPath(const['month'])) - 1];
+      if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid && month == shiftMonth){
         shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
       }
     }
+    // remove "Tilkaldt" from list, if exists
+    assignedShiftList.removeWhere((element) => element.contains("Tilkaldt"));
 
-    print("bookede vagter for " + month + " " + shiftsystemList.toString());
-    print("tildelte vagter for " + month + " " + assignedShiftList.toString());
+    // save hours and minutes by looping through lists
+    for (var assignedTime in assignedShiftList){
+      var format = DateFormat("HH:mm");
+      var start = format.parse(assignedTime.substring(0,5));
+      var end = format.parse(assignedTime.substring(6));
+
+      Duration duration = end.difference(start).abs();
+      final hours = duration.inHours;
+      final minutes = duration.inMinutes % 60;
+      assignedShiftHours.add(hours);
+      assignedShiftMin.add(minutes);
+    }
+
+    for (var bookedTime in shiftsystemList){
+      var format = DateFormat("HH:mm");
+      var start = format.parse(bookedTime.substring(0,5));
+      var end = format.parse(bookedTime.substring(6));
+
+      Duration duration = end.difference(start).abs();
+      final hours = duration.inHours;
+      final minutes = duration.inMinutes % 60;
+      shiftsystemHours.add(hours);
+      shiftsystemMin.add(minutes);
+    }
+
+    // calculate total hours + minutes from both lists
+      final bookedHours = shiftsystemHours.reduce((value, element) => value + element);
+      final assignedHours = assignedShiftHours.reduce((value, element) => value + element);
+      final bookedMinutes = shiftsystemMin.reduce((value, element) => value + element);
+      final assignedMinutes = assignedShiftMin.reduce((value, element) => value + element);
+
+      totalHours = bookedHours + assignedHours;
+      totalMin = bookedMinutes + assignedMinutes;
+
+      return totalHours + totalMin;
   }
 
   @override
@@ -89,7 +137,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
 
           Container(
             padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Timer beregnes ud fra de vagter du er blevet tildelt og fra vagtbanken - der tages ikke udgangspunkt i timer fra tilkaldelse.", style: TextStyle(color: Colors.grey, fontSize: 12),),
+            child: Text("Timer beregnes ud fra de vagter du er blevet tildelt, og fra vagtbanken - der tages ikke udgangspunkt i timer fra tilkaldelse.", style: TextStyle(color: Colors.grey, fontSize: 12),),
           ),
 
           Container(
