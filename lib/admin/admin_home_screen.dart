@@ -24,6 +24,9 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
   final databaseReference = FirebaseFirestore.instance;
   late TabController _controller;
 
+  var data;
+  var userReference;
+
   @override
   void initState() {
     _controller = TabController(length: 2, vsync: this);
@@ -56,6 +59,8 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
       for (var shifts in shiftRef.docs){
+        data = shifts;
+        userReference = shiftRef;
         if (shifts.data()['awaitConfirmation'].toString() != "0"){
           entireShift.add(shifts.data()['date'] + ";"
               + shifts.data()['status'] + ";"
@@ -67,9 +72,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               + users.get(FieldPath(const ['token'])) + ";"
               + users.id + ";"
               + shifts.data()['awaitConfirmation'].toString() + ";"
-              + shifts.data()['details']
+              + shifts.data()['details'] + ";"
+              //+ shifts.toString()  + ";"
+              //+ shiftRef.toString()  + ";"
           );
-        } else {
+        } else if (shifts.data()['awaitConfirmation'].toString() == "0") {
           entireShift.add(shifts.data()['date'] + ";"
               + shifts.data()['status'] + ";"
               + shifts.data()['color'] + ";"
@@ -80,6 +87,8 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               + users.get(FieldPath(const ['token'])) + ";"
               + users.id + ";"
               + shifts.data()['awaitConfirmation'].toString() + ";"
+              //+ shifts.toString()  + ";"
+              //+ shiftRef.toString()  + ";"
           );
         }
       }
@@ -157,33 +166,32 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       children: [
                         Container(padding: EdgeInsets.only(left: 30, right: 30),child: ElevatedButton.icon(onPressed: (){
                           if (int.parse(shiftSplit[9]) != 0){
-                           /* Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: data.id,
-                              status: data.get(FieldPath(const ['status'])),
-                              name: users.get(FieldPath(const ['name'])),
-                              token: users.get(FieldPath(const ['token'])),
-                              time: data.get(FieldPath(const ['time'])),
-                              comment: data.get(FieldPath(const ['comment'])),
-                              awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
-                              details: data.get(FieldPath(const ['details'])),
-                              color: data.get(FieldPath(const ['color'])),
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: shiftSplit[0],
+                              status: shiftSplit[1],
+                              name: shiftSplit[6],
+                              token: shiftSplit[7],
+                              time: shiftSplit[3],
+                              comment: shiftSplit[4],
+                              awaitConfirmation: int.parse(shiftSplit[9]),
+                              details: shiftSplit[10],
+                              color: shiftSplit[2],
                               data: data,
-                              userRef: userRef,
-                            ))); */} else if (int.parse(shiftSplit[9]) == 0){
-                            /*Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: data.id,
-                              status: data.get(FieldPath(const ['status'])),
-                              name: users.get(FieldPath(const ['name'])),
-                              token: users.get(FieldPath(const ['token'])),
-                              time: data.get(FieldPath(const ['time'])),
-                              comment: data.get(FieldPath(const ['comment'])),
-                              awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
-                              color: data.get(FieldPath(const ['color'])),
+                              userRef: userReference,
+                            ))); } else if (int.parse(shiftSplit[9]) == 0){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: shiftSplit[0],
+                              status: shiftSplit[1],
+                              name: shiftSplit[6],
+                              token: shiftSplit[7],
+                              time: shiftSplit[3],
+                              comment: shiftSplit[4],
+                              awaitConfirmation: int.parse(shiftSplit[9]),
+                              color: shiftSplit[2],
                               data: data,
-                              userRef: userRef,
-                            )));*/
+                              userRef: userReference,
+                            )));
                           }
-
                         }, icon: Icon(Icons.login), label: Text("Vagtoplysninger"))),
                         const Divider(thickness: 1),
                         Container(
