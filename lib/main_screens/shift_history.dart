@@ -17,10 +17,11 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
   get unsortedShift => FirebaseFirestore.instance.collection(user!.uid).orderBy('date', descending: false);
+  get shifsystemShifts => FirebaseFirestore.instance.collection('shifts');
+
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
   late String dropdownValue;
-  List times = [];
 
   @override
   initState(){
@@ -97,10 +98,38 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
       final bookedMinutes = shiftsystemMin.reduce((value, element) => value + element);
       final assignedMinutes = assignedShiftMin.reduce((value, element) => value + element);
 
-      totalHours = bookedHours + assignedHours;
-      totalMin = bookedMinutes + assignedMinutes;
+      var totalTime = (bookedHours * 60) + (assignedHours * 60) + bookedMinutes + assignedMinutes;
+      totalHours = (totalTime / 60).round();
+      totalMin = totalTime % 60;
 
-      return totalHours.toString() +" timer og "+totalMin.toString() + " minutter";
+      return totalHours.toString() + " timer og " + totalMin.toString() + " minutter" ;
+  }
+
+  calculateShifts(String month) async {
+    var assignedShiftsRef = await FirebaseFirestore.instance.collection(user!.uid).get();
+    var shiftsystemRef = await FirebaseFirestore.instance.collection('shifts').get();
+
+    List shiftsystemList = [];
+    List assignedShiftList = [];
+
+    for (var assignedShifts in assignedShiftsRef.docs){
+      String assignedMonth = months[assignedShifts.get(FieldPath(const ["month"])) - 1];
+      if (month == assignedMonth && assignedShifts.get(FieldPath(const ["awaitConfirmation"])) != 0){
+        if (assignedShifts.get(FieldPath(const['details'])) != ""){
+          assignedShiftList.add(assignedShifts.get(FieldPath(const['details'])).substring(0,11));
+        }
+      }
+    }
+    // save shiftsystem shifts
+    for (var shiftSystemShifts in shiftsystemRef.docs){
+      String shiftMonth = months[shiftSystemShifts.get(FieldPath(const['month'])) - 1];
+      if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid && month == shiftMonth && shiftSystemShifts.get(FieldPath(const ["awaitConfirmation"])) != 0){
+        shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+      }
+    }
+    // remove "Tilkaldt" from list, if exists
+    //assignedShiftList.removeWhere((element) => element.contains("Tilkaldt"));
+    return shiftsystemList.length + assignedShiftList.length;
   }
 
   @override
@@ -154,10 +183,26 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
             child: Text("Timer beregnes ud fra de vagter du er blevet tildelt, og fra vagtbanken - der tages ikke udgangspunkt i timer fra tilkaldelse.", style: TextStyle(color: Colors.grey, fontSize: 12),),
           ),
 
-          Container(
-            padding: EdgeInsets.only(left: 10, bottom: 40, top: 10),
-            child: Text("Antal vagter:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+          FutureBuilder(
+              future: calculateShifts(dropdownValue),
+              builder: (context, snapshot) {
+                if (snapshot.hasData){
+                  return Container(
+                    padding: EdgeInsets.only(left: 10, bottom: 10),
+                    child: Text("Antal vagter: " + snapshot.data.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                  );
+                } else if (!snapshot.hasData) {
+                  return Container(
+                    padding: EdgeInsets.only(left: 10, bottom: 10),
+                    child: Text("Antal vagter: ingen", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                  );
+                } else {
+                  return Container();
+                }
+              }
           ),
+
+          const Divider(thickness: 1,),
 
           // Cards of shifts on selected month
           StreamBuilder(
@@ -178,16 +223,62 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                 );
               }
               return Column(
-                children: snapshot.data!.docs.map((document){
-                  if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2){
-                    return ShiftCard(onPressed: (){calculateHours(dropdownValue);}, text: document['date'].substring(0,5), subtitle: document['status'],);
-                  } else {
-                    return Container();
-                  }
-                }).toList(),
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 10, bottom: 20, top: 20),
+                    child: Text("Tilgængelighedskalenderen", style: TextStyle(fontSize: 16),),
+                  ),
+                  Column(
+                    children: snapshot.data!.docs.map((document){
+                      if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2){
+                        return ShiftCard(onPressed: (){}, text: document['date'].substring(0,5), subtitle: document['status'],);
+                      } else {
+                        return Container();
+                      }
+                    }).toList(),
+                  ),
+                ],
               );
             },
           ),
+
+          // shiftsystem shifts
+          StreamBuilder(
+            stream: shifsystemShifts.snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+              if (!snapshot.hasData){
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                  color: Colors.blue,
+                  size: 50,
+                ));
+              }else if (snapshot.data!.docs.isEmpty){
+                return Container(
+                  padding: const EdgeInsets.all(50),
+                  child: const Center(child: Text(
+                    "Ingen Vagter",
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),),
+                );
+              }
+              return Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 10, bottom: 20, top: 20),
+                    child: Text("Vagtbanken", style: TextStyle(fontSize: 16),),
+                  ),
+                  Column(
+                    children: snapshot.data!.docs.map((document){
+                      if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2 && document['userID'] == user!.uid){
+                        return ShiftCard(onPressed: (){}, text: document['date'].substring(0,5), subtitle: "Taget vagt",);
+                      } else {
+                        return Container();
+                      }
+                    }).toList(),
+                  ),
+                ],
+              );
+            },
+          )
         ],
       ),
     );

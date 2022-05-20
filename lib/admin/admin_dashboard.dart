@@ -49,7 +49,6 @@ class _HomescreenState extends State<AdminDashboard> {
       ),
       body: SizedBox.expand(
         child: PageView(
-          physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
