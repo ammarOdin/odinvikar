@@ -8,6 +8,7 @@ import 'package:odinvikar/admin/admin_edit_shift.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../card_assets.dart';
 import 'admin_assign_shift.dart';
+import 'admin_shift_details.dart';
 
 
 class AdminHomeScreen extends StatefulWidget {
@@ -55,17 +56,32 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
       for (var shifts in shiftRef.docs){
-        entireShift.add(shifts.data()['date'] + ";"
-            + shifts.data()['status'] + ";"
-            + shifts.data()['color'] + ";"
-            + shifts.data()['time'] + ";"
-            + shifts.data()['comment'] + ";"
-            + users.get(FieldPath(const ['phone'])) + ";"
-            + users.get(FieldPath(const ['name'])) + ";"
-            + users.get(FieldPath(const ['token'])) + ";"
-            + users.id + ";"
-            + shifts.data()['awaitConfirmation'].toString() + ";"
-        );
+        if (shifts.data()['awaitConfirmation'].toString() != "0"){
+          entireShift.add(shifts.data()['date'] + ";"
+              + shifts.data()['status'] + ";"
+              + shifts.data()['color'] + ";"
+              + shifts.data()['time'] + ";"
+              + shifts.data()['comment'] + ";"
+              + users.get(FieldPath(const ['phone'])) + ";"
+              + users.get(FieldPath(const ['name'])) + ";"
+              + users.get(FieldPath(const ['token'])) + ";"
+              + users.id + ";"
+              + shifts.data()['awaitConfirmation'].toString() + ";"
+              + shifts.data()['details']
+          );
+        } else {
+          entireShift.add(shifts.data()['date'] + ";"
+              + shifts.data()['status'] + ";"
+              + shifts.data()['color'] + ";"
+              + shifts.data()['time'] + ";"
+              + shifts.data()['comment'] + ";"
+              + users.get(FieldPath(const ['phone'])) + ";"
+              + users.get(FieldPath(const ['name'])) + ";"
+              + users.get(FieldPath(const ['token'])) + ";"
+              + users.id + ";"
+              + shifts.data()['awaitConfirmation'].toString() + ";"
+          );
+        }
       }
     }
 
@@ -137,10 +153,38 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5)),
+                      title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
                       children: [
-                        Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + shiftSplit[3])),
-                        Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nKommentar: " + shiftSplit[4])),
+                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: ElevatedButton.icon(onPressed: (){
+                          if (int.parse(shiftSplit[9]) != 0){
+                           /* Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: data.id,
+                              status: data.get(FieldPath(const ['status'])),
+                              name: users.get(FieldPath(const ['name'])),
+                              token: users.get(FieldPath(const ['token'])),
+                              time: data.get(FieldPath(const ['time'])),
+                              comment: data.get(FieldPath(const ['comment'])),
+                              awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+                              details: data.get(FieldPath(const ['details'])),
+                              color: data.get(FieldPath(const ['color'])),
+                              data: data,
+                              userRef: userRef,
+                            ))); */} else if (int.parse(shiftSplit[9]) == 0){
+                            /*Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: data.id,
+                              status: data.get(FieldPath(const ['status'])),
+                              name: users.get(FieldPath(const ['name'])),
+                              token: users.get(FieldPath(const ['token'])),
+                              time: data.get(FieldPath(const ['time'])),
+                              comment: data.get(FieldPath(const ['comment'])),
+                              awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
+                              color: data.get(FieldPath(const ['color'])),
+                              data: data,
+                              userRef: userRef,
+                            )));*/
+                          }
+
+                        }, icon: Icon(Icons.login), label: Text("Vagtoplysninger"))),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),
