@@ -155,7 +155,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
                       children: [
-                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: ElevatedButton.icon(onPressed: () async {
+                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: TextButton.icon(onPressed: () async {
                           var userRef = await databaseReference.collection(shiftSplit[8]);
                           var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
                           if (int.parse(shiftSplit[9]) != 0){
@@ -187,7 +187,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                               userRef: userRef,
                             )));
                           }
-                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),), style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent))),),
+                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),),),),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),
@@ -270,10 +270,41 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5)),
+                      title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
                       children: [
-                        Container(padding: EdgeInsets.only(left: 30),child: Text("\nKan arbejde: " + shiftSplit[3])),
-                        Container(padding: EdgeInsets.only(left: 30, bottom: 20),child: Text("\nKommentar: " + shiftSplit[4])),
+                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: TextButton.icon(onPressed: () async {
+                          var userRef = await databaseReference.collection(shiftSplit[8]);
+                          var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+                          if (int.parse(shiftSplit[9]) != 0){
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: shiftSplit[0],
+                              status: shiftSplit[1],
+                              name: shiftSplit[6],
+                              token: shiftSplit[7],
+                              time: shiftSplit[3],
+                              comment: shiftSplit[4],
+                              awaitConfirmation: int.parse(shiftSplit[9]),
+                              details: shiftSplit[10],
+                              color: shiftSplit[2],
+                              data: dataRef,
+                              userRef: userRef,
+                            ))); } else if (int.parse(shiftSplit[9]) == 0){
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                              date: shiftSplit[0],
+                              status: shiftSplit[1],
+                              name: shiftSplit[6],
+                              token: shiftSplit[7],
+                              time: shiftSplit[3],
+                              comment: shiftSplit[4],
+                              awaitConfirmation: int.parse(shiftSplit[9]),
+                              color: shiftSplit[2],
+                              data: dataRef,
+                              userRef: userRef,
+                            )));
+                          }
+                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),),),),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),

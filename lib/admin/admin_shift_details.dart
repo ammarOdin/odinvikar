@@ -65,29 +65,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(widget.name + "'s vagt"),
-        actions: [
-          IconButton(onPressed: () async {
-            if (awaitConfirmation != "0"){
-              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
-              setState(() {
-                details = result[0];
-                awaitConfirmation = result[1];
-                status = result[2];
-                color = result[3];
-              });
-            } else {
-              Fluttertoast.showToast(
-                  msg: "Der er ikke tildelt en vagt endnu.",
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 2,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            }
-          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
-        ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: ListView(
@@ -334,27 +311,54 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
               ],
             ),
           ) else Container(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 50),
-            height: 100,
-            width: 250,
-            child: ElevatedButton.icon(
-                onPressed: () async {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: Text("Slet dag"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                      actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
-                          , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
-                },
-                style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 16),
-                  primary: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+            padding: EdgeInsets.only(left: 2),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 2, right: 2),
+                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(title: Text("Slet dag"),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
+                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                                , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
+                      label: Text("Slet vagt")),
                 ),
-                icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                label: Text("Slet vagt")),
+                Container(
+                  padding: EdgeInsets.only(left: 2, right: 2),
+                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  child: ElevatedButton.icon(onPressed: () async {
+                    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
+                    setState(() {
+                      details = result[0];
+                      awaitConfirmation = result[1];
+                      status = result[2];
+                      color = result[3];
+                    });
+                  },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.edit_outlined, color: Colors.white, size: 18,), label: Text("Rediger")),
+                ),
+              ],
+            ),
           ),
 
         ],
