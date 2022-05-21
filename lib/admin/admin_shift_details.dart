@@ -10,7 +10,7 @@ import 'admin_edit_shift.dart';
 class AdminShiftDetailsScreen extends StatefulWidget {
   final String date, status, time, comment, color, name, token;
   final String? details;
-  final QueryDocumentSnapshot<Map<String, dynamic>> data;
+  final DocumentReference<Map<String, dynamic>> data;
   final CollectionReference<Map<String, dynamic>> userRef;
   final int awaitConfirmation;
   const AdminShiftDetailsScreen({Key? key, required this.date, required this.status, required this.time, required this.comment, required this.color,
@@ -275,7 +275,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           return AlertDialog(title: Text("Slet dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
                       style: ElevatedButton.styleFrom(
@@ -343,7 +343,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                     return AlertDialog(title: Text("Slet dag"),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                      actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                      actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
                           , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                 },
                 style: ElevatedButton.styleFrom(

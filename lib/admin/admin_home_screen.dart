@@ -24,9 +24,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
   final databaseReference = FirebaseFirestore.instance;
   late TabController _controller;
 
-  var data;
-  var userReference;
-
   @override
   void initState() {
     _controller = TabController(length: 2, vsync: this);
@@ -59,8 +56,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
       for (var shifts in shiftRef.docs){
-        data = shifts;
-        userReference = shiftRef;
         if (shifts.data()['awaitConfirmation'].toString() != "0"){
           entireShift.add(shifts.data()['date'] + ";"
               + shifts.data()['status'] + ";"
@@ -73,8 +68,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               + users.id + ";"
               + shifts.data()['awaitConfirmation'].toString() + ";"
               + shifts.data()['details'] + ";"
-              //+ shifts.toString()  + ";"
-              //+ shiftRef.toString()  + ";"
           );
         } else if (shifts.data()['awaitConfirmation'].toString() == "0") {
           entireShift.add(shifts.data()['date'] + ";"
@@ -87,8 +80,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               + users.get(FieldPath(const ['token'])) + ";"
               + users.id + ";"
               + shifts.data()['awaitConfirmation'].toString() + ";"
-              //+ shifts.toString()  + ";"
-              //+ shiftRef.toString()  + ";"
           );
         }
       }
@@ -164,8 +155,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
                       children: [
-                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: ElevatedButton.icon(onPressed: (){
+                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: ElevatedButton.icon(onPressed: () async {
+                          var userRef = await databaseReference.collection(shiftSplit[8]);
+                          var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
                           if (int.parse(shiftSplit[9]) != 0){
+                            Navigator.pop(context);
                             Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
                               date: shiftSplit[0],
                               status: shiftSplit[1],
@@ -176,9 +170,10 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                               awaitConfirmation: int.parse(shiftSplit[9]),
                               details: shiftSplit[10],
                               color: shiftSplit[2],
-                              data: data,
-                              userRef: userReference,
+                              data: dataRef,
+                              userRef: userRef,
                             ))); } else if (int.parse(shiftSplit[9]) == 0){
+                            Navigator.pop(context);
                             Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
                               date: shiftSplit[0],
                               status: shiftSplit[1],
@@ -188,11 +183,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                               comment: shiftSplit[4],
                               awaitConfirmation: int.parse(shiftSplit[9]),
                               color: shiftSplit[2],
-                              data: data,
-                              userRef: userReference,
+                              data: dataRef,
+                              userRef: userRef,
                             )));
                           }
-                        }, icon: Icon(Icons.login), label: Text("Vagtoplysninger"))),
+                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),), style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent))),),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),

@@ -97,10 +97,12 @@ class _State extends State<AdminCalendar> {
       for (var users in userRef.docs){
         var userData = await databaseReference.collection(users.id).get();
         var userRef = await databaseReference.collection(users.id);
+
         for (var data in userData.docs){
           if (appointmentDetails.eventName == users.get(FieldPath(const ["name"])) && data.get(FieldPath(const ["date"])) == tapDate){
             Navigator.pop(context);
             if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) != 0){
+              var dataRef = await databaseReference.collection(users.id).doc(data.id);
               Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
                 date: data.id,
                 status: data.get(FieldPath(const ['status'])),
@@ -111,7 +113,7 @@ class _State extends State<AdminCalendar> {
                 awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
                 details: data.get(FieldPath(const ['details'])),
                 color: data.get(FieldPath(const ['color'])),
-                data: data,
+                data: dataRef,
                 userRef: userRef,
               ))).then((value) {
                 setState(() {
@@ -119,6 +121,7 @@ class _State extends State<AdminCalendar> {
                 });
               });
             } else if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) == 0){
+              var dataRef = await databaseReference.collection(users.id).doc(data.id);
               Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
                 date: data.id,
                 status: data.get(FieldPath(const ['status'])),
@@ -128,7 +131,7 @@ class _State extends State<AdminCalendar> {
                 comment: data.get(FieldPath(const ['comment'])),
                 awaitConfirmation: data.get(FieldPath(const ['awaitConfirmation'])),
                 color: data.get(FieldPath(const ['color'])),
-                data: data,
+                data: dataRef,
                 userRef: userRef,
               ))).then((value) {
                 setState(() {
