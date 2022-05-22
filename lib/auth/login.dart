@@ -8,6 +8,7 @@ import 'package:odinvikar/main_screens/dashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
+import 'auth_register.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -125,7 +126,7 @@ class _LoginState extends State<LoginScreen> {
                   key: _resetKey,
                   child: TextButton(onPressed: () async {
                     showDialog(context: context, builder: (BuildContext context){
-                      return AlertDialog(title: const Text("Nulstil Adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
+                      return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
                         TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
                         TextButton(onPressed: () async {
                           if(_resetKey.currentState!.validate()){
@@ -138,14 +139,17 @@ class _LoginState extends State<LoginScreen> {
                                 _showSnackBar(context, "Fejl", Colors.red);}
                             }
 
-                          }}, child: const Text("Send E-mail"))],);});
-                  }, child: Text("Glemt Adgangskode")),
+                          }}, child: const Text("Send e-mail"))],);});
+                  }, child: Text("Glemt adgangskode")),
                 ),
+                TextButton(onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AuthRegisterPage()));
+                }, child: Text("Ny vikar? Opret bruger")),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 80),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 30),
             child: Center(child: Text("Har du problemer med din konto, kan du kontakte os via telefon")),
           ),
           TextButton(onPressed: (){launch("tel://60 51 02 97");}, child: Text("60 51 02 97")),

@@ -2,14 +2,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
-import 'package:odinvikar/main_screens/login.dart';
-import 'package:odinvikar/main_screens/web_register.dart';
+import 'package:odinvikar/auth/login.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -19,15 +16,7 @@ bool screen = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb){
-    await Firebase.initializeApp(
-      // web app info
-      options: FirebaseOptions(apiKey: "AIzaSyBU0I4h6PEocz7ZgT5Eb2FEo0tVSUD-jIM", appId: "1:320368504585:web:d6ecf3729dc524167aedd8", messagingSenderId: "320368504585", projectId: "odinvikar", storageBucket: "odinvikar.appspot.com"),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-
+  await Firebase.initializeApp();
 
   // Foreground notifications
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -121,11 +110,7 @@ class MyApp extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
 
     Widget checkHome(){
-      if (kIsWeb) {
-        return RegisterPage();
-      } else {
-        return user == null? const LoginScreen() : const AuthenticationWrapper();
-    }
+      return user == null? const LoginScreen() : const AuthenticationWrapper();
     }
 
     return MaterialApp(
