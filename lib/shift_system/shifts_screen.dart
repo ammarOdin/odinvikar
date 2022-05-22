@@ -61,7 +61,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Container(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 8),
                     child: const Center(
                         child: Text(
                           "Vagter",

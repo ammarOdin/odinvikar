@@ -41,12 +41,12 @@ class _HomescreenState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      /*extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-      ),
+      ),*/
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,

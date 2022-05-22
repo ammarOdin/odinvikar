@@ -161,7 +161,7 @@ class _State extends State<SettingsScreen> {
                     top: MediaQuery
                         .of(context)
                         .size
-                        .height / 30),
+                        .height / 10),
                 child: const Center(
                     child: Text(
                       "Profil",

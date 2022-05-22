@@ -347,7 +347,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             children: [
               Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 30),
+                      top: MediaQuery.of(context).size.height / 10),
                   child: const Center(
                       child: Text(
                         "Vikaroversigt",
@@ -356,7 +356,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               Center(
                 child: Container(
                   padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 40),
+                      top: MediaQuery.of(context).size.height / 30),
                   child: Text(
                     DateFormat('dd-MM-yyyy').format(DateTime.now()),
                     style: const TextStyle(color: Colors.white, fontSize: 26),

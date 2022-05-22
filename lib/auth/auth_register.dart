@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/register.dart';
@@ -64,7 +64,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  if (_authkey.currentState!.validate()){
+                  if (_authkey.currentState!.validate()) {
                     showDialog(barrierDismissible: false, context: context, builder: (BuildContext context){
                       return AlertDialog(
                         elevation: 0,
@@ -75,16 +75,18 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                       );
                     });
                     try{
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
-                      Navigator.pop(context);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
-                    } on FirebaseAuthException catch(e){
-                      if(e.code == "user-not-found"){
+                      var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
+                      //await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
+                      if (emailauthController.text.trim() == getAuthInfo.data()!['email']  && passwordauthController.text.trim() == getAuthInfo.data()!['password']){
                         Navigator.pop(context);
-                        _showSnackBar(context, "E-mail eksisterer ikke!", Colors.red);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
                       } else {
                         Navigator.pop(context);
-                        _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}
+                        _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);
+                      }
+                    } catch(e){
+                      Navigator.pop(context);
+                      _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);
                     }
                   }}, icon: const Icon(Icons.check_circle_outline), label: const Align(alignment: Alignment.centerLeft, child: Text("Autentificer")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(

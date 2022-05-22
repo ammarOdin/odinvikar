@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:odinvikar/auth/login.dart';
+import 'package:odinvikar/main_screens/dashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
 
@@ -12,7 +14,7 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage>  with WidgetsBindingObserver {
+class _RegisterPageState extends State<RegisterPage> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -28,22 +30,14 @@ class _RegisterPageState extends State<RegisterPage>  with WidgetsBindingObserve
 
   @override
   void initState(){
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose(){
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  void didChangeAppLifecycleState(AppLifecycleState state){
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.detached){
-      FirebaseAuth.instance.signOut();
-    }
-  }
 
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
@@ -78,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage>  with WidgetsBindingObserve
     return WillPopScope(
       onWillPop: () async {
         Fluttertoast.showToast(
-            msg: "Tryk på tilbage-knappen for at navigere tilbage til hjemmeskærmen.",
+            msg: "Tryk på tilbage-knappen for at navigere tilbage til hjemmeskærmen",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 2,
@@ -96,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage>  with WidgetsBindingObserve
           leading: IconButton(onPressed: (){
             FirebaseAuth.instance.signOut();
             Fluttertoast.showToast(
-                msg: "Brugeroprettelse afbrudt.",
+                msg: "Brugeroprettelse afbrudt",
                 toastLength: Toast.LENGTH_LONG,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 2,
@@ -163,13 +157,11 @@ class _RegisterPageState extends State<RegisterPage>  with WidgetsBindingObserve
                               _showSnackBar(context, "Bruger findes allerede!", Colors.red);
                             } else if (!documentSnapshot.exists) {
                               await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
-                              emailController.clear();
-                              passwordController.clear();
-                              nameController.clear();
-                              phoneController.clear();
+                              _showSnackBar(context, "Logget ind", Colors.green);
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
                             }
                           });
-                          launch("https://vikarly.dk/?page_id=1685");
+                          //launch("https://vikarly.dk/?page_id=1685");
                         } on FirebaseAuthException catch(e){
                           _showSnackBar(context, "Fejl ved oprettelse - " + e.code, Colors.red);}
                       }},child: Container(

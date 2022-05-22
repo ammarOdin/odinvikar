@@ -278,7 +278,7 @@ class _State extends State<AdminSettingsScreen> {
                     top: MediaQuery
                         .of(context)
                         .size
-                        .height / 30),
+                        .height / 10),
                 child: const Center(
                     child: Text(
                       "Profil",

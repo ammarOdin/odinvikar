@@ -75,7 +75,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 30),
+                        top: MediaQuery.of(context).size.height / 10),
                     child: const Center(
                         child: Text(
                           "Dine dage",
@@ -83,7 +83,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         ))),
                 Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 40),
+                        top: MediaQuery.of(context).size.height / 30),
                     child: Center(
                       child: Text(
                         DateFormat('dd-MM-yyyy').format(DateTime.now()),
