@@ -60,12 +60,12 @@ class _LoginState extends State<LoginScreen> {
       return false;
       },
       child: Scaffold(
-        extendBodyBehindAppBar: true,
+        /*extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.black),
-        ),
+        ),*/
         body: ListView(
           physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.only(top: 0),
@@ -79,7 +79,7 @@ class _LoginState extends State<LoginScreen> {
                 children: [
                   Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 100, left: MediaQuery.of(context).size.width / 20 ),
+                          top: MediaQuery.of(context).size.height / 10, left: MediaQuery.of(context).size.width / 20 ),
                       child: const Align(
                         alignment: Alignment.centerLeft,
                           child: Text(
