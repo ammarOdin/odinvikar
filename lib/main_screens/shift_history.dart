@@ -61,7 +61,9 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     for (var shiftSystemShifts in shiftsystemRef.docs){
       String shiftMonth = months[shiftSystemShifts.get(FieldPath(const['month'])) - 1];
       if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid && month == shiftMonth){
-        shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+        if (shiftSystemShifts.get(FieldPath(const['time'])) != ""){
+          shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+        }
       }
     }
     // remove "Tilkaldt" from list, if exists
@@ -93,16 +95,36 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     }
 
     // calculate total hours + minutes from both lists
-      final bookedHours = shiftsystemHours.reduce((value, element) => value + element);
-      final assignedHours = assignedShiftHours.reduce((value, element) => value + element);
-      final bookedMinutes = shiftsystemMin.reduce((value, element) => value + element);
-      final assignedMinutes = assignedShiftMin.reduce((value, element) => value + element);
 
-      var totalTime = (bookedHours * 60) + (assignedHours * 60) + bookedMinutes + assignedMinutes;
-      totalHours = (totalTime / 60).round();
-      totalMin = totalTime % 60;
+    // Vagtbanken list
+    final bookedHours;
+    final bookedMinutes;
+    if (!shiftsystemList.isEmpty){
+      bookedHours = shiftsystemHours.reduce((value, element) => value + element);
+      bookedMinutes = shiftsystemMin.reduce((value, element) => value + element);
+    } else {
+      bookedMinutes = 0;
+      bookedHours = 0;
+    }
 
-      return totalHours.toString() + " timer og " + totalMin.toString() + " minutter" ;
+    // Tilgængelighedskalenderen list
+    final assignedHours;
+    final assignedMinutes;
+    if (!assignedShiftList.isEmpty){
+      assignedHours = assignedShiftHours.reduce((value, element) => value + element);
+      assignedMinutes = assignedShiftMin.reduce((value, element) => value + element);
+    } else {
+      assignedMinutes = 0;
+      assignedHours = 0;
+    }
+    print(assignedHours);
+    print(shiftsystemHours);
+
+    var totalTime = (bookedHours * 60) + (assignedHours * 60) + bookedMinutes + assignedMinutes;
+    totalHours = (totalTime / 60).round();
+    totalMin = totalTime % 60;
+
+    return totalHours.toString() + " timer og " + totalMin.toString() + " minutter" ;
   }
 
   calculateShifts(String month) async {
@@ -124,7 +146,9 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     for (var shiftSystemShifts in shiftsystemRef.docs){
       String shiftMonth = months[shiftSystemShifts.get(FieldPath(const['month'])) - 1];
       if (shiftSystemShifts.get(FieldPath(const['userID'])) == user!.uid && month == shiftMonth && shiftSystemShifts.get(FieldPath(const ["awaitConfirmation"])) != 0){
-        shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+        if (shiftSystemShifts.get(FieldPath(const['time'])) != ""){
+          shiftsystemList.add(shiftSystemShifts.get(FieldPath(const['time'])));
+        }
       }
     }
     // remove "Tilkaldt" from list, if exists
@@ -213,7 +237,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   color: Colors.blue,
                   size: 50,
                 ));
-              }else if (snapshot.data!.docs.isEmpty){
+              }/*else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.all(50),
                   child: const Center(child: Text(
@@ -221,7 +245,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),),
                 );
-              }
+              }*/
               return Column(
                 children: [
                   Container(
@@ -231,7 +255,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   Column(
                     children: snapshot.data!.docs.map((document){
                       if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2){
-                        return ShiftCard(onPressed: (){}, text: document['date'].substring(0,5), subtitle: document['status'],);
+                        return ShiftCard(onPressed: (){calculateHours(dropdownValue);}, text: document['date'].substring(0,5), subtitle: document['status'],);
                       } else {
                         return Container();
                       }
@@ -251,7 +275,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   color: Colors.blue,
                   size: 50,
                 ));
-              }else if (snapshot.data!.docs.isEmpty){
+              }/*else if (snapshot.data!.docs.isEmpty){
                 return Container(
                   padding: const EdgeInsets.all(50),
                   child: const Center(child: Text(
@@ -259,7 +283,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                     style: TextStyle(color: Colors.blue, fontSize: 18),
                   ),),
                 );
-              }
+              }*/
               return Column(
                 children: [
                   Container(
