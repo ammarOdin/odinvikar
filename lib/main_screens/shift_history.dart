@@ -117,8 +117,6 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
       assignedMinutes = 0;
       assignedHours = 0;
     }
-    print(assignedHours);
-    print(shiftsystemHours);
 
     var totalTime = (bookedHours * 60) + (assignedHours * 60) + bookedMinutes + assignedMinutes;
     totalHours = (totalTime / 60).round();
