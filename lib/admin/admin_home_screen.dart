@@ -187,7 +187,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                               userRef: userRef,
                             )));
                           }
-                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),),),),
+                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Flere oplysninger", style: TextStyle(color: Colors.blue),),),),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),
@@ -304,7 +304,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                               userRef: userRef,
                             )));
                           }
-                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Vagtoplysninger", style: TextStyle(color: Colors.blue),),),),
+                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Flere oplysninger", style: TextStyle(color: Colors.blue),),),),
                         const Divider(thickness: 1),
                         Container(
                           padding: EdgeInsets.only(top: 5),

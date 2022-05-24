@@ -5,6 +5,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/card_assets.dart';
 import 'package:intl/intl.dart';
 
+import '../shift_system/shift_details.dart';
+import 'own_days_details.dart';
+
 
 class ShiftHistoryScreen extends StatefulWidget {
   const ShiftHistoryScreen({Key? key}) : super(key: key);
@@ -235,15 +238,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   color: Colors.blue,
                   size: 50,
                 ));
-              }/*else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen Vagter",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }*/
+              }
               return Column(
                 children: [
                   Container(
@@ -253,7 +248,19 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   Column(
                     children: snapshot.data!.docs.map((document){
                       if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2){
-                        return ShiftCard(onPressed: (){calculateHours(dropdownValue);}, text: document['date'].substring(0,5), subtitle: document['status'],);
+                        var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                        return ShiftCard(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                            date: document.id,
+                            status: document['status'],
+                            time: document['time'],
+                            comment: document['comment'],
+                            awaitConfirmation: document['awaitConfirmation'],
+                            details: document['details'],
+                            color: document['color'],
+                            data: reference,
+                          )));
+                        }, text: document['date'].substring(0,5), subtitle: document['status'],);
                       } else {
                         return Container();
                       }
@@ -273,15 +280,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   color: Colors.blue,
                   size: 50,
                 ));
-              }/*else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen Vagter",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }*/
+              }
               return Column(
                 children: [
                   Container(
@@ -291,7 +290,21 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                   Column(
                     children: snapshot.data!.docs.map((document){
                       if (months[document['month'] - 1] == dropdownValue && document['awaitConfirmation'] == 2 && document['userID'] == user!.uid){
-                        return ShiftCard(onPressed: (){}, text: document['date'].substring(0,5), subtitle: "Taget vagt",);
+                        var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                        return ShiftCard(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
+                            date: document['date'],
+                            comment: document['comment'],
+                            time: document['time'],
+                            name: document['name'],
+                            token: document['token'],
+                            data: document.id,
+                            status: document['status'],
+                            awaitConfirmation: document['awaitConfirmation'],
+                            acute: document['isAcute'],
+                            color: document['color'] ,
+                          )));
+                        }, text: document['date'].substring(0,5), subtitle: "Taget vagt",);
                       } else {
                         return Container();
                       }
