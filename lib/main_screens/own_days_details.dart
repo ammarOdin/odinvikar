@@ -116,7 +116,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 comment = result[1];
               });
             }
-          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
+          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,)),
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
@@ -161,9 +161,39 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     Container(
                         padding: EdgeInsets.only(bottom: 5),
                         child: Text("Status", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                    Container(child: Text(widget.status, style: TextStyle(color: Color(int.parse(widget.color)), fontWeight: FontWeight.w500),))
+                    Container(child: Text(widget.status, style: TextStyle(color: Color(int.parse(widget.color)), fontWeight: FontWeight.w500),)),
+                    if (widget.awaitConfirmation == 1) Container(
+                      padding: EdgeInsets.only(top: 10),
+                      height: 35,
+                      //width: 100,
+                      child: ElevatedButton.icon(
+                          onPressed: () async {
+                            await widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
+                            Navigator.pop(context);
+                            _showSnackBar(context, "Vagt accepteret", Colors.green);
+                            var adminRef = await databaseReference.collection('user').get();
+                            var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
+                            for (var admins in adminRef.docs){
+                              if (admins.get(FieldPath(const ["isAdmin"])) == true){
+                                sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), widget.date, userNameRef.get(FieldPath(const ["name"])));
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 16),
+                            primary: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          icon: Icon(Icons.check, color: Colors.white, size: 14,),
+                          label: Text("Accepter", style: TextStyle(fontSize: 14),)),
+                    ) else Container(),
                   ],
-                )
+                ),
+
+                // Accept button
+
               ],
             ),
           ),
@@ -332,36 +362,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
                 label: Text("Slet dag")),
           ),
-
-          // Accept button
-          if (widget.awaitConfirmation == 1) Container(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-            height: 100,
-            width: 250,
-            child: ElevatedButton.icon(
-                onPressed: () async {
-                  await widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
-                  Navigator.pop(context);
-                  _showSnackBar(context, "Vagt accepteret", Colors.green);
-                  var adminRef = await databaseReference.collection('user').get();
-                  var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
-                  for (var admins in adminRef.docs){
-                    if (admins.get(FieldPath(const ["isAdmin"])) == true){
-                      sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), widget.date, userNameRef.get(FieldPath(const ["name"])));
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 16),
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                icon: Icon(Icons.check, color: Colors.white, size: 18,),
-                label: Text("Accepter")),
-          ) else Container(),
-
         ],
       ),
     );
