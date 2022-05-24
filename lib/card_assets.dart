@@ -85,10 +85,10 @@ class AvailableShiftCard extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         height: 120,
         padding: const EdgeInsets.only(top: 5, bottom: 5),
-        margin: const EdgeInsets.only(bottom: 5),
+        margin: const EdgeInsets.only(bottom: 15, right: 5, left: 5),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(5, 5),
