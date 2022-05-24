@@ -226,6 +226,41 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     ],
                   ),
                 ),
+
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Row(
+                    children: [
+                      Container(
+                          padding: EdgeInsets.only(right: 10, left: 5),
+                          child: Icon(Icons.school_outlined, color: Colors.grey,)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Text("Lokalefordeling", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                          /*Container(
+                              width: MediaQuery.of(context).size.width/1.2,
+                              child: Text("", style: TextStyle(color: Colors.grey),))*/
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 5),
+                      child: Text("09:00\n12:00"),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 5),
+                      child: Text("PÆD Vikar"),
+                    ),
+                  ],
+                ),
               ],
             ),
           ) else Container(
