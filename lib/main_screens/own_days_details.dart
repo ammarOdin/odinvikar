@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
@@ -54,6 +55,39 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     time = widget.time;
     comment = widget.comment;
     super.initState();
+  }
+
+  Future<List> getShiftDetails() async {
+    List shift = [];
+    //TODO fetch api data from IST Tabulex for the current user (check for name etc.)
+    /*for (var i = 0; i < 6; i++){
+      shift.add(Container(
+        padding: EdgeInsets.only(top: 5, bottom: 5),
+        child: Row(
+          children: [
+            Container(
+              color: Colors.grey,
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
+              margin: EdgeInsets.only(left: 5),
+              child: Text("09:00\n12:00"),
+            ),
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Text("MAT Vikar"),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Text("5B (22)"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),);
+    }*/
+    return shift;
   }
 
   @override
@@ -179,6 +213,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
           if (widget.awaitConfirmation == 1 || widget.awaitConfirmation == 2) Container(
             padding: EdgeInsets.only(top: 20),
             child: ListView(
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               children: [
                 Center(
@@ -228,39 +263,50 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 ),
 
                 Container(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Row(
                     children: [
                       Container(
                           padding: EdgeInsets.only(right: 10, left: 5),
                           child: Icon(Icons.school_outlined, color: Colors.grey,)),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text("Lokalefordeling", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                          /*Container(
-                              width: MediaQuery.of(context).size.width/1.2,
-                              child: Text("", style: TextStyle(color: Colors.grey),))*/
-                        ],
-                      )
+                      Container(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text("Lokalefordeling", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),)),
                     ],
                   ),
                 ),
-
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 5),
-                      child: Text("09:00\n12:00"),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 5),
-                      child: Text("PÆD Vikar"),
-                    ),
-                  ],
-                ),
+                FutureBuilder(
+                  future: getShiftDetails(), builder: (context, AsyncSnapshot<List> snapshot){
+                  if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                      color: Colors.blue,
+                      size: 50,
+                    ));
+                  } else if (snapshot.data!.isEmpty) {
+                    return Container(
+                      padding: const EdgeInsets.only(left: 50),
+                      child: Text(
+                        "Intet at vise",
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ),);
+                  }
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index){
+                        var shiftCard = snapshot.data?[index];
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              shiftCard
+                            ],
+                          ),
+                        );
+                      }
+                  );
+                }),
               ],
             ),
           ) else Container(
