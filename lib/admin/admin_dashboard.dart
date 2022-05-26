@@ -34,7 +34,7 @@ class _HomescreenState extends State<AdminDashboard> {
     setState(() {
       _currentIndex = index;
       _pageController.animateToPage(index,
-          duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+          duration: Duration(milliseconds: 250), curve: Curves.easeOutCirc);
     });
   }
 
