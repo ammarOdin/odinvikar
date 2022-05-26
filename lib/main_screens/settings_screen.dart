@@ -217,7 +217,7 @@ class _State extends State<SettingsScreen> {
                         TextButton(onPressed: () async {
                           if (_feedbackKey.currentState!.validate()){
                             try {
-                              feedbackReference.doc().set({'message': feedbackController.text});
+                              feedbackReference.doc().set({'message': feedbackController.text, 'user': user!.uid});
                               Navigator.pop(context);
                               _showSnackBar(context, "Feedback sendt!", Colors.green);
                             } catch (e) {

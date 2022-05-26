@@ -292,7 +292,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   ),
                 ),
 
-                Container(
+                /*Container(
                   padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Row(
                     children: [
@@ -336,7 +336,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                         );
                       }
                   );
-                }),
+                }),*/
               ],
             ),
           ) else Container(

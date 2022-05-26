@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:odinvikar/main_screens/own_days_details.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -180,7 +181,7 @@ class OwnDays extends State<OwnDaysScreen> {
                   showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                     startHour: 7,
                     endHour: 19,
-                    nonWorkingDays: [DateTime.saturday, DateTime.sunday]),
+                    nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
                   monthViewSettings: const MonthViewSettings(
                     showAgenda: true,
                     agendaViewHeight: 100,
@@ -202,17 +203,29 @@ class OwnDays extends State<OwnDaysScreen> {
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
-                    setState(() {
-                    getFirestoreShift();
-                  });});
+                  if (getDateTap.weekday == 6  || getDateTap.weekday == 7){
+                    Fluttertoast.showToast(
+                        msg: "Du kan ikke tilføje en weekend",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
+                      setState(() {
+                        getFirestoreShift();
+                      });});
+                  }
                   }, icon: const Icon(Icons.add_circle_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 16),
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                ),),),
+                ),
+                ),),
               /*Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
