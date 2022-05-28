@@ -102,7 +102,7 @@ class AvailableShiftCard extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 15, top: 20),
+                    padding: EdgeInsets.only(left: 15, top: 15),
                     child: Text(day,
                         textAlign: TextAlign.center,
                         style: const TextStyle(

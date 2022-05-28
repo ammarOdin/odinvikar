@@ -2,11 +2,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:odinvikar/main_screens/own_days_details.dart';
-import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -150,10 +148,6 @@ class OwnDays extends State<OwnDaysScreen> {
     });
   }
 
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -226,116 +220,12 @@ class OwnDays extends State<OwnDaysScreen> {
                   ),
                 ),
                 ),),
-              /*Container(
-                height: 50,
-                margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: showJobInfo, icon: const Icon(Icons.delete_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Slet dag")),
-                  style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 16),
-                    primary: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),),),*/
             ],
           ),
         ),
       ),
     );
   }
-
-  Future showJobInfo () => showSlidingBottomSheet(
-    context,
-    builder: (context) => SlidingSheetDialog(
-      duration: const Duration(milliseconds: 450),
-      snapSpec: const SnapSpec(
-          snappings: [0.4, 0.7, 1], initialSnap: 0.4
-      ),
-      builder: showJob,
-      /////headerBuilder: buildHeader,
-      avoidStatusBar: true,
-      cornerRadius: 15,
-    ),
-  );
-
-  Widget showJob(context, state) => Material(
-  child: ListView(
-      shrinkWrap: true,
-      primary: false,
-      children: [
-        Container(padding: const EdgeInsets.only(bottom: 20, top: 10), child: const Center(child: Text("Dine Dage", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),)),
-        StreamBuilder(
-            stream: shift.snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-              if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
-                  color: Colors.blue,
-                  size: 50,
-                ));
-              } else if (snapshot.data!.docs.isEmpty){
-                return Container(
-                  padding: const EdgeInsets.only(top: 10, bottom: 30),
-                  child: const Center(child: Text(
-                    "Ingen Dage",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
-                );
-              }
-                return Column(
-                children: snapshot.data!.docs.map((document){
-                  var docDate = DateFormat('dd-MM-yyyy').parse(document['date']).add(const Duration(days: 1));
-                  if (DateTime.now().isAfter(docDate)){
-                    return Container();
-                  } else if (DateTime.now().isBefore(docDate)){
-                    return Column(children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 15, left: 3, right: 3, bottom: 15),
-                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))),
-                        child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-                          if (document.get(FieldPath(const ["isAccepted"])) == true){
-                            showDialog(context: context, builder: (BuildContext context){
-                              return AlertDialog(
-                                title: const Text("Slet Dag"),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: const Text("Der er en vagt tildelt til dig på denne dato. Kontakt din chef hvis du ikke kan arbejde."),
-                                actions: [
-                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")) ,
-                                ],
-                              );});
-                          } else {
-                            showDialog(context: context, builder: (BuildContext context){
-                              return AlertDialog(
-                                title: const Text("Slet Dag"),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: const Text("Er du sikker på at slette dagen?"),
-                                actions: [
-                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                                  TextButton(onPressed: () {document.reference.delete(); Navigator.pop(context); Navigator.pop(context); getFirestoreShift(); _showSnackBar(context, document.id + " Slettet", Colors.green); setState(() {});}
-                                      , child: const Text("Slet"))
-                                ],
-                              );});
-                          }
-                          }, child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                              children: [
-                                Align(alignment: Alignment.centerLeft, child: Text("Dag: " + document['date'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)),
-                                const Spacer(),
-                                const Align(alignment: Alignment.centerRight, child: Icon(Icons.delete, color: Colors.red,))
-                              ]),
-                        )) ,),
-                    ],);
-                  } else {
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
-                      color: Colors.blue,
-                      size: 50,
-                    ));
-                  }
-                }).toList(),);
-            }),
-      ],
-    ),
-  );
 }
 
 // Calendar content class (syncfusion)

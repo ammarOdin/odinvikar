@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:odinvikar/auth/login.dart';
@@ -156,7 +158,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             if (documentSnapshot.exists) {
                               _showSnackBar(context, "Bruger findes allerede!", Colors.red);
                             } else if (!documentSnapshot.exists) {
-                              await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text});
+                              // get token
+                              var token;
+                              await FirebaseMessaging.instance.getToken().then((value) {token = value;});
+
+                              // save user cred to db
+                              await usersRef.doc(userCredential.user?.uid).set({
+                                'email': emailController.text,
+                                'isAdmin': false,
+                                'name': nameController.text,
+                                'phone': phoneController.text,
+                                'token': token,
+                              });
                               _showSnackBar(context, "Logget ind", Colors.green);
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
                             }
