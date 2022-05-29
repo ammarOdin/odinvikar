@@ -57,6 +57,8 @@ dependencies:
   flutter_slidable: ^1.2.0
   fluttertoast: ^8.0.9
   upgrader: ^3.15.0
+  pdf: ^3.8.1
+  path_provider: ^2.0.10
 
   change_app_package_name: ^1.0.0
 

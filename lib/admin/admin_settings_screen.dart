@@ -10,6 +10,8 @@ import 'package:validators/validators.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
+import 'generate_pdf_invoice.dart';
+
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({Key? key}) : super(key: key);
 
@@ -342,7 +344,12 @@ class _State extends State<AdminSettingsScreen> {
                         }, child: const Text("Send"))
                       ],),
                   );
-                });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),)
+                });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),),
+            Container(
+              child: IconButton(onPressed: () async {
+                final pdfFile = await PdfApi.generateInvoice();
+              } , icon: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue,)),),
+
           ],
         ),
         const Divider(thickness: 1, height: 15),
