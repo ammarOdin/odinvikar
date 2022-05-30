@@ -10,6 +10,7 @@ import 'package:validators/validators.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
+import 'admin_total_hours.dart';
 import 'generate_pdf_invoice.dart';
 
 class AdminSettingsScreen extends StatefulWidget {
@@ -347,8 +348,8 @@ class _State extends State<AdminSettingsScreen> {
                 });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),),
             Container(
               child: IconButton(onPressed: () async {
-                final pdfFile = await PdfApi.generateInvoice();
-              } , icon: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue,)),),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTotalHours()));
+              } , icon: const Icon(Icons.access_time_outlined, color: Colors.blue,)),),
 
           ],
         ),
