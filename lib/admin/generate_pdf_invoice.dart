@@ -16,7 +16,7 @@ class PdfApi {
     return months[DateTime.now().month - 1];
   }
 
-  static Future<File> generateInvoice(int shiftAmount, double shiftLength, double averageLength, double averagePay, double commission) async {
+  static Future<File> generateInvoice(String shiftAmount, String shiftLength, String averageLength, String averagePay, String commission) async {
     final pdf = pw.Document();
     final image = (await rootBundle.load('assets/icon_iOS.png')).buffer.asUint8List();
 
@@ -32,27 +32,27 @@ class PdfApi {
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10, top: 20),
-                child:pw.Text("Antal vagter: " + shiftAmount.toString(), style: pw.TextStyle(fontSize: 18,))
+                child:pw.Text("Antal vagter: " + shiftAmount, style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10),
-                child: pw.Text("Antal timer: " + shiftLength.toString(), style: pw.TextStyle(fontSize: 18,))
+                child: pw.Text("Antal timer: " + shiftLength, style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10),
-                child: pw.Text("Gennemsnittelig antal timer pr. vagt: " + averageLength.toString(), style: pw.TextStyle(fontSize: 18,))
+                child: pw.Text("Gennemsnittelig antal timer pr. vagt: " + averageLength, style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10),
-                child: pw.Text("Gennemsnittelig løn pr. vagt: " + averagePay.toString() + ",-", style: pw.TextStyle(fontSize: 18,))
+                child: pw.Text("Gennemsnittelig løn pr. vagt: " + averagePay + ",-", style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10),
-                child: pw.Text("2,5 % kommision: " + commission.toString() + ",-", style: pw.TextStyle(fontSize: 18,))
+                child: pw.Text("2,5 % kommision: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Spacer(),
             pw.Row(

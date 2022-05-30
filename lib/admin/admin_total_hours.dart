@@ -149,15 +149,15 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
   }
 
   double calculateAverageSalary(){
-    double averageSalary = 0;
-
-    return averageSalary;
+    var average = double.parse(averageLength) * 215;
+    averagePay = average.toString();
+    return average;
   }
 
   double calculateCommission(){
-    double commission = 0;
-
-    return commission;
+    var commissionVal = (0.025 * double.parse(averagePay)) * double.parse(shiftAmount);
+    commission = commissionVal.toString();
+    return commissionVal;
   }
 
   @override
@@ -167,8 +167,13 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         title: Text("Timer"),
         actions: [
           IconButton(onPressed: () async {
-            final pdf = await PdfApi.generateInvoice(int.parse(shiftAmount), double.parse(shiftLength),
-                double.parse(averageLength), double.parse(averagePay), double.parse(commission));
+            final pdf = await PdfApi.generateInvoice(
+                shiftAmount,
+                shiftLength,
+                double.parse((calculateAverageHour()).toStringAsFixed(2)).toString(),
+                double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString(),
+                double.parse((calculateCommission()).toStringAsFixed(2)).toString()
+            );
             PdfApi.openFile(pdf);
           }, icon: Icon(Icons.picture_as_pdf_outlined))
         ],
@@ -238,7 +243,11 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
           ),
           Container(
             padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Gennemsnittelig timer pr. vagt: " + double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+            child: Text("Gennemsnittelig løn pr. vagt: " + double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString() + ",-", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 10, bottom: 10),
+            child: Text("2,5% kommision pr. måned: " + double.parse((calculateCommission()).toStringAsFixed(2)).toString() + ",-", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
           )
         ],
       ),
