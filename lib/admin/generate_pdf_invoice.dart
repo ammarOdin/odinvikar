@@ -11,12 +11,7 @@ class PdfApi {
  static List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
 
-
-  static getMonth(){
-    return months[DateTime.now().month - 1];
-  }
-
-  static Future<File> generateInvoice(String shiftAmount, String shiftLength, String averageLength, String averagePay, String commission) async {
+  static Future<File> generateInvoice(String month, String shiftAmount, String shiftLength, String averageLength, String averagePay, String commission) async {
     final pdf = pw.Document();
     final image = (await rootBundle.load('assets/icon_iOS.png')).buffer.asUint8List();
 
@@ -27,7 +22,7 @@ class PdfApi {
         return pw.ListView(
           children: [
             pw.Header(
-                child: pw.Text("Timer for " + getMonth() + " - Odinskolen", style: pw.TextStyle(fontSize: 28, fontWeight: pw.FontWeight.bold))
+                child: pw.Text("Timer for " + month + " - Odinskolen", style: pw.TextStyle(fontSize: 28, fontWeight: pw.FontWeight.bold))
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,

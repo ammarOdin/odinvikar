@@ -170,6 +170,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         actions: [
           IconButton(onPressed: () async {
             final pdf = await PdfApi.generateInvoice(
+              dropdownValue,
                 shiftAmount,
                 shiftLength,
                 double.parse((calculateAverageHour()).toStringAsFixed(2)).toString(),
