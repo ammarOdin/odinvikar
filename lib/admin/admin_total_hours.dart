@@ -50,6 +50,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         }
       }
     }
+    shiftAmount = totalShiftAmount.toString();
     return totalShiftAmount;
   }
 
@@ -138,24 +139,25 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
     var totalTime = (bookedHours * 60) + (assignedHours * 60) + bookedMinutes + assignedMinutes;
     totalHours = (totalTime / 60).round();
     totalMin = (totalTime % 60) / 100;
-
+    var result = totalHours + totalMin;
+    shiftLength = result.toString();
     return totalHours + totalMin;
   }
 
-  double calculateAverageHour(){
+  double calculateAverageHour()  {
     var average = double.parse(shiftLength) / double.parse(shiftAmount);
     averageLength = average.toString();
     return average;
   }
 
-  double calculateAverageSalary(){
+  double calculateAverageSalary()  {
     var average = double.parse(averageLength) * 215;
     averagePay = average.toString();
     return average;
   }
 
-  double calculateCommission(){
-    var commissionVal = (0.025 * double.parse(averagePay)) * double.parse(shiftAmount);
+  double calculateCommission() {
+    var commissionVal =  (0.025 * double.parse(averagePay)) * double.parse(shiftAmount);
     commission = commissionVal.toString();
     return commissionVal;
   }
@@ -172,8 +174,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
                 shiftLength,
                 double.parse((calculateAverageHour()).toStringAsFixed(2)).toString(),
                 double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString(),
-                double.parse((calculateCommission()).toStringAsFixed(2)).toString()
-            );
+                double.parse((calculateCommission()).toStringAsFixed(2)).toString());
             PdfApi.openFile(pdf);
           }, icon: Icon(Icons.picture_as_pdf_outlined))
         ],
@@ -201,7 +202,6 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
               future: calculateTotalShiftAmount(dropdownValue),
               builder: (context, snapshot) {
                 if (snapshot.hasData){
-                    shiftAmount = snapshot.data.toString();
                   return Container(
                     padding: EdgeInsets.only(left: 10, bottom: 10),
                     child: Text("Antal vagter: " + snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
@@ -221,7 +221,6 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
               future: calculateTotalHours(dropdownValue),
               builder: (context, snapshot) {
                 if (snapshot.hasData){
-                  shiftLength = snapshot.data.toString();
                   return Container(
                     padding: EdgeInsets.only(left: 10, bottom: 10),
                     child: Text("Antal timer: " + snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
@@ -237,18 +236,9 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
               }
           ),
 
-          Container(
-            padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Gennemsnittelig timer pr. vagt: " + double.parse((calculateAverageHour()).toStringAsFixed(2)).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Gennemsnittelig løn pr. vagt: " + double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString() + ",-", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("2,5% kommision pr. måned: " + double.parse((calculateCommission()).toStringAsFixed(2)).toString() + ",-", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-          )
+
+          //double.parse((calculateCommission()).toStringAsFixed(2)).toString()
+
         ],
       ),
     );
