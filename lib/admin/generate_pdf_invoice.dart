@@ -44,7 +44,7 @@ class PdfApi {
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10, top: 30),
-                child: pw.Text("2,5 % kommision for " + month + " måned: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
+                child: pw.Text("5 % kommision for " + month + " måned: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Spacer(),
             pw.Row(
