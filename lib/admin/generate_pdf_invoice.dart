@@ -8,9 +8,6 @@ import 'package:intl/intl.dart';
 
 class PdfApi {
 
- static List months =
-  ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
-
   static Future<File> generateInvoice(String month, String shiftAmount, String shiftLength, String averageLength, String averagePay, String commission) async {
     final pdf = pw.Document();
     final image = (await rootBundle.load('assets/icon_iOS.png')).buffer.asUint8List();
@@ -46,8 +43,8 @@ class PdfApi {
             ),
             pw.Container(
                 alignment: pw.Alignment.centerLeft,
-                padding: pw.EdgeInsets.only(bottom: 10),
-                child: pw.Text("2,5 % kommision pr. måned: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
+                padding: pw.EdgeInsets.only(bottom: 10, top: 30),
+                child: pw.Text("2,5 % kommision for " + month + " måned: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
             ),
             pw.Spacer(),
             pw.Row(

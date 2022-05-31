@@ -54,7 +54,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     List<Slidable> tomorrowList = [];
 
     for (var users in userRef.docs){
-      var shiftRef = await databaseReference.collection(users.id).get();
+      var shiftRef;
+      if (_controller.index == 0){
+        shiftRef = await databaseReference.collection(users.id).
+        where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()).get();
+      } else if (_controller.index == 1){
+        shiftRef = await databaseReference.collection(users.id).
+        where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 1))).toString()).get();
+      }
+
       for (var shifts in shiftRef.docs){
         if (shifts.data()['awaitConfirmation'].toString() != "0"){
           entireShift.add(shifts.data()['date'] + ";"

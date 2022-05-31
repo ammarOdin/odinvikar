@@ -41,6 +41,15 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
   Future<int> calculateTotalShiftAmount(String month) async {
     int totalShiftAmount = 0;
     var userRef = await FirebaseFirestore.instance.collection('user').get();
+    var shiftsystemRef = await FirebaseFirestore.instance.collection('shifts').get();
+
+    for (var shifts in shiftsystemRef.docs){
+      String shiftMonth = months[shifts.get(FieldPath(const ["month"])) - 1];
+      if (shifts.data()['awaitConfirmation'] == 2 && month == shiftMonth){
+        totalShiftAmount++;
+      }
+    }
+
     for (var users in userRef.docs){
       var documentRef = await FirebaseFirestore.instance.collection(users.id).get();
       for (var document in documentRef.docs){
@@ -144,13 +153,13 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
     return totalHours + totalMin;
   }
 
-  double calculateAverageHour()  {
+  double calculateAverageHour() {
     var average = double.parse(shiftLength) / double.parse(shiftAmount);
     averageLength = average.toString();
     return average;
   }
 
-  double calculateAverageSalary()  {
+  double calculateAverageSalary() {
     var average = double.parse(averageLength) * 215;
     averagePay = average.toString();
     return average;
@@ -185,7 +194,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         shrinkWrap: true,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 10, bottom: 10),
+            padding: EdgeInsets.only(top: 10, bottom: 30),
             child: Center(
               child: DropdownButton<String>(
                 underline: Container(color: Colors.grey, height: 1,),
@@ -195,51 +204,103 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
                     dropdownValue = value!;
                   });},
                 items: [for (var num = 0; num <= 11; num++) DropdownMenuItem(child: Text(months[num]), value: months[num])],
-                icon: Icon(Icons.keyboard_arrow_down), ),
+                icon: Icon(Icons.keyboard_arrow_down)),
             ),
           ),
 
-          FutureBuilder(
-              future: calculateTotalShiftAmount(dropdownValue),
-              builder: (context, snapshot) {
-                if (snapshot.hasData){
-                  return Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("Antal vagter: " + snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                  );
-                } else if (!snapshot.hasData) {
-                  return Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("Antal vagter: ...", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-                  );
-                } else {
-                  return Container();
-                }
-              }
+          Container(
+            padding: EdgeInsets.only(left: 10, bottom: 30),
+            child: Text("Vejledende antal vagter og timer for valgte måned. Tallene bruges til at beregne gennemsnittelige antal timer per vagt, og ligeledes vejledende løn der tilskrives per vagt.", style: TextStyle(fontSize: 14, color: Colors.grey),),
           ),
 
-          FutureBuilder(
-              future: calculateTotalHours(dropdownValue),
-              builder: (context, snapshot) {
-                if (snapshot.hasData){
-                  return Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("Antal timer: " + snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                  );
-                } else if (!snapshot.hasData) {
-                  return Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("Antal timer: ...", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-                  );
-                } else {
-                  return Container();
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white
+            ),
+            padding: EdgeInsets.only(top: 20, bottom: 10),
+            margin: EdgeInsets.only(left: 10, right: 10),
+            child: FutureBuilder(
+                future: calculateTotalShiftAmount(dropdownValue),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData){
+                    return Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text("Antal vagter: "),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                          child: Text(snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        ),
+                      ],
+                    );
+                  } else if (!snapshot.hasData) {
+                    return Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text("Antal vagter: "),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                          child: Text("...", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
                 }
-              }
+            ),
           ),
-
-
-          //double.parse((calculateCommission()).toStringAsFixed(2)).toString()
-
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white
+            ),
+            margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+            padding: EdgeInsets.only(top: 20, bottom: 10),
+            child: FutureBuilder(
+                future: calculateTotalHours(dropdownValue),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData){
+                    return Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text("Antal timer: "),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                          child: Text(snapshot.data.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        ),
+                      ],
+                    );
+                  } else if (!snapshot.hasData) {
+                    return Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10),
+                          child: Text("Antal timer: "),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                          child: Text("...", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                }
+            ),
+          ),
         ],
       ),
     );
