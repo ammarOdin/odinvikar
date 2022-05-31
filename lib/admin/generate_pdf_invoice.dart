@@ -51,7 +51,11 @@ class PdfApi {
         children: [
           pw.Container(
         alignment: pw.Alignment.centerLeft,
+        //padding: pw.EdgeInsets.only(right: 50),
         child: pw.Text("Fil genereret: " + DateFormat('dd/MM/yyyy').add_Hm().format(DateTime.now()), style: pw.TextStyle(fontSize: 14,))),
+          /*pw.Container(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Text("Send til afregning", style: pw.TextStyle(fontSize: 14,))),*/
         pw.Spacer(),
         pw.SizedBox(
           height: 75,
