@@ -249,4 +249,25 @@ export const summonedUser = functions.https.onCall(async (data, context)=>{
       });
 });
 
+export const cancelledShift = functions.https.onCall(async (data, context)=>{
+  const token = data.token;
+  const date = data.date;
+  const message = {
+    token: token,
+    notification: {
+      title: "Vagt afbooket",
+      body: "Din vagt d. "+date+" er blevet afbooket.",
+    },
+  };
+
+  admin.messaging().send(message)
+      .then(() => {
+        functions.logger.info("Message sent", {structuredData: true});
+      })
+      .catch((error) =>{
+        functions.logger.info("Error on sending message", error,
+            {structuredData: true});
+      });
+});
+
 

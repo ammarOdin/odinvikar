@@ -44,6 +44,14 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
     });
   }
 
+  Future<void> sendCanceledShift(String token, String date) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('cancelledShift');
+    await callable.call(<String, dynamic>{
+      'token': token,
+      'date': date
+    });
+  }
+
 
   String getDayOfWeek(DateTime date){
     Intl.defaultLocale = 'da';
@@ -316,7 +324,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 2, right: 2),
-                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         showDialog(context: context, builder: (BuildContext context){
@@ -338,7 +346,39 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 2, right: 2),
-                  width: MediaQuery.of(context).size.width / 2-2.5,
+                  width: MediaQuery.of(context).size.width / 3.1,
+                  child: ElevatedButton.icon(onPressed: () async {
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(title: Text("Afbook vagt"),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        content: Text("Du er ved at afbooke vagten. " + widget.name + " vil blive gjort tilgængelig igen."),
+                        actions: [TextButton(onPressed: () {
+                          widget.data.update({
+                            'isAccepted': false,
+                            'color': '0xFFFFA500',
+                            'status': 'Tilgængelig',
+                            'awaitConfirmation': 0,
+                            'details': FieldValue.delete(),
+                          });
+                          sendCanceledShift(widget.token, widget.date);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          _showSnackBar(context, "Vagt gjort tilgængelig", Colors.green);
+                          }
+                            , child: const Text("AFBOOK", style: TextStyle(color: Colors.blue),))],); });
+                  },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16),
+                        primary: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.remove_circle_outline, color: Colors.white, size: 18,), label: Text("Afbook")),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 2, right: 2),
+                  width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(onPressed: () async {
                     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
                     setState(() {
@@ -360,7 +400,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
               ],
             ),
           ),
-
         ],
       ),
     );
