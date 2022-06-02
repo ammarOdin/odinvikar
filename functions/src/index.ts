@@ -61,11 +61,12 @@ export const updateUserPass = functions.https.onCall(async (data, context)=>{
 export const addShiftNotif = functions.https.onCall(async (data, context)=>{
   const token = data.token;
   const date = data.date;
+  const time = data.time;
   const message = {
     token: token,
     notification: {
       title: "Vagt tildelt",
-      body: "Du er blevet tildelt en vagt d. "+date+". Accepter i app'en.",
+      body: "Du er blevet tildelt en vagt d. "+date+time+". Accepter i app'en.",
     },
   };
 

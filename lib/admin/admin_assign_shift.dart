@@ -33,11 +33,12 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
     }
   }
 
-  Future<void> sendAssignedShiftNotification(String token, String date) async {
+  Future<void> sendAssignedShiftNotification(String token, String date, String time) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('addShiftNotif');
     await callable.call(<String, dynamic>{
       'token': token,
-      'date': date
+      'date': date,
+      'time': time
     });
   }
 
@@ -151,6 +152,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                   ),
                 ),
                 onPressed: () async {
+                  var timeRange = " fra " + startTime.format(context) + " til " + endTime.format(context);
                   List <String> stateUpdater = [];
                   var comment = commentController.text;
                   if (commentController.text == "" || commentController.text.isEmpty){
@@ -169,7 +171,7 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                       stateUpdater.add('0xFFFF0000');
                       stateUpdater.add("1");
                       Navigator.pop(context, stateUpdater);
-                      sendAssignedShiftNotification(widget.token, widget.date.toString());
+                      sendAssignedShiftNotification(widget.token, widget.date.toString(), timeRange);
                       _showSnackBar(context,"Vagt tildelt", Colors.green);
                     } catch (e) {
                       _showSnackBar(context, "Fejl", Colors.red);

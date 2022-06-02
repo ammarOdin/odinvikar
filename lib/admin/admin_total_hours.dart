@@ -86,6 +86,13 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         }
       }
     }
+
+    for (var assignedShiftsTime in assignedShiftList){
+      if (assignedShiftsTime.contains("Tilkaldt")){
+        Duration duration = Duration(hours: 4);
+        assignedShiftHours.add(duration.inHours);
+      }
+    }
     assignedShiftList.removeWhere((element) => element.contains("Tilkaldt"));
 
     // save bookingsystem shifts
@@ -166,7 +173,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
   }
 
   double calculateCommission() {
-    var commissionVal =  (0.04 * double.parse(averagePay)) * double.parse(shiftAmount);
+    var commissionVal =  (0.03 * double.parse(averagePay)) * double.parse(shiftAmount);
     commission = commissionVal.toString();
     return commissionVal;
   }
