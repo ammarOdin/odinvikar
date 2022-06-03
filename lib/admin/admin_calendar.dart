@@ -28,6 +28,17 @@ class _State extends State<AdminCalendar> {
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = true;
 
+  var _month = DateTime.now();
+  var _year;
+  List months =
+  ['January', 'February', 'March', 'April', 'May','June','July','August','September','October','November','December'];
+
+  getMonthValue(){
+    /*var dateString = _month;
+    DateFormat format = new DateFormat("dd-MM-yyyy");
+    var formattedDate = format.parse(dateString);*/
+    return months[_month.month - 1];
+  }
 
 
   String? validateDetails(String? input){
@@ -73,6 +84,17 @@ class _State extends State<AdminCalendar> {
     } else {
       return Colors.orange;
     }
+  }
+
+  void viewChanged(ViewChangedDetails viewChangedDetails) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+      setState(() {
+        _month = DateFormat('MMMM').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString() as DateTime;
+        _year = DateFormat('yyyy').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();
+      });
+    });
   }
 
   // awaitConfirmation = 0 -> User added a shift
@@ -146,6 +168,7 @@ class _State extends State<AdminCalendar> {
   }
 
   Future<void> getFirestoreShift() async {
+    //var userRef = await databaseReference.collection('user').where("month", isEqualTo: ).get();
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
     List<Meeting> separatedShiftList = [];
@@ -186,6 +209,7 @@ class _State extends State<AdminCalendar> {
                 onTap: calendarTapped,
                 view: CalendarView.month,
                 firstDayOfWeek: 1,
+                onViewChanged: viewChanged,
                 showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
                   startHour: 7,
                   endHour: 19,
@@ -218,6 +242,7 @@ class _State extends State<AdminCalendar> {
                 )),
             ],
           ) : Container(),
+          Padding(padding: EdgeInsets.all(10), child: Text(getMonthValue()),)
         ],
       ),
     );
