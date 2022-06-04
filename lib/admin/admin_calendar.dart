@@ -28,18 +28,10 @@ class _State extends State<AdminCalendar> {
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = true;
 
-  var _month = DateTime.now();
+  var _month = DateTime.now().month;
   var _year;
-  List months =
-  ['January', 'February', 'March', 'April', 'May','June','July','August','September','October','November','December'];
-
-  getMonthValue(){
-    /*var dateString = _month;
-    DateFormat format = new DateFormat("dd-MM-yyyy");
-    var formattedDate = format.parse(dateString);*/
-    return months[_month.month - 1];
-  }
-
+  Map months =
+  {'January':1, 'February':2, 'March':3, 'April':4, 'May':5,'June':6,'July':7,'August':8,'September':9,'October':10,'November':11,'December':12};
 
   String? validateDetails(String? input){
     if (input!.contains(new RegExp(r'^[#$^*():{}|<>]+$'))){
@@ -51,6 +43,7 @@ class _State extends State<AdminCalendar> {
 
   @override
   void initState() {
+    _month = DateTime.now().month;
     getFirestoreShift().then((results) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
@@ -89,12 +82,13 @@ class _State extends State<AdminCalendar> {
   void viewChanged(ViewChangedDetails viewChangedDetails) {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
       setState(() {
-        _month = DateFormat('MMMM').format(viewChangedDetails
-            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString() as DateTime;
-        _year = DateFormat('yyyy').format(viewChangedDetails
-            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();
+        final selected = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length ~/ 2];
+        _month = selected.month;
+        /*_year = DateFormat('yyyy').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();*/
       });
     });
+    getFirestoreShift();
   }
 
   // awaitConfirmation = 0 -> User added a shift
@@ -140,6 +134,7 @@ class _State extends State<AdminCalendar> {
               ))).then((value) {
                 setState(() {
                   getFirestoreShift();
+                  _month = data.get(FieldPath(const ['month']));
                 });
               });
             } else if (data.get(FieldPath(const ["date"])) == tapDate && data.get(FieldPath(const['awaitConfirmation'])) == 0){
@@ -158,6 +153,7 @@ class _State extends State<AdminCalendar> {
               ))).then((value) {
                 setState(() {
                   getFirestoreShift();
+                  _month = data.get(FieldPath(const ['month']));
                 });
               });
             }
@@ -168,13 +164,14 @@ class _State extends State<AdminCalendar> {
   }
 
   Future<void> getFirestoreShift() async {
-    //var userRef = await databaseReference.collection('user').where("month", isEqualTo: ).get();
+    //print(_month);
+    loading = true;
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
     List<Meeting> separatedShiftList = [];
 
     for (var users in userRef.docs){
-      var shiftRef = await databaseReference.collection(users.id).get();
+      var shiftRef = await databaseReference.collection(users.id).where("month", isEqualTo: _month).get();
       for (var shifts in shiftRef.docs){
         entireShift.add(shifts.data()['date'] + ";"
             + shifts.data()['status'] + ";"
@@ -242,7 +239,6 @@ class _State extends State<AdminCalendar> {
                 )),
             ],
           ) : Container(),
-          Padding(padding: EdgeInsets.all(10), child: Text(getMonthValue()),)
         ],
       ),
     );
