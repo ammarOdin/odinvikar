@@ -467,8 +467,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   ),
                 ),
                 Container(
-                    padding: EdgeInsets.only(left: 10, bottom: 10),
-                    child: Text("Du har mulighed for at indskrive dine timer, hvis du er blevet tilkaldt. Således kan timerne inkluderes inde under 'Mine timer'.", style: TextStyle(color: Colors.grey, fontSize: 14),)),
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: Text("Du har mulighed for at indskrive dine timer, hvis du er blevet tilkaldt. Således kan timerne inkluderes inde under 'Mine timer'."
+                      , style: TextStyle(color: Colors.grey, fontSize: 14),)),
               ],
             ),
           ) else Container()
