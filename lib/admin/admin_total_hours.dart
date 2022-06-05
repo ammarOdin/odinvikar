@@ -173,7 +173,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
   }
 
   double calculateCommission() {
-    var commissionVal =  (0.03 * double.parse(averagePay)) * double.parse(shiftAmount);
+    var commissionVal =  (0.0025 * double.parse(averagePay)) * double.parse(shiftAmount);
     commission = commissionVal.toString();
     return commissionVal;
   }

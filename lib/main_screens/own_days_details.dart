@@ -27,9 +27,13 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   late String time;
   late String comment;
+  late String timeRange;
 
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
+
+  late TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
+  late TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
 
 
   void _showSnackBar(BuildContext context, String text, Color color) {
@@ -53,6 +57,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   @override
   void initState() {
     time = widget.time;
+    timeRange = widget.details!.substring(0,11);
     comment = widget.comment;
     super.initState();
   }
@@ -263,7 +268,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           Container(
                               padding: EdgeInsets.only(bottom: 5),
                               child: Text("Tidsrum", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                          Container(child: Text(widget.details!.substring(0,11), style: TextStyle(color: Colors.grey),))
+                          Container(child: Text(timeRange, style: TextStyle(color: Colors.grey),))
                         ],
                       )
                     ],
@@ -362,6 +367,109 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
                 label: Text("Slet dag")),
           ),
+          if (widget.status == "Tilkaldt") Container(
+            //padding: EdgeInsets.only(left: 10),
+            child: ListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Row(
+                    children: [
+                      TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Timer")),
+                      const Spacer(),
+                      SizedBox(
+                        width: 300,
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  padding: EdgeInsets.only(right: 5),
+                                  child: Column(
+                                    children: [
+                                      Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
+                                      Container(
+                                        padding: EdgeInsets.only(left: 5, right: 5),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white
+                                        ),
+                                        child: TextButton(onPressed: () async {
+                                          startTime = (await showTimePicker(initialTime: startTime, context: context))!;
+                                          setState(() {
+                                            startTime.format(context);
+                                          });
+                                        },
+                                          child: Text(startTime.format(context)),),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Column(
+                                    children: [
+                                      Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
+                                      Container(
+                                        padding: EdgeInsets.only(left: 5, right: 5),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white
+                                        ),
+                                        child: TextButton(onPressed: () async {
+                                          endTime = (await showTimePicker(initialTime: endTime, context: context))!;
+                                          setState(() {
+                                            endTime.format(context);
+                                          });
+                                        },
+                                          child: Text(endTime.format(context)),),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: ElevatedButton.icon(onPressed: (){
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                        elevation: 0,
+                                        title: Text("Gem timer"),
+                                        content: Text("Du er ved at gemme dine timer."),
+                                        actions: [
+                                          TextButton(onPressed: () async {
+                                            await widget.data.reference.update({'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: Ingen",});
+                                            setState((){
+                                              timeRange = startTime.format(context) + "-" + endTime.format(context);
+                                            });
+                                            Navigator.pop(context);
+                                            _showSnackBar(context, "Tidsrum gemt", Colors.green);
+                                          }, child: Text("GEM", style: TextStyle(color: Colors.green),))
+                                        ],
+                                      );
+                                    });
+                                  }, icon: Icon(Icons.save), label: Text("Gem"), ),
+                                ),
+                              ),
+                            ],),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsets.only(left: 10, bottom: 10),
+                    child: Text("Du har mulighed for at indskrive dine timer, hvis du er blevet tilkaldt. Således kan timerne inkluderes inde under 'Mine timer'.", style: TextStyle(color: Colors.grey, fontSize: 14),)),
+              ],
+            ),
+          ) else Container()
         ],
       ),
     );
