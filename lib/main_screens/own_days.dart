@@ -76,13 +76,15 @@ class OwnDays extends State<OwnDaysScreen> {
     }
   }
 
-  String calendarDetails(int awaitConfirmation){
+  String calendarDetails(int awaitConfirmation, String status){
     if (awaitConfirmation == 0){
       return 'Tilgængelig - se mere';
     } else if (awaitConfirmation == 1) {
       return 'Afventer Accept - se mere';
-    } else if (awaitConfirmation == 2) {
+    } else if (awaitConfirmation == 2 && status == "Godkendt vagt") {
       return 'Godkendt - se mere';
+    } else if (awaitConfirmation == 2 && status == "Tilkaldt") {
+      return 'Tilkaldt - se mere';
     } else {
       return 'Detaljer - se mere';
     }
@@ -137,7 +139,7 @@ class OwnDays extends State<OwnDaysScreen> {
     var snapShotsValue = await databaseReference.collection(user!.uid).get();
 
     List<Meeting> list = snapShotsValue.docs.map((e)=>
-        Meeting(eventName: calendarDetails(e.data()['awaitConfirmation']),
+        Meeting(eventName: calendarDetails(e.data()['awaitConfirmation'], e.data()['status']),
         from: DateFormat('dd-MM-yyyy').parse(e.data()['date']),
         to: DateFormat('dd-MM-yyyy').parse(e.data()['date']) ,
         background: calendarColor(e.data()['date'], e.data()['awaitConfirmation']),

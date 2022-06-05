@@ -374,13 +374,15 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
               shrinkWrap: true,
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Row(
                     children: [
-                      TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Timer")),
+                      Container(
+                          padding: EdgeInsets.only(top: 20),
+                          child: TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Timer"))),
                       const Spacer(),
                       SizedBox(
-                        width: 300,
+                        width: MediaQuery.of(context).size.width / 1.3,
                         child: Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -435,7 +437,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                               ),
                               Flexible(
                                 child: Container(
-                                  padding: EdgeInsets.only(top: 10),
+                                  padding: EdgeInsets.only(top: 20, left: 15),
                                   child: ElevatedButton.icon(onPressed: (){
                                     showDialog(context: context, builder: (BuildContext context){
                                       return AlertDialog(
@@ -455,7 +457,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                                         ],
                                       );
                                     });
-                                  }, icon: Icon(Icons.save), label: Text("Gem"), ),
+                                  }, icon: Icon(Icons.save, size: 18,), label: Text("Gem", style: TextStyle(fontSize: 12),), ),
                                 ),
                               ),
                             ],),
