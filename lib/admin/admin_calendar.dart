@@ -1,3 +1,4 @@
+import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -6,6 +7,8 @@ import 'package:odinvikar/admin/admin_shift_details.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+
+import '../card_assets.dart';
 
 
 class AdminCalendar extends StatefulWidget {
@@ -23,7 +26,9 @@ class _State extends State<AdminCalendar> {
   final databaseReference = FirebaseFirestore.instance;
   MeetingDataSource? events;
 
-  late DateTime selectedDate = initialDate();
+  //late DateTime? selectedDate = initialDate();
+  //late DateTime selectedDate = initialDate();
+  late DateTime selectedDate = DateTime.now();
   String userToken = "";
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = true;
@@ -44,11 +49,11 @@ class _State extends State<AdminCalendar> {
   @override
   void initState() {
     _month = DateTime.now().month;
-    getFirestoreShift().then((results) {
+    /*getFirestoreShift().then((results) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
       });
-    });
+    });*/
     super.initState();
   }
 
@@ -79,23 +84,23 @@ class _State extends State<AdminCalendar> {
     }
   }
 
-  void viewChanged(ViewChangedDetails viewChangedDetails) {
+  /*void viewChanged(ViewChangedDetails viewChangedDetails) {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
       setState(() {
         final selected = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length ~/ 2];
         _month = selected.month;
-        /*_year = DateFormat('yyyy').format(viewChangedDetails
-            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();*/
+        *//*_year = DateFormat('yyyy').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();*//*
       });
     });
     getFirestoreShift();
-  }
+  }*/
 
   // awaitConfirmation = 0 -> User added a shift
   // awaitConfirmation = 1 -> Admin assigned shift, not accepted by user
   // awaitConfirmation = 2 -> User accepted assigned shift by admin
 
-  void calendarTapped(CalendarTapDetails calendarTapDetails) async {
+  /*void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     var userRef = await databaseReference.collection('user').get();
     final Meeting appointmentDetails = calendarTapDetails.appointments![0];
     final tapDate = DateFormat('dd-MM-yyyy').format(calendarTapDetails.date as DateTime);
@@ -161,9 +166,9 @@ class _State extends State<AdminCalendar> {
         }
       }
     }
-  }
+  }*/
 
-  Future<void> getFirestoreShift() async {
+/*  Future<void> getFirestoreShift() async {
     loading = true;
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
@@ -192,6 +197,102 @@ class _State extends State<AdminCalendar> {
       events = MeetingDataSource(separatedShiftList);
       loading = false;
     });
+  }*/
+
+  Future<List> getDateShifts() async {
+    loading = true;
+    var userRef = await databaseReference.collection('user').get();
+    List<String> entireShift = [];
+    List separatedShiftList = [];
+
+    for (var users in userRef.docs){
+      var shiftRef = await databaseReference.collection(users.id).get();
+      for (var shifts in shiftRef.docs){
+        if (shifts.data()['awaitConfirmation'].toString() != "0"){
+          entireShift.add(shifts.data()['date'] + ";"
+              + shifts.data()['status'] + ";"
+              + shifts.data()['color'] + ";"
+              + shifts.data()['time'] + ";"
+              + shifts.data()['comment'] + ";"
+              + users.get(FieldPath(const ['phone'])) + ";"
+              + users.get(FieldPath(const ['name'])) + ";"
+              + users.get(FieldPath(const ['token'])) + ";"
+              + users.id + ";"
+              + shifts.data()['awaitConfirmation'].toString() + ";"
+              + shifts.data()['details'] + ";"
+          );
+        } else if (shifts.data()['awaitConfirmation'].toString() == "0") {
+          entireShift.add(shifts.data()['date'] + ";"
+              + shifts.data()['status'] + ";"
+              + shifts.data()['color'] + ";"
+              + shifts.data()['time'] + ";"
+              + shifts.data()['comment'] + ";"
+              + users.get(FieldPath(const ['phone'])) + ";"
+              + users.get(FieldPath(const ['name'])) + ";"
+              + users.get(FieldPath(const ['token'])) + ";"
+              + users.id + ";"
+              + shifts.data()['awaitConfirmation'].toString() + ";"
+          );
+        }
+      }
+    }
+
+    for (var shifts in entireShift){
+      List shiftSplit = shifts.split(";");
+      if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(selectedDate)) {
+        separatedShiftList.add(
+            AdminAvailableShiftCard(text: shiftSplit[6],
+                time: "Tilgængelig: " + shiftSplit[3],
+                subtitle: "Se mere",
+                icon: Icon(
+                  Icons.circle, color: Color(int.parse(shiftSplit[2])),),
+                onPressed: () async {
+                  var userRef = await databaseReference.collection(
+                      shiftSplit[8]);
+                  var dataRef = await databaseReference.collection(
+                      shiftSplit[8]).doc(shiftSplit[0]);
+                  if (int.parse(shiftSplit[9]) != 0) {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) =>
+                        AdminShiftDetailsScreen(
+                          date: shiftSplit[0],
+                          status: shiftSplit[1],
+                          name: shiftSplit[6],
+                          token: shiftSplit[7],
+                          time: shiftSplit[3],
+                          comment: shiftSplit[4],
+                          awaitConfirmation: int.parse(shiftSplit[9]),
+                          details: shiftSplit[10],
+                          color: shiftSplit[2],
+                          data: dataRef,
+                          userRef: userRef,
+                        )));
+                  } else if (int.parse(shiftSplit[9]) == 0) {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) =>
+                        AdminShiftDetailsScreen(
+                          date: shiftSplit[0],
+                          status: shiftSplit[1],
+                          name: shiftSplit[6],
+                          token: shiftSplit[7],
+                          time: shiftSplit[3],
+                          comment: shiftSplit[4],
+                          awaitConfirmation: int.parse(shiftSplit[9]),
+                          color: shiftSplit[2],
+                          data: dataRef,
+                          userRef: userRef,
+                        )));
+                  }
+                })
+        );
+      }
+    }
+    setState(() {
+      loading = false;
+    });
+    return separatedShiftList;
   }
 
   @override
@@ -200,6 +301,30 @@ class _State extends State<AdminCalendar> {
       body: Stack(
         children: [
           Container(
+            padding: EdgeInsets.only(top: 40, bottom: 30),
+            child: CalendarTimeline(
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now().subtract(Duration(days: 90)),
+              lastDate: DateTime.now().add(Duration(days: 90)),
+              onDateSelected: (date) {
+                selectedDate = date!;
+                print(selectedDate);
+                /*setState((){
+                  selectedDate = date!;
+                  print(selectedDate);
+                });*/
+              },
+              leftMargin: 20,
+              monthColor: Colors.black54,
+              dayColor: Colors.black54,
+              activeDayColor: Colors.white,
+              activeBackgroundDayColor: Colors.blue,
+              dotsColor: Colors.white,
+              selectableDayPredicate: (DateTime val) => val.weekday == 6 || val.weekday == 7 ? false : true,
+              locale: 'da',
+            ),
+          ),
+          /*Container(
               padding: EdgeInsets.only(top: 40),
               child: SfCalendar(
                 onTap: calendarTapped,
@@ -225,12 +350,12 @@ class _State extends State<AdminCalendar> {
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   shape: BoxShape.rectangle,),
               ),
-            ),
+            ),*/
           loading ? Stack(
             children: [
               Opacity(
                 opacity: 0.5,
-                  child: Container(color: Colors.black)),
+                  child: Container(color: Colors.transparent)),
               Center(
                     child: SpinKitFoldingCube(
                       color: Colors.blue,
@@ -238,6 +363,39 @@ class _State extends State<AdminCalendar> {
                 )),
             ],
           ) : Container(),
+
+          FutureBuilder(
+              future: getDateShifts(), builder: (context, AsyncSnapshot<List> snapshot){
+            if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
+              return Text("Loading");/*Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                color: Colors.blue,
+                size: 50,
+              ));*/
+            } else if (snapshot.data!.isEmpty) {
+              return Container(
+                padding: const EdgeInsets.only(left: 50),
+                child: Text(
+                  "Intet at vise",
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ),);
+            }
+            return ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index){
+                  var shiftCard = snapshot.data?[index];
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        shiftCard
+                      ],
+                    ),
+                  );
+                }
+            );
+          }),
         ],
       ),
     );
