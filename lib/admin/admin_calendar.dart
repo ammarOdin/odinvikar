@@ -28,15 +28,15 @@ class _State extends State<AdminCalendar> {
 
   //late DateTime? selectedDate = initialDate();
   //late DateTime selectedDate = initialDate();
-  late DateTime selectedDate = DateTime.now();
+  var selectedDate;
   String userToken = "";
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = true;
 
-  var _month = DateTime.now().month;
+ /* var _month = DateTime.now().month;
   var _year;
   Map months =
-  {'January':1, 'February':2, 'March':3, 'April':4, 'May':5,'June':6,'July':7,'August':8,'September':9,'October':10,'November':11,'December':12};
+  {'January':1, 'February':2, 'March':3, 'April':4, 'May':5,'June':6,'July':7,'August':8,'September':9,'October':10,'November':11,'December':12};*/
 
   String? validateDetails(String? input){
     if (input!.contains(new RegExp(r'^[#$^*():{}|<>]+$'))){
@@ -48,8 +48,11 @@ class _State extends State<AdminCalendar> {
 
   @override
   void initState() {
-    _month = DateTime.now().month;
-    /*getFirestoreShift().then((results) {
+    setState(() {
+      selectedDate = DateTime.now();
+    });
+    /*_month = DateTime.now().month;
+    getFirestoreShift().then((results) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
       });
@@ -82,6 +85,14 @@ class _State extends State<AdminCalendar> {
     } else {
       return Colors.orange;
     }
+  }
+
+  updateActiveDate(DateTime? date){
+    selectedDate = date!;
+    getDateShifts();
+    /*setState((){
+
+    })*/;
   }
 
   /*void viewChanged(ViewChangedDetails viewChangedDetails) {
@@ -203,7 +214,7 @@ class _State extends State<AdminCalendar> {
     loading = true;
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
-    List separatedShiftList = [];
+    List<AdminAvailableShiftCard> separatedShiftList = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).get();
@@ -252,7 +263,6 @@ class _State extends State<AdminCalendar> {
                   var dataRef = await databaseReference.collection(
                       shiftSplit[8]).doc(shiftSplit[0]);
                   if (int.parse(shiftSplit[9]) != 0) {
-                    Navigator.pop(context);
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) =>
                         AdminShiftDetailsScreen(
@@ -269,7 +279,6 @@ class _State extends State<AdminCalendar> {
                           userRef: userRef,
                         )));
                   } else if (int.parse(shiftSplit[9]) == 0) {
-                    Navigator.pop(context);
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) =>
                         AdminShiftDetailsScreen(
@@ -289,16 +298,15 @@ class _State extends State<AdminCalendar> {
         );
       }
     }
-    setState(() {
-      loading = false;
-    });
+    loading = false;
     return separatedShiftList;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: ListView(
+        shrinkWrap: true,
         children: [
           Container(
             padding: EdgeInsets.only(top: 40, bottom: 30),
@@ -307,16 +315,12 @@ class _State extends State<AdminCalendar> {
               firstDate: DateTime.now().subtract(Duration(days: 90)),
               lastDate: DateTime.now().add(Duration(days: 90)),
               onDateSelected: (date) {
-                selectedDate = date!;
+                updateActiveDate(date);
                 print(selectedDate);
-                /*setState((){
-                  selectedDate = date!;
-                  print(selectedDate);
-                });*/
               },
               leftMargin: 20,
-              monthColor: Colors.black54,
-              dayColor: Colors.black54,
+              monthColor: Colors.black,
+              dayColor: Colors.black,
               activeDayColor: Colors.white,
               activeBackgroundDayColor: Colors.blue,
               dotsColor: Colors.white,
@@ -350,7 +354,7 @@ class _State extends State<AdminCalendar> {
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   shape: BoxShape.rectangle,),
               ),
-            ),*/
+            ),
           loading ? Stack(
             children: [
               Opacity(
@@ -362,18 +366,32 @@ class _State extends State<AdminCalendar> {
                       size: 50,
                 )),
             ],
-          ) : Container(),
+          ) : Container(),*/
 
           FutureBuilder(
               future: getDateShifts(), builder: (context, AsyncSnapshot<List> snapshot){
-            if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-              return Text("Loading");/*Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
-                color: Colors.blue,
-                size: 50,
-              ));*/
+            if (snapshot.connectionState == ConnectionState.waiting){
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                    color: Colors.blue,
+                    size: 50,
+                  )),
+                  Container(
+                    padding: EdgeInsets.only(top: 30, left: 5),
+                    child: Text("Henter vagter..."),
+                  )
+                ],
+              );
             } else if (snapshot.data!.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.only(left: 50),
+              return Center(
+                child: Text(
+                  "Intet at vise",
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ),);
+            } else if (!snapshot.hasData){
+              return Center(
                 child: Text(
                   "Intet at vise",
                   style: TextStyle(color: Colors.blue, fontSize: 16),
@@ -385,7 +403,7 @@ class _State extends State<AdminCalendar> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index){
-                  var shiftCard = snapshot.data?[index];
+                  AdminAvailableShiftCard shiftCard = snapshot.data?[index];
                   return SingleChildScrollView(
                     child: Column(
                       children: [
