@@ -157,7 +157,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.delete,),
                 ],
               ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " + shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " + shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -274,7 +274,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.delete,),
                   ],
                 ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " +  shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.circle, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " +  shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -424,7 +424,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 color: Colors.blue, icon: Icon(Icons.refresh),
               );
               if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                   color: Colors.blue,
                   size: 50,
                 ));

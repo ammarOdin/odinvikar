@@ -152,7 +152,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                     children: snapshot.data!.docs.map((document){
                       if (document['userID'] == user!.uid && _controller.index == 0 && document['week'].toString() == dropdownValue.toString()){
                         return ShiftSystemCard(
-                          icon: Icon(Icons.circle,
+                          icon: Icon(Icons.square_rounded,
                           color: Color(int.parse(document['color'])), size: 18,),
                           icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
                           day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
@@ -174,7 +174,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                         },);
                       } else if (document['awaitConfirmation'] != 2 /*&& document['week'] >= DateTime.now().weekOfYear*/ &&  _controller.index == 1 && document['week'].toString() == dropdownValue.toString()){
                         return ShiftSystemCard(
-                          icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),
+                          icon: Icon(Icons.square_rounded, color: Color(int.parse(document['color'])), size: 18,),
                           icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
                           day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
                           text: document['date'],

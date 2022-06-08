@@ -185,7 +185,7 @@ class _State extends State<SettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                             color: Colors.blue,
                             size: 50,
                           )));
@@ -326,7 +326,7 @@ class _State extends State<SettingsScreen> {
                       alignment: Alignment.centerLeft,
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                     color: Colors.blue,
                     size: 50,
                   )));
@@ -347,7 +347,7 @@ class _State extends State<SettingsScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                     color: Colors.blue,
                     size: 50,
                   )));

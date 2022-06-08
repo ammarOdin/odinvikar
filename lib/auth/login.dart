@@ -110,7 +110,7 @@ class _LoginState extends State<LoginScreen> {
                           return AlertDialog(
                             elevation: 0,
                             backgroundColor: Colors.transparent,
-                            content: SpinKitFoldingCube(
+                            content: SpinKitRing(
                               color: Colors.blue,
                             ),
                           );

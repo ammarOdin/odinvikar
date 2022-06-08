@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:odinvikar/admin/admin_calendar.dart';
 import '../shift_system/admin/admin_shifts_screen.dart';
+import 'admin_calendar_new.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
 
@@ -55,7 +56,7 @@ class _HomescreenState extends State<AdminDashboard> {
           },
           children: const <Widget>[
             AdminHomeScreen(),
-            AdminCalendar(),
+            AdminNewCalendar(),
             AdminShiftsScreen(),
             AdminSettingsScreen(),
           ],

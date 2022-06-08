@@ -234,7 +234,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
             stream: unsortedShift.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                   color: Colors.blue,
                   size: 50,
                 ));
@@ -276,7 +276,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
             stream: shifsystemShifts.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                   color: Colors.blue,
                   size: 50,
                 ));

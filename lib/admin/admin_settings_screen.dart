@@ -305,7 +305,7 @@ class _State extends State<AdminSettingsScreen> {
                             return Center(
                                 child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                           }
-                          return SpinKitFoldingCube(
+                          return SpinKitRing(
                             color: Colors.blue,
                             size: 50,
                           );
@@ -426,7 +426,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['phone'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                     color: Colors.blue,
                     size: 50,
                   )));
@@ -445,7 +445,7 @@ class _State extends State<AdminSettingsScreen> {
                     return Center(
                         child: Text(name['email'].toString(), style: const TextStyle(color: Colors.black),));
                   }
-                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                     color: Colors.blue,
                     size: 50,
                   )));
@@ -483,7 +483,7 @@ class _State extends State<AdminSettingsScreen> {
                 stream: usersRef.snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData){
-                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
+                    return SizedBox(height: 50, width: 50, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
                       color: Colors.blue,
                       size: 50,
                     )));

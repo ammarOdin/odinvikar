@@ -156,7 +156,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                 stream: vagter.snapshots() ,
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
                   if (!snapshot.hasData){
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(color: Colors.blue,));
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(color: Colors.blue,));
                   } else if (snapshot.data!.docs.isEmpty){
                     return Container(
                       padding: const EdgeInsets.all(50),
@@ -170,7 +170,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                     children: snapshot.data!.docs.map((document){
                       if (document["isTaken"] == true && _controller.index == 1 && document['week'].toString() == dropdownValue.toString()){
                         return ShiftSystemCard(
-                          icon: Icon(Icons.circle,
+                          icon: Icon(Icons.square_rounded,
                             color: Color(int.parse(document['color'])), size: 18,),
                           text: document['date'],
                           icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.transparent,),
@@ -194,7 +194,7 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
                         );
                       } else if (document["isTaken"] == false && _controller.index == 0 && document['week'].toString() == dropdownValue.toString()) {
                         return ShiftSystemCard(
-                          icon: Icon(Icons.circle, color: Color(int.parse(document['color'])), size: 18,),
+                          icon: Icon(Icons.square_rounded, color: Color(int.parse(document['color'])), size: 18,),
                           text: document['date'],
                           day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
                           icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.transparent,),
