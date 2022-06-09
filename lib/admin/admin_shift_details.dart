@@ -71,9 +71,8 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(widget.name + "'s vagt", style: TextStyle(color: Colors.black),),
-        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.black,),),
+        title: Text(widget.name + "'s vagt", style: TextStyle(color: Colors.white),),
+        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: ListView(
         shrinkWrap: true,

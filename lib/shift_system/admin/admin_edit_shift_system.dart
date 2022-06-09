@@ -50,8 +50,7 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text("Rediger vagt"),
+          title: Text("Rediger vagt", style: TextStyle(color: Colors.white),),
           toolbarHeight: kToolbarHeight + 2,
           leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),)
       ),
@@ -60,12 +59,6 @@ class _EditShiftScreenState extends State<AdminEditShiftSystemScreen> {
         padding: const EdgeInsets.only(top: 0),
         shrinkWrap: true,
         children: [
-          Container(
-              padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
-              child: Text("Indtast nye oplysninger", style:TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),)
-          ),
-
-          const Divider(thickness: 1),
           Container(
             padding: EdgeInsets.only(top: 30, bottom: 20),
             child: Row(

@@ -143,7 +143,9 @@ class _State extends State<AdminNewCalendar> {
                           color: shiftSplit[2],
                           data: dataRef,
                           userRef: userRef,
-                        )));
+                        ))).then((value) {
+                      setState((){getDateShifts();});
+                    });
                   } else if (int.parse(shiftSplit[9]) == 0) {
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) =>
@@ -158,7 +160,9 @@ class _State extends State<AdminNewCalendar> {
                           color: shiftSplit[2],
                           data: dataRef,
                           userRef: userRef,
-                        )));
+                        ))).then((value) {
+                          setState((){getDateShifts();});
+                    });
                   }
                 })
         );

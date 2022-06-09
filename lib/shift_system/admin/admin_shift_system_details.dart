@@ -68,8 +68,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Udbudt vagt"),
+        title: Text("Udbudt vagt", style: TextStyle(color: Colors.white),),
         actions: [
           IconButton(onPressed: () async {
             if (awaitConfirmation != "2"){

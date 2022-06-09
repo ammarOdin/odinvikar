@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
@@ -27,7 +26,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   late String time;
   late String comment;
-  late String timeRange;
+  late String? timeRange;
 
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
@@ -57,7 +56,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   @override
   void initState() {
     time = widget.time;
-    timeRange = widget.details!.substring(0,11);
+    if(widget.details != null){
+      timeRange = widget.details!.substring(0,11);
+    }
     comment = widget.comment;
     super.initState();
   }
@@ -268,7 +269,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           Container(
                               padding: EdgeInsets.only(bottom: 5),
                               child: Text("Tidsrum", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                          Container(child: Text(timeRange, style: TextStyle(color: Colors.grey),))
+                          Container(child: Text(timeRange!, style: TextStyle(color: Colors.grey),))
                         ],
                       )
                     ],
