@@ -120,7 +120,7 @@ class _State extends State<AdminNewCalendar> {
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(selectedDate)) {
         separatedShiftList.add(
             AdminAvailableShiftCard(text: shiftSplit[6],
-                time: "Tilgængelig: " + shiftSplit[3],
+                time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11),
                 subtitle: "Se mere",
                 icon: Icon(Icons.square_rounded, size: 22, color: Color(int.parse(shiftSplit[2])),),
                 onPressed: () async {

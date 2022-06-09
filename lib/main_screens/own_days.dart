@@ -181,7 +181,7 @@ class OwnDays extends State<OwnDaysScreen> {
                   monthViewSettings: const MonthViewSettings(
                     showAgenda: true,
                     agendaViewHeight: 100,
-                    agendaItemHeight: 35,),
+                    agendaItemHeight: 40,),
                   //monthCellBuilder: monthCellBuilder,
                   dataSource: events,
                   cellBorderColor: Colors.transparent,

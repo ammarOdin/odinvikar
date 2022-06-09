@@ -157,7 +157,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.delete,),
                 ],
               ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " + shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -274,7 +274,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.delete,),
                   ],
                 ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: "Tilgængelig: " +  shiftSplit[3], subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+                child: AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -383,7 +383,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                  child: Icon(Icons.square_rounded, color: Colors.orange, size: 16,),
                 ),
                 Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
               ],
@@ -393,7 +393,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.circle, color: Colors.red, size: 16,),
+                  child: Icon(Icons.square_rounded, color: Colors.red, size: 16,),
                 ),
                 Text(" Afventer accept", style: TextStyle(fontSize: 12),)
               ],
@@ -403,7 +403,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(left: 5),
-                  child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                  child: Icon(Icons.square_rounded, color: Colors.green, size: 16,),
                 ),
                 Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
               ],
