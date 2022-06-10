@@ -80,7 +80,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                   Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.circle, color: Colors.orange, size: 16,),
+                    child: Icon(Icons.square_rounded, color: Colors.orange, size: 16,),
                   ),
                   Text(" Ledig", style: TextStyle(fontSize: 12),)
                 ],
@@ -90,7 +90,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                   Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.circle, color: Colors.red, size: 16,),
+                    child: Icon(Icons.square_rounded, color: Colors.red, size: 16,),
                   ),
                   Text(" Afventer accept", style: TextStyle(fontSize: 12),)
                 ],
@@ -100,7 +100,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                   Container(
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.circle, color: Colors.green, size: 16,),
+                    child: Icon(Icons.square_rounded, color: Colors.green, size: 16,),
                   ),
                   Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
                 ],
