@@ -50,6 +50,16 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
     return DateFormat('EEEE').format(date);
   }
 
+  String getWeekOfYear(){
+    if (DateTime.now().weekday == DateTime.sunday){
+      return DateTime.now().add(Duration(days: 1)).weekOfYear.toString();
+    } else if (DateTime.now().weekday == DateTime.saturday){
+      return DateTime.now().add(Duration(days: 2)).weekOfYear.toString();
+    } else {
+      return DateTime.now().weekOfYear.toString();
+    }
+  }
+
   Future<void> sendAcceptedShiftNotification(String token, String date, String name) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acceptShiftNotif');
     await callable.call(<String, dynamic>{
@@ -138,7 +148,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
           if (_controller.index == 0) Container(
               padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-              child: Text("Uge " + DateTime.now().weekOfYear.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+              child: Text("Uge " + getWeekOfYear(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
 
           Container(
             padding: EdgeInsets.only(top: 10),
