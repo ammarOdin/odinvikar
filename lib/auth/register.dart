@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -170,6 +172,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                 'phone': phoneController.text,
                                 'token': token,
                               });
+
+                              // regen new OTP and save
+                              const _chars = '1234567890';
+                              Random _rnd = Random();
+                              String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+                                  length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+                              var otp = getRandomString(8);
+                              await FirebaseFirestore.instance.collection('auth').doc('authInfo').set({'OTP': otp});
                               _showSnackBar(context, "Logget ind", Colors.green);
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
                             }

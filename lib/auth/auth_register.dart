@@ -54,12 +54,8 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             key: _authkey, child: Column(
             children: [
               Container(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20, left: 15, right: 15),
-                  margin: const EdgeInsets.only(top: 10),
-                  child: TextFormField(validator: validateEmail, controller: emailauthController, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'E-mail',),)),
-              Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                  child: TextFormField(validator: validatePassword, controller: passwordauthController, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Adgangskode',),)),
+                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
@@ -77,7 +73,8 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                     try{
                       var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
                       //await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
-                      if (emailauthController.text.trim() == getAuthInfo.data()!['email']  && passwordauthController.text.trim() == getAuthInfo.data()!['password']){
+                      if (passwordauthController.text.trim() == getAuthInfo.data()!['OTP']){
+                        _showSnackBar(context, "Forespørgsel godkendt", Colors.green);
                         Navigator.pop(context);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
                       } else {

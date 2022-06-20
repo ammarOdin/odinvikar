@@ -41,11 +41,11 @@ class PdfApi {
                 padding: pw.EdgeInsets.only(bottom: 10),
                 child: pw.Text("Gennemsnittelig løn pr. vagt: " + averagePay + ",-", style: pw.TextStyle(fontSize: 18,))
             ),
-            pw.Container(
+            /*pw.Container(
                 alignment: pw.Alignment.centerLeft,
                 padding: pw.EdgeInsets.only(bottom: 10, top: 30),
                 child: pw.Text("2,5% kommision for " + month + " måned: " + commission + ",-", style: pw.TextStyle(fontSize: 18,))
-            ),
+            ),*/
             pw.Spacer(),
             pw.Row(
         children: [
