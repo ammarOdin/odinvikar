@@ -79,11 +79,11 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
                       } else {
                         Navigator.pop(context);
-                        _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);
+                        _showSnackBar(context, "Forkert kode", Colors.red);
                       }
                     } catch(e){
                       Navigator.pop(context);
-                      _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);
+                      _showSnackBar(context, "Forkert kode", Colors.red);
                     }
                   }}, icon: const Icon(Icons.check_circle_outline), label: const Align(alignment: Alignment.centerLeft, child: Text("Autentificer")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(

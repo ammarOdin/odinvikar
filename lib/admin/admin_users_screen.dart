@@ -33,6 +33,11 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
   bool validEmail = false;
   bool validPassword = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // Display snackbar with provided details
   void _showSnackBar(BuildContext context, String text, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
@@ -292,6 +297,41 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                       updateUserField(e.id, 'phone', e['phone'], phoneController, 'Telefon'),
                                       updateUserField(e.id, 'name', e['name'],nameController, 'Navn'),
                                       //Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
+                                      Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {
+                                        if (e['isAdmin'] == true){
+                                          showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Fjern administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at fjerne administrator?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
+                                            e.reference.update({'isAdmin': false});
+                                          Fluttertoast.showToast(
+                                              msg: "Administrator fjernet",
+                                              toastLength: Toast.LENGTH_LONG,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 2,
+                                              backgroundColor: Colors.green,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0
+                                          );
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          },
+                                  child: const Text("Fjern administrator", style: TextStyle(color: Colors.red),))],);});
+                                        } else {
+                                          showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Tilføj administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du er ved at tilføje administrator-privilegier til denne bruger."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
+                                            e.reference.update({'isAdmin': true});
+                                            Fluttertoast.showToast(
+                                                msg: "Tilføjet som administrator",
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                timeInSecForIosWeb: 2,
+                                                backgroundColor: Colors.green,
+                                                textColor: Colors.white,
+                                                fontSize: 16.0
+                                            );
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          },
+                                              child: const Text("Tilføj administrator", style: TextStyle(color: Colors.red),))],);});
+                                        }
+                                      }, icon: const Icon(Icons.admin_panel_settings, color: Colors.white,), label: Align(alignment: Alignment.centerLeft, child: e['isAdmin'] == true ? Text("Fjern som administrator", style: TextStyle(color: Colors.white),) : Text("Gør til administrator", style: TextStyle(color: Colors.white),)),)),
                                     ],
                                   ),)));
                               }, child: const Center(child: Text("Rediger Oplysninger"))),
@@ -308,7 +348,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 }
             ),
           ],),
-          Container(padding: const EdgeInsets.all(10),),
+          /*
           Container(margin: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 10), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
@@ -334,12 +374,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 ),
               ),)));
 
-          }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),
+          }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),*/
 
+          Container(padding: const EdgeInsets.all(15),),
           Container(margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25), decoration: BoxDecoration(border: Border.all(color: Colors.blue, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {
             var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
             showDialog(context: context, builder: (BuildContext context){
               return AlertDialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 elevation: 0,
                 backgroundColor: Colors.white,
                 title: Text("Kode til oprettelse"),

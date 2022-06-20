@@ -78,13 +78,14 @@ class _State extends State<AdminNewCalendar> {
   }
 
   Future<List> getDateShifts() async {
+    Stopwatch stopwatch = new Stopwatch()..start();
+
     loading = true;
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
     List<AdminAvailableShiftCard> separatedShiftList = [];
 
     for (var users in userRef.docs){
-      //var shiftRef = await databaseReference.collection(users.id).get();
       var shiftRef = await databaseReference.collection(users.id).
       where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(selectedDate).toString()).get();
 
@@ -117,6 +118,7 @@ class _State extends State<AdminNewCalendar> {
         }
       }
     }
+    print('getDateShift() - fetch and save all shifts - executed in ${stopwatch.elapsed}');
 
     for (var shifts in entireShift){
       List shiftSplit = shifts.split(";");
@@ -172,6 +174,7 @@ class _State extends State<AdminNewCalendar> {
       }
     }
     loading = false;
+    print('getDateShift() - return users list - executed in ${stopwatch.elapsed}');
     return separatedShiftList;
   }
 

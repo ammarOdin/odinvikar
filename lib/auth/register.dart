@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: const Align(
                           alignment: Alignment.center,
                           child: Text(
-                            "\nRegistrer Bruger\n",
+                            "\nRegistrer bruger\n",
                             style: TextStyle(color: Colors.blueGrey, fontSize: 30, fontWeight: FontWeight.bold),
                           ))),
                 ],
@@ -190,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           _showSnackBar(context, "Fejl ved oprettelse - " + e.code, Colors.red);}
                       }},child: Container(
                         width: MediaQuery.of(context).size.width / 2,
-                        child: const Align(alignment: Alignment.center, child: Text("Opret Bruger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))), style: ButtonStyle(shape: MaterialStateProperty.all(
+                        child: const Align(alignment: Alignment.center, child: Text("Opret bruger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))), style: ButtonStyle(shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: const BorderSide(color: Colors.blue)
