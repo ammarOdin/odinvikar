@@ -78,6 +78,7 @@ class _State extends State<AdminNewCalendar> {
   }
 
   Future<List> getDateShifts() async {
+    // TODO optimize load of shifts - taking too long
     Stopwatch stopwatch = new Stopwatch()..start();
 
     loading = true;
