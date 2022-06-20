@@ -84,7 +84,10 @@ class _State extends State<AdminNewCalendar> {
     List<AdminAvailableShiftCard> separatedShiftList = [];
 
     for (var users in userRef.docs){
-      var shiftRef = await databaseReference.collection(users.id).get();
+      //var shiftRef = await databaseReference.collection(users.id).get();
+      var shiftRef = await databaseReference.collection(users.id).
+      where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(selectedDate).toString()).get();
+
       for (var shifts in shiftRef.docs){
         if (shifts.data()['awaitConfirmation'].toString() != "0"){
           entireShift.add(shifts.data()['date'] + ";"
