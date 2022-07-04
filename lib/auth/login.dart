@@ -3,9 +3,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
@@ -25,11 +26,6 @@ class _LoginState extends State<LoginScreen> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final GlobalKey<FormState> _resetKey = GlobalKey<FormState>();
 
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
-
   String? validateEmail(String? email){
     if (email == null || email.isEmpty){
       return "Indsæt e-mail";
@@ -48,15 +44,7 @@ class _LoginState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Fluttertoast.showToast(
-          msg: "Du kan ikke navigere tilbage",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+        showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke navigere tilbage",),);
       return false;
       },
       child: Scaffold(
@@ -124,10 +112,10 @@ class _LoginState extends State<LoginScreen> {
                         } on FirebaseAuthException catch(e){
                           if(e.code == "user-not-found"){
                             Navigator.pop(context);
-                            _showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);
+                            showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);
                           } else {
                             Navigator.pop(context);
-                            _showSnackBar(context, "Forkert e-mail eller adgangskode", Colors.red);}
+                            showTopSnackBar(context, CustomSnackBar.error(message: "Forkert e-mail eller adgangskode",),);}
                         }
                       }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ButtonStyle(shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -145,12 +133,12 @@ class _LoginState extends State<LoginScreen> {
                           TextButton(onPressed: () async {
                             if(_resetKey.currentState!.validate()){
                               try{
-                                await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);
+                                await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail afsendt",),);
                               } on FirebaseAuthException catch (e){
                                 if(e.code == "user-not-found"){
-                                  _showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);
+                                  showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);
                                 } else {
-                                  _showSnackBar(context, "Fejl", Colors.red);}
+                                  showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);}
                               }
 
                             }}, child: const Text("Send e-mail"))],);});

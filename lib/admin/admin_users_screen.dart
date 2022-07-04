@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
 class AdminUsersScreen extends StatefulWidget {
@@ -38,11 +38,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     super.initState();
   }
 
-  // Display snackbar with provided details
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
   // Register user through auth without logging current user out
   Future<void> register(String email, String password) async {
     FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
@@ -52,10 +47,22 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
       usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
         if (documentSnapshot.exists){
-          _showSnackBar(context, "Bruger findes allerede!", Colors.red);
+          showTopSnackBar(
+            context,
+            CustomSnackBar.error(
+              message:
+              "Bruger eksisterer i databasen",
+            ),
+          );
         } else if (!documentSnapshot.exists){
           await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text, 'token': ''});
-          _showSnackBar(context, "Bruger oprettet!", Colors.green);
+          showTopSnackBar(
+            context,
+            CustomSnackBar.success(
+              message:
+              "Bruger oprettet",
+            ),
+          );
           emailController.clear();
           passwordController.clear();
           nameController.clear();
@@ -69,9 +76,21 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     }
     on FirebaseAuthException catch (e) {
       if (e.code == "invalid-email"){
-        _showSnackBar(context, "Invalid e-mail", Colors.red);
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message:
+            "Ugyldig e-mail",
+          ),
+        );
       } else {
-        _showSnackBar(context, "Bruger kunne ikke oprettes", Colors.red);
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message:
+            "Bruger kunne ikke oprettes",
+          ),
+        );
       }
       /*if (kDebugMode) {
         print(e.toString());
@@ -112,19 +131,19 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                     if (validForm){
                       switch(reference){
                         case "email":{
-                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt", Colors.green); Navigator.pop(context);}on FirebaseAuthException catch(e){if(e.code == 'invalid-email'){_showSnackBar(context, "Ugyldig E-mail", Colors.red);} else {_showSnackBar(context, "Databasefejl ved email!", Colors.red);}}
+                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Ny e-mail gemt",),); Navigator.pop(context);}on FirebaseAuthException catch(e){if(e.code == 'invalid-email'){showTopSnackBar(context, CustomSnackBar.error(message: "Ugyldig e-mail",),);} else {showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);}}
                         }
                         break;
                         case "password":{
-                          try{updateUserPassword(uid, controller.text); _showSnackBar(context, "Ny Adgangskode Gemt", Colors.green); Navigator.pop(context);} catch(e){_showSnackBar(context, "Kunne ikke gemme adgangskode!", Colors.red);}
+                          try{updateUserPassword(uid, controller.text); showTopSnackBar(context, CustomSnackBar.success(message: "Ny adgangskode gemt",),); Navigator.pop(context);} catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme adgangskoden",),);}
                         }
                         break;
                         case "phone":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Telefonnummer Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
+                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Nyt telefonnummer gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme telefonnummer",),);}
                         }
                         break;
                         case "name":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt Navn Gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme navn!", Colors.red);}
+                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Nyt navn gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme navn",),);}
                         }
                         break;
                       }
@@ -301,15 +320,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                         if (e['isAdmin'] == true){
                                           showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Fjern administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at fjerne administrator?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
                                             e.reference.update({'isAdmin': false});
-                                          Fluttertoast.showToast(
-                                              msg: "Administrator fjernet",
-                                              toastLength: Toast.LENGTH_LONG,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 2,
-                                              backgroundColor: Colors.green,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0
-                                          );
+                                          showTopSnackBar(context, CustomSnackBar.success(message: "Administrator fjernet",),);
                                           Navigator.pop(context);
                                           Navigator.pop(context);
                                           },
@@ -317,15 +328,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                         } else {
                                           showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Tilføj administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du er ved at tilføje administrator-privilegier til denne bruger."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
                                             e.reference.update({'isAdmin': true});
-                                            Fluttertoast.showToast(
-                                                msg: "Tilføjet som administrator",
-                                                toastLength: Toast.LENGTH_LONG,
-                                                gravity: ToastGravity.BOTTOM,
-                                                timeInSecForIosWeb: 2,
-                                                backgroundColor: Colors.green,
-                                                textColor: Colors.white,
-                                                fontSize: 16.0
-                                            );
+                                            showTopSnackBar(context, CustomSnackBar.success(message: "Administrator tilføjet",),);
                                             Navigator.pop(context);
                                             Navigator.pop(context);
                                           },
@@ -340,7 +343,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
                                 deleteUser(e.id);
                                 Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
-                                _showSnackBar(context, "Bruger slettet!", Colors.green);},
+                                showTopSnackBar(context, CustomSnackBar.success(message: "Bruger fjernet",),);
+                                },
                                   child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)),),
                     );
 
@@ -389,15 +393,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 actions: [
                   TextButton(onPressed: (){
                     Clipboard.setData(ClipboardData(text: getAuthInfo.data()!['OTP'].toString()));
-                    Fluttertoast.showToast(
-                        msg: "Kopieret til udklipsholder",
-                        toastLength: Toast.LENGTH_LONG,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 2,
-                        backgroundColor: Colors.grey,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
+                    showTopSnackBar(context, CustomSnackBar.success(message: "Kopieret til udklipsholderen",),);
                     }, child: Text("Kopier"))
                 ],
               );

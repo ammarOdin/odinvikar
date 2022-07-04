@@ -6,6 +6,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/admin/admin_users_screen.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -37,11 +39,6 @@ class _State extends State<AdminSettingsScreen> {
     super.initState();
     setState(() {
     });
-  }
-
-  // Display snackbar with provided details
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
   String? validateFeedbackField(String? input){
@@ -127,9 +124,21 @@ class _State extends State<AdminSettingsScreen> {
                             try {
                               feedbackReference.doc().set({'message': feedbackController.text});
                               Navigator.pop(context);
-                              _showSnackBar(context, "Feedback sendt!", Colors.green);
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.info(
+                                  message:
+                                  "Feedback afsendt",
+                                ),
+                              );
                             } catch (e) {
-                              _showSnackBar(context, "Kunne ikke sende meddelelse", Colors.red);
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.error(
+                                  message:
+                                  "Kunne ikke sende meddelelse. Prøv igen",
+                                ),
+                              );
                             }
                           }
 
@@ -176,7 +185,13 @@ class _State extends State<AdminSettingsScreen> {
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
           //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); _showSnackBar(context, "Logget Ud", Colors.grey); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(
+            context,
+            CustomSnackBar.success(
+              message:
+              "Logget ud",
+            ),
+          ); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: const BorderSide(color: Colors.blue)
