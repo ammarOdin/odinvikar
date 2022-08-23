@@ -154,7 +154,7 @@ class _LoginState extends State<LoginScreen> {
               padding: EdgeInsets.only(left: 20, right: 20, top: 30),
               child: Center(child: Text("Har du problemer med din konto, kan du kontakte os via telefon")),
             ),
-            TextButton(onPressed: (){launch("tel://60 51 02 97");}, child: Text("60 51 02 97")),
+            TextButton(onPressed: (){launch("tel://42750701");}, child: Text("42 75 07 01")),
           ],
         ),
       ),

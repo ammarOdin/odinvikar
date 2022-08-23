@@ -18,17 +18,9 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
   final passwordauthController = TextEditingController();
   final GlobalKey<FormState> _authkey = GlobalKey<FormState>();
 
-  String? validateEmail(String? email){
-    if (email == null || email.isEmpty){
-      return "Indsæt e-mail";
-    } else if (!email.contains("@") || !email.contains(".")){
-      return "Ugyldig e-mail";
-    }
-  }
-
   String? validatePassword(String? password){
     if (password == null || password.isEmpty){
-      return "Indsæt password";
+      return "Indtast kode";
     }
   }
 
@@ -44,8 +36,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
         children: [
           Container(
             padding: EdgeInsets.only(left: 10, top: 40),
-            child: Text("For at oprette dig som bruger, skal du først autentificeres. Indtast e-mail og kodeord som du har modtaget fra din institution. "
-                "Du vil blive viderestillet til en skærm hvor du kan oprette dig selv som bruger.",
+            child: Text("For at oprette dig som bruger, skal du først autentificeres.\n\nIndtast kodeordet som du har modtaget fra din institution.",
               style: TextStyle(fontSize: 14, color: Colors.grey),),
           ),
           Form(
@@ -53,7 +44,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             children: [
               Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
+                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
