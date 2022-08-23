@@ -1,13 +1,11 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:odinvikar/auth/login.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
 
@@ -27,10 +25,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   @override
   void initState(){
@@ -75,15 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Fluttertoast.showToast(
-            msg: "Tryk på tilbage-knappen for at navigere tilbage til hjemmeskærmen",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
+        showTopSnackBar(context, CustomSnackBar.info(message: "Tryk på tilbage-knappen for at navigere tilbage til hjemmeskærmen",),);
         return false;
         },
       child: Scaffold(
@@ -93,15 +79,8 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 0,
           leading: IconButton(onPressed: (){
             FirebaseAuth.instance.signOut();
-            Fluttertoast.showToast(
-                msg: "Brugeroprettelse afbrudt",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0
-            );
+            showTopSnackBar(context, CustomSnackBar.info(message: "Brugeroprettelse afbrudt",),);
+
             Navigator.pop(context);
           }, icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),),
         ),
@@ -158,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
                           usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
                             if (documentSnapshot.exists) {
-                              _showSnackBar(context, "Bruger findes allerede!", Colors.red);
+                              showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer allerede",),);
                             } else if (!documentSnapshot.exists) {
                               // get token
                               var token;
@@ -181,13 +160,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                               var otp = getRandomString(8);
                               await FirebaseFirestore.instance.collection('auth').doc('authInfo').set({'OTP': otp});
-                              _showSnackBar(context, "Logget ind", Colors.green);
+                              showTopSnackBar(context, CustomSnackBar.success(message: "Logget ind",),);
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
                             }
                           });
                           //launch("https://vikarly.dk/?page_id=1685");
                         } on FirebaseAuthException catch(e){
-                          _showSnackBar(context, "Fejl ved oprettelse - " + e.code, Colors.red);}
+                          showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse - ${e.code}",),);
+                        }
                       }},child: Container(
                         width: MediaQuery.of(context).size.width / 2,
                         child: const Align(alignment: Alignment.center, child: Text("Opret bruger", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))), style: ButtonStyle(shape: MaterialStateProperty.all(

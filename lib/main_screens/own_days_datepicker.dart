@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 
@@ -98,10 +100,6 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
       ),
     );
   }*/
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   DateTime initialDate() {
     if (DateTime.now().weekday == DateTime.saturday){
@@ -307,7 +305,7 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                   }
                                   saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
                                     if (documentSnapshot.exists) {
-                                      _showSnackBar(context, pickedDate + " er allerede oprettet", Colors.red);
+                                      showTopSnackBar(context, CustomSnackBar.error(message: "${pickedDate} er allerede oprettet",),);
                                     } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
                                       try{
                                         await saveShift.doc(pickedDate).set(
@@ -323,9 +321,9 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                                           'awaitConfirmation': 0
                                             });
                                         Navigator.pop(context);
-                                        _showSnackBar(context, pickedDate + " tilføjet", Colors.green);
+                                        showTopSnackBar(context, CustomSnackBar.success(message: "${pickedDate} oprettet",),);
                                       } catch (e) {
-                                        _showSnackBar(context, "Fejl ved oprettelse", Colors.red);
+                                        showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse af vagt. Prøv igen",),);
                                       }
                                     }
                                   });

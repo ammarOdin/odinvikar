@@ -2,13 +2,14 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:odinvikar/main_screens/own_days_details.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
@@ -200,14 +201,7 @@ class OwnDays extends State<OwnDaysScreen> {
                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
                 child: ElevatedButton.icon(onPressed: () async {
                   if (getDateTap.weekday == 6  || getDateTap.weekday == 7){
-                    Fluttertoast.showToast(
-                        msg: "Du kan ikke tilføje en weekend",
-                        toastLength: Toast.LENGTH_LONG,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 2,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                    showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke tilføje på en weekend",),);
                   } else {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
                       setState(() {

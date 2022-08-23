@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'edit_shift_screen.dart';
 
@@ -33,11 +34,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   late TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
   late TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
-
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   Future<void> sendAcceptedShiftNotification(String token, String date, String name) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('acceptShiftNotif');
@@ -105,15 +101,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         actions: [
           IconButton(onPressed: () async {
             if (widget.awaitConfirmation != 0){
-              Fluttertoast.showToast(
-                  msg: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 2,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
+              showTopSnackBar(context, CustomSnackBar.error(message: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",),);
             } else {
               var userRef = await databaseReference.collection(user!.uid);
               final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
@@ -176,7 +164,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           onPressed: () async {
                             await widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
                             Navigator.pop(context);
-                            _showSnackBar(context, "Vagt accepteret", Colors.green);
+                            showTopSnackBar(context, CustomSnackBar.success(message: "Vagt accepteret",),);
                             var adminRef = await databaseReference.collection('user').get();
                             var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
                             for (var admins in adminRef.docs){
@@ -355,7 +343,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     return AlertDialog(title: Text("Slet dag"),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       content: Text("Er du sikker på at slette dagen?"),
-                      actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  _showSnackBar(context, "Vagt slettet", Colors.green);}
+                      actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
+                        }
                           , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                 },
                 style: ElevatedButton.styleFrom(
@@ -453,7 +442,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                                               timeRange = startTime.format(context) + "-" + endTime.format(context);
                                             });
                                             Navigator.pop(context);
-                                            _showSnackBar(context, "Tidsrum gemt", Colors.green);
+                                            showTopSnackBar(context, CustomSnackBar.success(message: "Nyt tidsrum gemt",),);
                                           }, child: Text("GEM", style: TextStyle(color: Colors.green),))
                                         ],
                                       );

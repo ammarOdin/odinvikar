@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_edit_shift.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../card_assets.dart';
 import 'admin_assign_shift.dart';
@@ -43,9 +44,6 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   Future<List> getUserInfo() async {
     var userRef = await databaseReference.collection('user').get();
@@ -103,14 +101,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 children: [
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                      Fluttertoast.showToast(
-                          msg: "En vagt er allerede tildelt.",
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.info(
+                          message:
+                          "En vagt er allerede tildelt",
+                        ),
                       );
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
@@ -121,14 +117,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.add,),
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 0){
-                      Fluttertoast.showToast(
-                          msg: "Der er ikke tildelt en vagt endnu. Du kan ikke redigere dagen.",
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.info(
+                          message:
+                          "Der er ikke tildelt en vagt endnu. Du kan ikke redigere dagen",
+                        ),
                       );
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
@@ -147,7 +141,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         TextButton(onPressed: () {
                           FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
                           Navigator.pop(context);
-                          _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                          showTopSnackBar(
+                            context,
+                            CustomSnackBar.success(
+                              message:
+                              "Vagt slettet",
+                            ),
+                          );
+                          }, child: const Text("Slet")),
                         TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
                       ],
                     );});
@@ -220,14 +221,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   children: [
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                        Fluttertoast.showToast(
-                            msg: "En vagt er allerede tildelt.",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0
+                        showTopSnackBar(
+                          context,
+                          CustomSnackBar.info(
+                            message:
+                            "En vagt er allerede tildelt",
+                          ),
                         );
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
@@ -238,14 +237,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.add,),
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 0){
-                        Fluttertoast.showToast(
-                            msg: "Der er ikke tildelt en vagt endnu. Du kan ikke redigere den.",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0
+                        showTopSnackBar(
+                          context,
+                          CustomSnackBar.info(
+                            message:
+                            "Der er ikke tildelt en vagt endnu. Du kan ikke redigere den",
+                          ),
                         );
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
@@ -264,7 +261,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                             TextButton(onPressed: () {
                               FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
                               Navigator.pop(context);
-                              _showSnackBar(context, "Vagt slettet", Colors.green);}, child: const Text("Slet")),
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.success(
+                                  message:
+                                  "Vagt slettet",
+                                ),
+                              );
+                              }, child: const Text("Slet")),
                             TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
                           ],
                         );});

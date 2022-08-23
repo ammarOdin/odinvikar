@@ -5,6 +5,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'package:odinvikar/main_screens/shift_history.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -31,10 +33,6 @@ class _State extends State<SettingsScreen> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final feedbackController = TextEditingController();
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   String? validatePassword(String? password){
     if (password == null || password.isEmpty){
@@ -100,7 +98,7 @@ class _State extends State<SettingsScreen> {
                     if (validForm){
                       switch(reference){
                         case "phone":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Nyt telefonnummer gemt", Colors.green); Navigator.pop(context);}catch(e){_showSnackBar(context, "Kunne ikke gemme telefonnummer!", Colors.red);}
+                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Telefonnummer gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme telefonnummer",),);}
                         }
                         break;
                         case "email":{
@@ -118,11 +116,11 @@ class _State extends State<SettingsScreen> {
                                   /*AuthCredential credential = EmailAuthProvider.credential(email: emailController.text, password: passwordController.text);
                                   await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);*/
                                     await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                                  _showSnackBar(context, "Autentificering godkendt", Colors.green);
+                                  showTopSnackBar(context, CustomSnackBar.success(message: "Autentificering godkendt",),);
                                   FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
-                                  usersRef.doc(uid).update({reference:controller.text}); _showSnackBar(context, "Ny E-mail Gemt!", Colors.green); Navigator.pop(context); Navigator.pop(context);
+                                  usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail gemt",),); Navigator.pop(context); Navigator.pop(context);
                                   }
-                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){_showSnackBar(context, "Forkert adgangskode!", Colors.red);} else if (e.code == "invalid-email"){ _showSnackBar(context, "Forkert e-mail!", Colors.red);} else if (e.code == "user-not-found"){_showSnackBar(context, "Bruger eksisterer ikke!", Colors.red);} else { _showSnackBar(context, "Fejlkode " + e.code, Colors.red);}}
+                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){showTopSnackBar(context, CustomSnackBar.error(message: "Forkert adgangskode",),);} else if (e.code == "invalid-email"){ showTopSnackBar(context, CustomSnackBar.error(message: "Forkert e-mail",),);} else if (e.code == "user-not-found"){showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);} else {showTopSnackBar(context, CustomSnackBar.error(message: "Fejlkode ${e.code}",),);}}
                                 }
                               }, child: const Text("Godkend")),
                           ],),
@@ -219,9 +217,9 @@ class _State extends State<SettingsScreen> {
                             try {
                               feedbackReference.doc().set({'message': feedbackController.text, 'user': user!.uid});
                               Navigator.pop(context);
-                              _showSnackBar(context, "Feedback sendt!", Colors.green);
+                              showTopSnackBar(context, CustomSnackBar.success(message: "Feedback sendt",),);
                             } catch (e) {
-                              _showSnackBar(context, "Kunne ikke sende meddelelse", Colors.red);
+                              showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke sende meddelelse. Prøv igen",),);
                             }
                           }
                           }, child: const Text("Send"))
@@ -261,7 +259,7 @@ class _State extends State<SettingsScreen> {
           height: 50,
           width: 150,
           margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); _showSnackBar(context, "Logget ud", Colors.grey); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
+          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                   side: const BorderSide(color: Colors.blue)
@@ -366,7 +364,7 @@ class _State extends State<SettingsScreen> {
                       Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                          TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "E-mail sendt!", Colors.green);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
+                          TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail sendt",),);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
                           child: const Text("Nulstil adgangskode")))),
                       /*Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'admin_edit_shift.dart';
 
@@ -31,10 +32,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   late String color ;
   late String awaitConfirmation ;
   bool isChecked = false;
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   Future<void> sendSummonedUser(String token, String date) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('summonedUser');
@@ -259,7 +256,15 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           return AlertDialog(title: Text("Slet dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
+                            showTopSnackBar(
+                              context,
+                              CustomSnackBar.success(
+                                message:
+                                "Vagt slettet",
+                              ),
+                            );
+                              }
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
                       style: ElevatedButton.styleFrom(
@@ -300,7 +305,13 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                                 details = "Tilkaldt              Ingen";
                               });
                               Navigator.pop(context); Navigator.pop(context);
-                              _showSnackBar(context, "Vikar status ændret", Colors.green);
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.success(
+                                  message:
+                                  "Vikar status ændret",
+                                ),
+                              );
                               }
                                 , child: const Text("SKIFT STATUS", style: TextStyle(color: Colors.blue),))],); });
                       },
@@ -330,7 +341,15 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           return AlertDialog(title: Text("Slet dag"),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);}
+                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
+                            showTopSnackBar(
+                              context,
+                              CustomSnackBar.success(
+                                message:
+                                "Vagt slettet",
+                              ),
+                            );
+                              }
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
                       style: ElevatedButton.styleFrom(
@@ -362,7 +381,13 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           sendCanceledShift(widget.token, widget.date);
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          _showSnackBar(context, "Vagt gjort tilgængelig", Colors.green);
+                          showTopSnackBar(
+                            context,
+                            CustomSnackBar.success(
+                              message:
+                              "Vagt gjort tilgængelig",
+                            ),
+                          );
                           }
                             , child: const Text("AFBOOK", style: TextStyle(color: Colors.blue),))],); });
                   },

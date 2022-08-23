@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AssignShiftScreen extends StatefulWidget {
   final String date;
@@ -19,11 +21,6 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
 
   final commentController = TextEditingController();
   final GlobalKey<FormState> _commentKey = GlobalKey<FormState>();
-
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   String? validateComment(String? input){
     if (input!.contains(new RegExp(r'^[#$^*():{}|<>]+$'))){
@@ -172,9 +169,21 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                       stateUpdater.add("1");
                       Navigator.pop(context, stateUpdater);
                       sendAssignedShiftNotification(widget.token, widget.date.toString(), timeRange);
-                      _showSnackBar(context,"Vagt tildelt", Colors.green);
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.success(
+                          message:
+                          "Vagt tildelt",
+                        ),
+                      );
                     } catch (e) {
-                      _showSnackBar(context, "Fejl", Colors.red);
+                      showTopSnackBar(
+                        context,
+                        CustomSnackBar.error(
+                          message:
+                          "En fejl opstod. Prøv igen",
+                        ),
+                      );
                     }
                   }
                 },

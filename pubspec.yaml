@@ -55,13 +55,13 @@ dependencies:
   get: ^4.6.1
   flutter_spinkit: ^5.1.0
   flutter_slidable: ^1.2.0
-  fluttertoast: ^8.0.9
   upgrader: ^3.15.0
   pdf: ^3.8.1
   path_provider: ^2.0.10
   open_file: ^3.2.1
   calendar_appbar: ^0.0.6
   table_calendar: ^3.0.6
+  top_snackbar_flutter: ^2.1.0
 
   change_app_package_name: ^1.0.0
 

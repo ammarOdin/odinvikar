@@ -71,7 +71,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
             ),
           ),
 
-          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Mine vagter"), Tab(text: "Ledige vagter",)])),
+          Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "Ledige vagter"), Tab(text: "Mine vagter",)])),
 
           Row(
             children: [
@@ -108,7 +108,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
             ],
           ),
 
-          Container(
+          /*Container(
             padding: EdgeInsets.only(left: 15, top: 10, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -132,59 +132,42 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                 ),
               ],
             ),
-          ),
+          ),*/
 
-          StreamBuilder(
-              stream: vagter.snapshots() ,
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if (!snapshot.hasData){
-                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
-                }else if (snapshot.data!.docs.isEmpty){
-                  return Container(
-                    padding: const EdgeInsets.all(50),
-                    child: const Center(child: Text(
-                      "Ingen Vagter",
-                      style: TextStyle(color: Colors.blue, fontSize: 18),
-                    ),),
-                  );
-                }
-                  return Column(
-                    children: snapshot.data!.docs.map((document){
-                      if (document['userID'] == user!.uid && _controller.index == 0 && document['week'].toString() == dropdownValue.toString()){
-                        return ShiftSystemCard(
-                          icon: Icon(Icons.square_rounded,
-                          color: Color(int.parse(document['color'])), size: 18,),
-                          icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
-                          day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
-                          text: document['date'],
-                          time: document['time'],
-                          onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
-                            date: document['date'],
-                            comment: document['comment'],
+          const Divider(thickness: 1, height: 45,),
+
+          Container(
+            child: StreamBuilder(
+                stream: vagter.snapshots() ,
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                  if (!snapshot.hasData){
+                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: const CircularProgressIndicator.adaptive());
+                  }else if (snapshot.data!.docs.isEmpty){
+                    return Container(
+                      padding: const EdgeInsets.all(50),
+                      child: const Center(child: Text(
+                        "Ingen Vagter",
+                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                      ),),
+                    );
+                  }
+                    return Column(
+                      children: snapshot.data!.docs.map((document){
+                        if (document['userID'] == user!.uid && _controller.index == 1 /*&& document['week'].toString() == dropdownValue.toString()*/){
+                          return ShiftSystemCard(
+                            icon: Icon(Icons.square_rounded,
+                            color: Color(int.parse(document['color'])), size: 18,),
+                            icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
+                            day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
+                            text: document['date'],
                             time: document['time'],
-                            name: document['name'],
-                            token: document['token'],
-                            data: document.id,
-                            status: document['status'],
-                            awaitConfirmation: document['awaitConfirmation'],
-                            acute: document['isAcute'],
-                            color: document['color'] ,
-                          )));
-                        },);
-                      } else if (document['awaitConfirmation'] != 2 /*&& document['week'] >= DateTime.now().weekOfYear*/ &&  _controller.index == 1 && document['week'].toString() == dropdownValue.toString()){
-                        return ShiftSystemCard(
-                          icon: Icon(Icons.square_rounded, color: Color(int.parse(document['color'])), size: 18,),
-                          icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
-                          day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
-                          text: document['date'],
-                          time: document['time'],
-                          onPressed: (){
+                            onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
                               date: document['date'],
                               comment: document['comment'],
                               time: document['time'],
                               name: document['name'],
+                              token: document['token'],
                               data: document.id,
                               status: document['status'],
                               awaitConfirmation: document['awaitConfirmation'],
@@ -192,13 +175,34 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                               color: document['color'] ,
                             )));
                           },);
-                      } else {
-                        return Container();
-                      }
-                    }).toList(),
-                  );
+                        } else if (document['awaitConfirmation'] != 2 /*&& document['week'] >= DateTime.now().weekOfYear*/ &&  _controller.index == 0 /*&& document['week'].toString() == dropdownValue.toString()*/){
+                          return ShiftSystemCard(
+                            icon: Icon(Icons.square_rounded, color: Color(int.parse(document['color'])), size: 18,),
+                            icon2: document['isAcute'] ? Icon(Icons.warning, color: Colors.red,) : Icon(Icons.warning, color: Colors.white,),
+                            day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])),
+                            text: document['date'],
+                            time: document['time'],
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftSystemDetailsScreen(
+                                date: document['date'],
+                                comment: document['comment'],
+                                time: document['time'],
+                                name: document['name'],
+                                data: document.id,
+                                status: document['status'],
+                                awaitConfirmation: document['awaitConfirmation'],
+                                acute: document['isAcute'],
+                                color: document['color'] ,
+                              )));
+                            },);
+                        } else {
+                          return Container();
+                        }
+                      }).toList(),
+                    );
 
-              }),
+                }),
+          ),
         ],
       ),
     );

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'admin_edit_shift_system.dart';
 
 class AdminShiftSystemDetailsScreen extends StatefulWidget {
@@ -26,10 +27,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
 
   late String status, color, awaitConfirmation, time, comment;
   late bool acute;
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
 
   Future<void> sendDeletedShiftNotification(String token, String date) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deletedShiftNotif');
@@ -88,15 +85,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                 comment = result[2];
               });
             } else {
-              Fluttertoast.showToast(
-                  msg: "Du kan ikke redigere en booket vagt.",
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 2,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
+              showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke redigere en booket vagt",),);
             }
           }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,))
         ],
@@ -264,7 +253,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                         // send notification that shift accepted
                         sendAcceptedShiftNotification(widget.token!, widget.date);
                         Navigator.pop(context);
-                        _showSnackBar(context, "Vagt godkendt", Colors.green);
+                        showTopSnackBar(context, CustomSnackBar.success(message: "Vagt godkendt",),);
                       },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 16),
@@ -288,7 +277,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                             actions: [TextButton(onPressed: () {
-                              FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);
+                              FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
                               if (awaitConfirmation != "0"){
                                 // send notification that shift deleted
                                 sendDeletedShiftNotification(widget.token!, widget.date);
@@ -321,7 +310,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftSystemDetailsScreen>
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                       actions: [TextButton(onPressed: () {
-                        FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); _showSnackBar(context, "Vagt slettet", Colors.green);
+                        FirebaseFirestore.instance.collection('shifts').doc(widget.data).delete(); Navigator.pop(context); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
                         if (awaitConfirmation != "0"){
                           // send notification that shift deleted
                           sendDeletedShiftNotification(widget.token!, widget.date);

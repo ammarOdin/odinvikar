@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class EditShiftScreen extends StatefulWidget {
   final String date;
@@ -26,10 +30,6 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
     } else {
       return null;
     }
-  }
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
   @override
@@ -211,9 +211,9 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
                         });
                         stateUpdater.add(timeRange); stateUpdater.add(comment);
                         Navigator.pop(context, stateUpdater);
-                        _showSnackBar(context,"Vagt redigeret", Colors.green);
+                        showTopSnackBar(context, CustomSnackBar.success(message: "Vagt redigeret",),);
                       } catch (e) {
-                        _showSnackBar(context, "Fejl", Colors.red);
+                        showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);
                       }
                     }
                   },

@@ -3,6 +3,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ShiftSystemDetailsScreen extends StatefulWidget {
   final String date, status, time, comment, color, data;
@@ -26,11 +28,6 @@ class _ShiftDetailsScreenState extends State<ShiftSystemDetailsScreen> {
   late bool acute;
   User? user = FirebaseAuth.instance.currentUser;
   get users => FirebaseFirestore.instance.collection("user");
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
-  }
-
 
   Future<void> sendShiftNotification(String token, String date, String name) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('shiftOfferNotif');
@@ -239,7 +236,7 @@ class _ShiftDetailsScreenState extends State<ShiftSystemDetailsScreen> {
                               }
                             }
                             Navigator.pop(context); Navigator.pop(context);
-                            _showSnackBar(context, "Budt på vagt", Colors.green);
+                            showTopSnackBar(context, CustomSnackBar.success(message: "Budt på vagt afsendt",),);
                           }
                               , child: const Text("BYD PÅ VAGT", style: TextStyle(color: Colors.green),))],); });
                     },
