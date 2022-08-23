@@ -13,20 +13,12 @@ class AuthRegisterPage extends StatefulWidget {
 class _AuthRegisterPageState extends State<AuthRegisterPage> {
 
   final emailauthController = TextEditingController();
-  final passwordauthController = TextEditingController();
+  final otpAuthController = TextEditingController();
   final GlobalKey<FormState> _authkey = GlobalKey<FormState>();
 
-  String? validateEmail(String? email){
-    if (email == null || email.isEmpty){
-      return "Indsæt e-mail";
-    } else if (!email.contains("@") || !email.contains(".")){
-      return "Ugyldig e-mail";
-    }
-  }
-
-  String? validatePassword(String? password){
-    if (password == null || password.isEmpty){
-      return "Indsæt password";
+  String? validateOTP(String? password){
+    if (password == null || password.isEmpty  || password.length != 8){
+      return "Indsæt gyligt kodeord";
     }
   }
 
@@ -46,8 +38,8 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
         children: [
           Container(
             padding: EdgeInsets.only(left: 10, top: 40),
-            child: Text("For at oprette dig som bruger, skal du først autentificeres. Indtast e-mail og kodeord som du har modtaget fra din institution. "
-                "Du vil blive viderestillet til en skærm hvor du kan oprette dig selv som bruger.",
+            child: Text("For at oprette dig som bruger, skal du først autentificeres. Indtast kodeordet som du har modtaget fra din institution. "
+                "\n\nDu vil blive viderestillet til en skærm hvor du kan oprette dig som bruger.",
               style: TextStyle(fontSize: 14, color: Colors.grey),),
           ),
           Form(
@@ -55,7 +47,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             children: [
               Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
+                  child: TextFormField(validator: validateOTP, controller: otpAuthController, keyboardType: TextInputType.number, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
@@ -73,7 +65,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                     try{
                       var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
                       //await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
-                      if (passwordauthController.text.trim() == getAuthInfo.data()!['OTP']){
+                      if (otpAuthController.text.trim() == getAuthInfo.data()!['OTP']){
                         _showSnackBar(context, "Forespørgsel godkendt", Colors.green);
                         Navigator.pop(context);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
@@ -95,7 +87,6 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             ],
           ),
           ),
-
         ],
       ),
     );
