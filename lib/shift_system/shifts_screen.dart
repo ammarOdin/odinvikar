@@ -6,6 +6,9 @@ import 'package:odinvikar/shift_system/shift_details.dart';
 import 'package:intl/intl.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
+import '../main_screens/dashboard.dart';
+import '../main_screens/settings_screen.dart';
+
 
 class ShiftScreen extends StatefulWidget {
   const ShiftScreen({Key? key}) : super(key: key);
@@ -49,6 +52,42 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        toolbarHeight: kToolbarHeight + 2,
+      ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                  decoration: BoxDecoration(
+                      color: Colors.blue
+                  ),
+                  child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
+              ListTile(
+                title: Text("Hjem"),
+                leading: Icon(Icons.work_outline),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
+                },
+              ),
+              ListTile(
+                title: Text("Vagtbanken", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ),),
+                leading: Icon(Icons.work_outline),
+                selected: true,
+              ),
+              ListTile(
+                title: Text("Profil"),
+                leading: Icon(Icons.account_box_outlined),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                },
+              ),
+            ],
+          ),
+        ),
       body: ListView(
         physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),
@@ -56,12 +95,12 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
         children: [
           Container(
             color: Colors.blue,
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 4,
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Container(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 8),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 12),
                     child: const Center(
                         child: Text(
                           "Vagter",

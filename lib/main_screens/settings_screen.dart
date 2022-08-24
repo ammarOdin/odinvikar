@@ -9,6 +9,9 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
+import '../shift_system/shifts_screen.dart';
+import 'dashboard.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
@@ -141,131 +144,169 @@ class _State extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: ClampingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 0),
-      children: [
-        Container(
-          color: Colors.blue,
-          margin: const EdgeInsets.only(bottom: 10),
-          height: MediaQuery
-              .of(context)
-              .size
-              .height / 3,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        toolbarHeight: kToolbarHeight + 2,
+      ),
+        drawer: Drawer(
           child: ListView(
+            padding: EdgeInsets.zero,
             children: [
-              Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery
-                        .of(context)
-                        .size
-                        .height / 10),
-                child: const Center(
-                    child: Text(
-                      "Profil",
-                      style: TextStyle(color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold),
-                    )),
+              DrawerHeader(
+                  decoration: BoxDecoration(
+                      color: Colors.blue
+                  ),
+                  child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
+              ListTile(
+                title: Text("Hjem"),
+                leading: Icon(Icons.work_outline),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
+                },
               ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery
-                        .of(context)
-                        .size
-                        .height / 30),
-                child: Center(
-                    child: StreamBuilder(
-                        stream: getUserInfo.snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData){
-                            var name = snapshot.data as DocumentSnapshot;
-                            return Center(
-                                child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
-                          }
-                          return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
-                            color: Colors.blue,
-                            size: 50,
-                          )));
-                        }
-                    ),),
+              ListTile(
+                title: Text("Vagtbanken"),
+                leading: Icon(Icons.work_outline),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ShiftScreen()));
+                },
+              ),
+              ListTile(
+                title: Text("Profil", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ),),
+                leading: Icon(Icons.account_box_outlined),
+                selected: true,
               ),
             ],
           ),
         ),
-        Row(
-          children: [
-            Container(padding: const EdgeInsets.only(left: 20),
-              child: const Text("Indstillinger",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-            const Spacer(),
-
-            Container(
-              child: IconButton(onPressed: () {
-                showDialog(context: context, builder: (BuildContext context){
-                  return Form(
-                    key: _feedbackKey,
-                    child: AlertDialog(title: const Text("Feedback"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
-                      actions: [
-                        Container(
-                            padding: EdgeInsets.only(right: 20),
-                            child: TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),)),
-                        TextButton(onPressed: () async {
-                          if (_feedbackKey.currentState!.validate()){
-                            try {
-                              feedbackReference.doc().set({'message': feedbackController.text, 'user': user!.uid});
-                              Navigator.pop(context);
-                              showTopSnackBar(context, CustomSnackBar.success(message: "Feedback sendt",),);
-                            } catch (e) {
-                              showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke sende meddelelse. Prøv igen",),);
+      body: ListView(
+        physics: ClampingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 0),
+        children: [
+          Container(
+            color: Colors.blue,
+            margin: const EdgeInsets.only(bottom: 10),
+            height: MediaQuery
+                .of(context)
+                .size
+                .height / 4,
+            child: ListView(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 20),
+                  child: const Center(
+                      child: Text(
+                        "Profil",
+                        style: TextStyle(color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 30),
+                  child: Center(
+                      child: StreamBuilder(
+                          stream: getUserInfo.snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData){
+                              var name = snapshot.data as DocumentSnapshot;
+                              return Center(
+                                  child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
                             }
+                            return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
+                              color: Colors.blue,
+                              size: 50,
+                            )));
                           }
-                          }, child: const Text("Send"))
-                      ],),
-                  );
-                });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),)
-          ],
-        ),
+                      ),),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Container(padding: const EdgeInsets.only(left: 20),
+                child: const Text("Indstillinger",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
+              const Spacer(),
 
-        const Divider(thickness: 1, height: 15),
+              Container(
+                child: IconButton(onPressed: () {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return Form(
+                      key: _feedbackKey,
+                      child: AlertDialog(title: const Text("Feedback"),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
+                        actions: [
+                          Container(
+                              padding: EdgeInsets.only(right: 20),
+                              child: TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),)),
+                          TextButton(onPressed: () async {
+                            if (_feedbackKey.currentState!.validate()){
+                              try {
+                                feedbackReference.doc().set({'message': feedbackController.text, 'user': user!.uid});
+                                Navigator.pop(context);
+                                showTopSnackBar(context, CustomSnackBar.success(message: "Feedback sendt",),);
+                              } catch (e) {
+                                showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke sende meddelelse. Prøv igen",),);
+                              }
+                            }
+                            }, child: const Text("Send"))
+                        ],),
+                    );
+                  });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),)
+            ],
+          ),
 
-        Container(
-          height: 50,
-          width: 150,
-          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
-          child: ElevatedButton.icon(onPressed: () {showContactInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: Colors.blue)
-              )
-          )),),),
+          const Divider(thickness: 1, height: 15),
 
-        Container(
-          height: 50,
-          width: 150,
-          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-          child: ElevatedButton.icon(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftHistoryScreen()));
-          }, icon: const Icon(Icons.access_time, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine timer", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: Colors.blue)
-              )
-          )),),),
+          Container(
+            height: 50,
+            width: 150,
+            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
+            child: ElevatedButton.icon(onPressed: () {showContactInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: Colors.blue)
+                )
+            )),),),
 
-        Container(
-          height: 50,
-          width: 150,
-          margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-          child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: Colors.blue)
-              )
-          )),),),
-      ],
+          Container(
+            height: 50,
+            width: 150,
+            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+            child: ElevatedButton.icon(onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftHistoryScreen()));
+            }, icon: const Icon(Icons.access_time, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine timer", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: Colors.blue)
+                )
+            )),),),
+
+          Container(
+            height: 50,
+            width: 150,
+            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+            child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: Colors.blue)
+                )
+            )),),),
+        ],
+      ),
     );
 
   }

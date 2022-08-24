@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/register.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AuthRegisterPage extends StatefulWidget {
   const AuthRegisterPage({Key? key}) : super(key: key);
@@ -13,17 +15,13 @@ class AuthRegisterPage extends StatefulWidget {
 class _AuthRegisterPageState extends State<AuthRegisterPage> {
 
   final emailauthController = TextEditingController();
-  final otpAuthController = TextEditingController();
+  final passwordauthController = TextEditingController();
   final GlobalKey<FormState> _authkey = GlobalKey<FormState>();
 
-  String? validateOTP(String? password){
-    if (password == null || password.isEmpty  || password.length != 8){
-      return "Indsæt gyligt kodeord";
+  String? validatePassword(String? password){
+    if (password == null || password.isEmpty){
+      return "Indtast kode";
     }
-  }
-
-  void _showSnackBar(BuildContext context, String text, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), backgroundColor: color,));
   }
 
   @override
@@ -38,8 +36,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
         children: [
           Container(
             padding: EdgeInsets.only(left: 10, top: 40),
-            child: Text("For at oprette dig som bruger, skal du først autentificeres. Indtast kodeordet som du har modtaget fra din institution. "
-                "\n\nDu vil blive viderestillet til en skærm hvor du kan oprette dig som bruger.",
+            child: Text("For at oprette dig som bruger, skal du først autentificeres.\n\nIndtast kodeordet som du har modtaget fra din institution.",
               style: TextStyle(fontSize: 14, color: Colors.grey),),
           ),
           Form(
@@ -47,7 +44,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             children: [
               Container(
                   padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                  child: TextFormField(validator: validateOTP, controller: otpAuthController, keyboardType: TextInputType.number, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
+                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
               Container(
                 height: 50,
                 margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
@@ -65,17 +62,17 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                     try{
                       var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
                       //await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
-                      if (otpAuthController.text.trim() == getAuthInfo.data()!['OTP']){
-                        _showSnackBar(context, "Forespørgsel godkendt", Colors.green);
+                      if (passwordauthController.text.trim() == getAuthInfo.data()!['OTP']){
+                        showTopSnackBar(context, CustomSnackBar.success(message: "Forespørgsel godkendt",),);
                         Navigator.pop(context);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
                       } else {
                         Navigator.pop(context);
-                        _showSnackBar(context, "Forkert kode", Colors.red);
+                        showTopSnackBar(context, CustomSnackBar.error(message: "Forkert kode",),);
                       }
                     } catch(e){
                       Navigator.pop(context);
-                      _showSnackBar(context, "Forkert kode", Colors.red);
+                      showTopSnackBar(context, CustomSnackBar.error(message: "Forkert kode",),);
                     }
                   }}, icon: const Icon(Icons.check_circle_outline), label: const Align(alignment: Alignment.centerLeft, child: Text("Autentificer")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
@@ -87,6 +84,7 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
             ],
           ),
           ),
+
         ],
       ),
     );

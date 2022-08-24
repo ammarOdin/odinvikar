@@ -40,11 +40,44 @@ class _HomescreenState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       //extendBodyBehindAppBar: true,
-     /* appBar: AppBar(
-        backgroundColor: Colors.transparent,
+     appBar: AppBar(
+        backgroundColor: Colors.blue,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),*/
+        toolbarHeight: kToolbarHeight + 2,
+        //iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue
+                ),
+                child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
+            Padding(padding: EdgeInsets.only(bottom: 20)),
+            ListTile(
+              title: Text("Hjem", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ),),
+              leading: Icon(Icons.home_outlined),
+              selected: true,
+            ),
+            ListTile(
+              title: Text("Vagtbanken"),
+              leading: Icon(Icons.work_outline),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ShiftScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Profil"),
+              leading: Icon(Icons.account_box_outlined),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+              },
+            ),
+          ],
+        ),
+      ),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -54,8 +87,8 @@ class _HomescreenState extends State<Dashboard> {
           children: const <Widget>[
             HomeScreen(),
             OwnDaysScreen(),
-            ShiftScreen(),
-            SettingsScreen(),
+            /*ShiftScreen(),
+            SettingsScreen(),*/
           ],
         ),
       ),
@@ -91,14 +124,14 @@ class _HomescreenState extends State<Dashboard> {
                   label: 'Kalender',
                   icon: Icon(Icons.today_outlined)
               ),
-              BottomNavigationBarItem(
+             /* BottomNavigationBarItem(
                   label: 'Vagtbanken',
                   icon: Icon(Icons.work_outline)
               ),
               BottomNavigationBarItem(
                   label: 'Profil',
                   icon: Icon(Icons.account_box_outlined)
-              ),
+              ),*/
             ],
           ),
         ),

@@ -30,12 +30,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^1.17.0
-  firebase_auth: ^3.3.18
-  cloud_firestore: ^3.1.15
+  firebase_core: ^1.21.0
+  firebase_auth: ^3.6.4
+  cloud_firestore: ^3.4.5
   firebase_analytics: ^9.1.6
-  cloud_functions: ^3.2.13
-  firebase_messaging: ^11.4.0
+  cloud_functions: ^3.3.5
+  firebase_messaging: ^12.0.3
 
   flutter_localizations:
     sdk: flutter

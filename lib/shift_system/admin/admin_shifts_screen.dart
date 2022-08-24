@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:week_of_year/date_week_extensions.dart';
+import '../../admin/admin_home_screen.dart';
+import '../../admin/admin_settings_screen.dart';
 import '../../card_assets.dart';
 import 'admin_add_shift.dart';
 import 'admin_shift_system_details.dart';
@@ -57,6 +60,44 @@ class _AdminShiftsScreenState extends State<AdminShiftsScreen> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        toolbarHeight: kToolbarHeight + 2,
+        //iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+                decoration: BoxDecoration(
+                    color: Colors.blue
+                ),
+                child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
+            Padding(padding: EdgeInsets.only(bottom: 20)),
+            ListTile(
+              title: Text("Hjem", style: TextStyle(fontSize: 16),),
+              leading: Icon(Icons.home_outlined),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminDashboard()));
+              },
+            ),
+            ListTile(
+              title: Text("Vagtbanken"),
+              leading: Icon(Icons.work_outline),
+              selected: true,
+            ),
+            ListTile(
+              title: Text("Indstillinger"),
+              leading: Icon(Icons.settings_outlined),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminSettingsScreen()));
+              },
+            ),
+          ],
+        ),
+      ),
       body: ListView(
         physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),

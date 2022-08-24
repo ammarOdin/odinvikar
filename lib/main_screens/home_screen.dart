@@ -79,13 +79,13 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           Container(
             color: Colors.blue,
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 4,
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 10),
+                        top: MediaQuery.of(context).size.height / 20),
                     child: const Center(
                         child: Text(
                           "Dine dage",
