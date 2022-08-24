@@ -147,9 +147,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               await usersRef.doc(userCredential.user?.uid).set({
                                 'email': emailController.text,
                                 'isAdmin': false,
+                                'isSynced': false,
                                 'name': nameController.text,
                                 'phone': phoneController.text,
                                 'token': token,
+                                'syncURL': "",
                               });
 
                               // regen new OTP and save

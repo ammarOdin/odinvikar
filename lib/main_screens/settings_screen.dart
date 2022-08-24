@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'package:odinvikar/main_screens/shift_history.dart';
+import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -36,6 +37,10 @@ class _State extends State<SettingsScreen> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final feedbackController = TextEditingController();
+
+  bool isSynced = false;
+
+
 
   String? validatePassword(String? password){
     if (password == null || password.isEmpty){
@@ -289,6 +294,19 @@ class _State extends State<SettingsScreen> {
             child: ElevatedButton.icon(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftHistoryScreen()));
             }, icon: const Icon(Icons.access_time, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine timer", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: Colors.blue)
+                )
+            )),),),
+
+          Container(
+            height: 50,
+            width: 150,
+            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+            child: ElevatedButton.icon(onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
+            }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.blue)
