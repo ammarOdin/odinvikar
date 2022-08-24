@@ -158,7 +158,7 @@ class _State extends State<SettingsScreen> {
                   decoration: BoxDecoration(
                       color: Colors.blue
                   ),
-                  child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
+                  child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
               ListTile(
                 title: Text("Hjem"),
                 leading: Icon(Icons.work_outline),

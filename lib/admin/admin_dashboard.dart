@@ -42,12 +42,44 @@ class _HomescreenState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.blue,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),*/
+        toolbarHeight: kToolbarHeight + 2,
+        //iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+                decoration: BoxDecoration(
+                    color: Colors.blue
+                ),
+                child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
+            Padding(padding: EdgeInsets.only(bottom: 20)),
+            ListTile(
+              title: Text("Hjem", style: TextStyle(fontSize: 16),),
+              leading: Icon(Icons.home_outlined),
+              selected: true,
+            ),
+            ListTile(
+              title: Text("Vagtbanken"),
+              leading: Icon(Icons.work_outline),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminShiftsScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Indstillinger"),
+              leading: Icon(Icons.settings_outlined),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminSettingsScreen()));
+              },
+            ),
+          ],
+        ),
+      ),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -57,8 +89,8 @@ class _HomescreenState extends State<AdminDashboard> {
           children: const <Widget>[
             AdminHomeScreen(),
             AdminNewCalendar(),
-            AdminShiftsScreen(),
-            AdminSettingsScreen(),
+            /*AdminShiftsScreen(),
+            AdminSettingsScreen(),*/
           ],
         ),
       ),
@@ -97,14 +129,14 @@ class _HomescreenState extends State<AdminDashboard> {
                   label: 'Vagter',
                   icon: Icon(Icons.work_outline)
               ),*/
-              BottomNavigationBarItem(
+              /*BottomNavigationBarItem(
                   label: 'Vagtbanken',
                   icon: Icon(Icons.work_outline)
               ),
               BottomNavigationBarItem(
                   label: 'Indstillinger',
                   icon: Icon(Icons.settings_outlined)
-              ),
+              ),*/
             ],
           ),
         ),
