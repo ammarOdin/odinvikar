@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,12 @@ class _State extends State<SettingsScreen> {
   final feedbackController = TextEditingController();
 
   bool isSynced = false;
+
+  @override
+  initState(){
+    super.initState();
+    _getSyncStatus();
+  }
 
 
 
@@ -83,6 +90,14 @@ class _State extends State<SettingsScreen> {
     } else if (!input.contains(new RegExp(r'^[a-zA-Z0-9,. !?+-]+$'))){
       return "Teksten indeholder ugyldige karakterer";
     }
+  }
+
+  _getSyncStatus() {
+    FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
+      setState((){
+        value['isSynced'] == true ? isSynced = true : null;
+      });
+    });
   }
 
   updateUserField(String uid, String reference, String field, TextEditingController controller) {
@@ -278,7 +293,6 @@ class _State extends State<SettingsScreen> {
 
           Container(
             height: 50,
-            width: 150,
             margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
             child: ElevatedButton.icon(onPressed: () {showContactInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
@@ -289,7 +303,6 @@ class _State extends State<SettingsScreen> {
 
           Container(
             height: 50,
-            width: 150,
             margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
             child: ElevatedButton.icon(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftHistoryScreen()));
@@ -300,9 +313,8 @@ class _State extends State<SettingsScreen> {
                 )
             )),),),
 
-          Container(
+          isSynced? Container(
             height: 50,
-            width: 150,
             margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
             child: ElevatedButton.icon(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
@@ -311,11 +323,27 @@ class _State extends State<SettingsScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.blue)
                 )
-            )),),),
-
+            )),),) : Badge(
+            toAnimate: false,
+            shape: BadgeShape.square,
+            badgeColor: Colors.orange,
+            borderRadius: BorderRadius.circular(8),
+            badgeContent: Text('IKKE SYNKRONISERET', style: TextStyle(color: Colors.white)),
+            position: BadgePosition.topEnd(end: 10),
+            child: Container(
+              height: 50,
+              margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+              child: ElevatedButton.icon(onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
+              }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: Colors.blue)
+                  )
+              )),),),
+          ),
           Container(
             height: 50,
-            width: 150,
             margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
             child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(

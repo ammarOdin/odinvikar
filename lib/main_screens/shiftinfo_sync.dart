@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_sheet/sliding_sheet.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ShiftInfoSyncScreen extends StatefulWidget {
   const ShiftInfoSyncScreen({Key? key}) : super(key: key);
@@ -12,13 +15,29 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
   bool linkExist = false;
   final urlController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  String? url;
+
+  @override
+  initState(){
+    super.initState();
+    _getSavedUrl();
+  }
 
   String? validateField(String? input){
     if (input == null || input.isEmpty){
       return "Feltet må ikke være tomt";
-    } else if (!input.contains(new RegExp(r'^[a-zA-Z0-9,. !?+-]+$'))){
-      return "Teksten indeholder ugyldige karakterer";
+    } else if (!Uri.parse(input).isAbsolute){
+      return "Ugyldig URL";
     }
+  }
+
+  _getSavedUrl() {
+      FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
+        setState((){
+          url = value['syncURL'];
+          value['isSynced'] == true ? linkExist = true : null;
+        });
+      });
   }
 
   @override
@@ -59,22 +78,29 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
               children: [
                 Container(
                     padding: EdgeInsets.only(top: 40, left: 15, right: 40),
-                    child: TextFormField(validator: validateField, controller: urlController, decoration: const InputDecoration(icon: Icon(Icons.dataset_linked), hintText: "Kalender-URL", hintMaxLines: 10,),)),
+                    child: TextFormField(validator: validateField, controller: urlController, decoration: InputDecoration(icon: Icon(Icons.dataset_linked), hintText: linkExist? url : "Kalender-URL", hintMaxLines: 10,),)),
                 Padding(
                   padding: const EdgeInsets.only(top: 40),
                   child: Container(
                     height: 50,
                     padding: EdgeInsets.only(left: 15, right: 15),
                     width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton.icon(onPressed: () {
-                      if(_key.currentState!.validate()){
+                    child: ElevatedButton.icon(onPressed: () async {
+                      if(_key.currentState!.validate()) {
                         try {
-
-                        } catch (e) {
-
+                          await FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).update({
+                            'syncURL': urlController.text.trim(),
+                            'isSynced': true
+                            });
+                          setState(() {
+                            linkExist = true;
+                            urlController.clear();
+                          });
+                          showTopSnackBar(context, CustomSnackBar.success(message: "Synkronisering fuldført",),);
+                        } on FirebaseException catch (e) {
+                          showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke synkronisere. Prøv igen. Fejlkode: ${e.code}",),);
                         }
                       }
-
                     }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Synkronisér", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
