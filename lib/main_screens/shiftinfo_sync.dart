@@ -150,6 +150,8 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                 setState(() {
                   currentStep++;
                 });
+              } else if (currentStep == 6){
+                Navigator.pop(context);
               }
             },
             onStepCancel: () {
