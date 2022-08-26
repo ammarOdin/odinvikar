@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -28,6 +34,10 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   late String time;
   late String comment;
   late String? timeRange;
+  late String icsFilePath = "";
+
+  late bool isSynced = false;
+  late bool loading = true;
 
   List months =
   ['Januar', 'Februar', 'Marts', 'April', 'Maj','Juni','Juli','August','September','Oktober','November','December'];
@@ -51,17 +61,51 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   @override
   void initState() {
+    super.initState();
     time = widget.time;
     if(widget.details != null){
       timeRange = widget.details!.substring(0,11);
     }
     comment = widget.comment;
-    super.initState();
+    _getSyncStatus();
+    Future.delayed(Duration(seconds: 1), () {
+      isSynced? _downloadIcsFile() : null;
+    });
+    Future.delayed(Duration(seconds: 2), () {
+     getShiftDetails();
+    });
+
+    //_saveIcsFile();
+  }
+
+  _downloadIcsFile() async {
+    Response response;
+    var dio = Dio();
+    var directory = await getApplicationDocumentsDirectory();
+    var path = Platform.isAndroid ? "/sdcard/Download/" : directory.path + Platform.pathSeparator;
+
+    FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) async {
+      response = await dio.download(value['syncURL'], path + 'vikarly-data.ics');
+    });
+    print(path+'vikarly-data.ics');
+    setState(() {
+      loading = false;
+      icsFilePath = path + "vikarly-data.ics";
+    });
   }
 
   Future<List> getShiftDetails() async {
     List shift = [];
-    //TODO fetch api data from IST Tabulex for the current user (check for name etc.)
+
+    final icsObj = ICalendar.fromLines(File(icsFilePath).readAsLinesSync());
+    var jsonObject = jsonEncode(icsObj.toJson());
+    print(jsonObject);
+
+    var decodedJson = json.decode(jsonObject);
+    var jsonValue = json.decode(decodedJson['data']);
+
+    print(jsonValue['dtstart'].toString());
+
     /*for (var i = 0; i < 6; i++){
       shift.add(Container(
         padding: EdgeInsets.only(top: 5, bottom: 5),
@@ -87,9 +131,17 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
             ),
           ],
         ),
-      ),);
+      ));
     }*/
     return shift;
+  }
+
+  _getSyncStatus() {
+    FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
+      setState((){
+        value['isSynced'] == true ? isSynced = true : null;
+      });
+    });
   }
 
   @override
@@ -114,7 +166,34 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
-      body: ListView(
+      body: loading? Column(
+        children: <Widget> [
+          Shimmer.fromColors(
+              baseColor: Colors.grey,
+              highlightColor: Colors.white10,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 6,
+                margin: EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white10
+                ),
+              )
+          ),
+          Shimmer.fromColors(
+              baseColor: Colors.grey,
+              highlightColor: Colors.white10,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 6,
+                margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white10
+                ),
+              )
+          ),
+        ],
+      ): ListView(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         children: [

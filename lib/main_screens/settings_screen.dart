@@ -181,7 +181,7 @@ class _State extends State<SettingsScreen> {
                   child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
               ListTile(
                 title: Text("Hjem"),
-                leading: Icon(Icons.work_outline),
+                leading: Icon(Icons.home_outlined),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
                 },
@@ -328,13 +328,17 @@ class _State extends State<SettingsScreen> {
             shape: BadgeShape.square,
             badgeColor: Colors.orange,
             borderRadius: BorderRadius.circular(8),
-            badgeContent: Text('IKKE SYNKRONISERET', style: TextStyle(color: Colors.white)),
+            badgeContent: Text('MANGLER SYNKRONISERING', style: TextStyle(color: Colors.white)),
             position: BadgePosition.topEnd(end: 10),
             child: Container(
               height: 50,
               margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
               child: ElevatedButton.icon(onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen())).then((value) {
+                  setState(() {
+                    _getSyncStatus();
+                  });
+                });
               }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

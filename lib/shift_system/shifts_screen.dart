@@ -68,7 +68,7 @@ class _ShiftScreenState extends State<ShiftScreen> with TickerProviderStateMixin
                   child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
               ListTile(
                 title: Text("Hjem"),
-                leading: Icon(Icons.work_outline),
+                leading: Icon(Icons.home_outlined),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
                 },

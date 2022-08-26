@@ -62,6 +62,9 @@ dependencies:
   calendar_appbar: ^0.0.6
   table_calendar: ^3.0.6
   top_snackbar_flutter: ^2.1.0
+  icalendar_parser: ^1.0.2
+  dio: ^4.0.6
+  shimmer: ^2.0.0
 
   change_app_package_name: ^1.0.0
 

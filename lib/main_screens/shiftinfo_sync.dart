@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -97,6 +98,7 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
                             urlController.clear();
                           });
                           showTopSnackBar(context, CustomSnackBar.success(message: "Synkronisering fuldført",),);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
                         } on FirebaseException catch (e) {
                           showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke synkronisere. Prøv igen. Fejlkode: ${e.code}",),);
                         }
@@ -165,7 +167,7 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
               Step(
                   isActive: currentStep >=0,
                   title: Text("Log ind på Aula"),
-                  content: Text("Log ind på din Aula app og naviger til kalender.")),
+                  content: Text("Log ind på din Aula app og naviger til kalender.", style: TextStyle(fontWeight: FontWeight.w500),)),
               Step(
                   isActive: currentStep >=1,
                   title: Text("Kalendermenu"),
@@ -173,8 +175,8 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                     children: [
                       Image.asset('assets/guide/1.jpg', fit: BoxFit.scaleDown,),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text("Inde på Aula appen, trykker du på Kalendermenu, set i venstre øverste hjørne."),
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text("Inde på Aula appen, trykker du på Kalendermenu, set i venstre øverste hjørne.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   )),
@@ -185,8 +187,8 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                     children: [
                       Image.asset('assets/guide/2.jpg', fit: BoxFit.scaleDown,),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text("Inde i kalendermenuen, tryk på Kalendersynkronisering."),
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text("Inde i kalendermenuen, tryk på Kalendersynkronisering.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   )),
@@ -197,8 +199,8 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                     children: [
                       Image.asset('assets/guide/3.jpg', fit: BoxFit.scaleDown,),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text("Vælg din institution, som du arbejder for."),
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text("Vælg din institution, som du arbejder for.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   )),
@@ -209,8 +211,8 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                     children: [
                       Image.asset('assets/guide/4.jpg', fit: BoxFit.scaleDown,),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text("Afkryds skema i bunden af siden, og tryk gem."),
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text("Afkryds skema i bunden af siden, og tryk gem.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   ),),
@@ -221,15 +223,15 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                     children: [
                       Image.asset('assets/guide/5.png', fit: BoxFit.scaleDown,),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text("Kopier linket som findes i bunden af siden. Du skal kopiere linket der hører ind under Ugekalender."),
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text("Kopier linket som findes i bunden af siden. Du skal kopiere linket der hører ind under Ugekalender.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   ),),
               Step(
                   isActive: currentStep >=6,
                   title: Text("Sæt ind"),
-                  content: Text("Naviger tilbage fra denne side, og sæt det kopierede link ind på vagtsynkroniseringssiden - tryk dernæst synkronisér.")
+                  content: Text("Naviger tilbage fra denne side, og sæt det kopierede link ind på vagtsynkroniseringssiden - tryk dernæst synkronisér.", style: TextStyle(fontWeight: FontWeight.w500),)
               ),
             ],
           )
