@@ -1,0 +1,140 @@
+BEGIN:VCALENDAR
+METHOD:PUBLISH
+PRODID:-//github.com/rianjs/ical.net//NONSGML ical.net 4.0//EN
+REFRESH-INTERVAL;VALUE=DURATION:PT5M
+VERSION:2.0
+X-WR-CALNAME:AULA - Odinskolen - Ugekalender
+BEGIN:VTIMEZONE
+TZID:Europe/Copenhagen
+X-LIC-LOCATION:Europe/Copenhagen
+BEGIN:STANDARD
+DTSTART:20201025T030000
+RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10
+TZNAME:CET
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20210328T020000
+RRULE:FREQ=YEARLY;BYDAY=4SU;BYMONTH=3
+TZNAME:CEST
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN=Mette Sædholm Petersen (Lærer - Odinskolen);PARTSTAT=ACCEPTED;
+ ROLE=REQ-PARTICIPANT:MAILTO:noreply-f3987da3-43f9-487f-b897-fe5bd0e792a7@
+ aula.dk
+ATTENDEE;CN=Ammar Kazim Muhsin (Timelønnet vikar - Odinskolen);PARTSTAT=AC
+ CEPTED;ROLE=REQ-PARTICIPANT:MAILTO:noreply-938dc088-615b-4d85-8d59-fcb7b4
+ b208ae@aula.dk
+ATTENDEE;CN=9D:MAILTO:noreply-9D@aula.dk
+DESCRIPTION:Denne kalenderbrik er synkroniseret fra din Aula kalender via 
+ kalendersynkronisering\, så du kan ikke interagere med den. Skal du eksem
+ pelvis svare på den eller redigere den\, så gør du dette i Aula. Tryk htt
+ ps://www.aula.dk/portal/#/kalender/begivenhed/334710147\, for at hoppe di
+ rekte til kalenderbrikken i Aula.\n\nNote til klasse:\nI skal lave opgave
+ r på www.grammatip.com\nMan vælger selv hvilke opgaver man starter med.\n
+ \nNote til vikar:\nDer ligger forskellige opgaver på grammatip.com\nEleve
+ rne vælger selv hvilken de starter med.
+DTEND;TZID=Europe/Copenhagen:20220825T113000
+DTSTAMP:20220825T222719Z
+DTSTART;TZID=Europe/Copenhagen:20220825T104500
+LOCATION:07
+ORGANIZER;CN=Mette Sædholm Petersen (Lærer - Odinskolen):MAILTO:noreply-5c
+ 6873c7-f8ef-41c3-98f6-fb979d7fca69@aula.dk
+SEQUENCE:0
+SUMMARY:TYS
+UID:cfc0576a-5b40-410d-8f51-1e0da4ba5c09
+END:VEVENT
+BEGIN:VEVENT
+ATTENDEE;CN=Tina Thodsen (Lærer - Odinskolen);PARTSTAT=ACCEPTED;ROLE=REQ-P
+ ARTICIPANT:MAILTO:noreply-c31d0276-31f3-480c-a90e-ebf00d9fec26@aula.dk
+ATTENDEE;CN=Ammar Kazim Muhsin (Timelønnet vikar - Odinskolen);PARTSTAT=AC
+ CEPTED;ROLE=REQ-PARTICIPANT:MAILTO:noreply-24b19c19-b87a-41d4-883c-2cb501
+ e8527f@aula.dk
+ATTENDEE;CN=4C:MAILTO:noreply-4C@aula.dk
+DESCRIPTION:Denne kalenderbrik er synkroniseret fra din Aula kalender via 
+ kalendersynkronisering\, så du kan ikke interagere med den. Skal du eksem
+ pelvis svare på den eller redigere den\, så gør du dette i Aula. Tryk htt
+ ps://www.aula.dk/portal/#/kalender/begivenhed/334814099\, for at hoppe di
+ rekte til kalenderbrikken i Aula.\n\nNote til vikar:\nDer ligger et link 
+ på “min uddannelse” til vikingetiden på Clio online. \nDe skal bruge dere
+ s unilog\n\nHvis linket ikke virker - kan de finde det ved at søge på Cli
+ o online vikingetiden.
+DTEND;TZID=Europe/Copenhagen:20220825T090000
+DTSTAMP:20220825T222719Z
+DTSTART;TZID=Europe/Copenhagen:20220825T080000
+LOCATION:16
+ORGANIZER;CN=Tina Thodsen (Lærer - Odinskolen):MAILTO:noreply-ddef0b45-3e0
+ 0-45a8-a79f-7279b0cb9874@aula.dk
+SEQUENCE:0
+SUMMARY:HIS
+UID:30f70e16-0575-4351-b555-608adfdd25d6
+END:VEVENT
+BEGIN:VEVENT
+ATTENDEE;CN=Ammar Kazim Muhsin (Timelønnet vikar - Odinskolen);PARTSTAT=AC
+ CEPTED;ROLE=REQ-PARTICIPANT:MAILTO:noreply-b44a3e98-1dee-40b5-8fac-16710f
+ 7b7946@aula.dk
+ATTENDEE;CN=Tina Thodsen (Lærer - Odinskolen);PARTSTAT=ACCEPTED;ROLE=REQ-P
+ ARTICIPANT:MAILTO:noreply-7a5f88f4-b061-4aff-8c1f-c39af4707d9d@aula.dk
+ATTENDEE;CN=4C:MAILTO:noreply-4C@aula.dk
+DESCRIPTION:Denne kalenderbrik er synkroniseret fra din Aula kalender via 
+ kalendersynkronisering\, så du kan ikke interagere med den. Skal du eksem
+ pelvis svare på den eller redigere den\, så gør du dette i Aula. Tryk htt
+ ps://www.aula.dk/portal/#/kalender/begivenhed/334814613\, for at hoppe di
+ rekte til kalenderbrikken i Aula.\n\n
+DTEND;TZID=Europe/Copenhagen:20220825T094500
+DTSTAMP:20220825T222719Z
+DTSTART;TZID=Europe/Copenhagen:20220825T090000
+LOCATION:16
+ORGANIZER;CN=Tina Thodsen (Lærer - Odinskolen):MAILTO:noreply-2cb7068b-55b
+ 0-4a0c-b8f2-b842d1a31997@aula.dk
+SEQUENCE:0
+SUMMARY:HIS
+UID:b1f1ab02-857e-431f-9092-9b047ce2cba3
+END:VEVENT
+BEGIN:VEVENT
+ATTENDEE;CN=Mohammad Khalil Jomaa (Lærer - Odinskolen);PARTSTAT=ACCEPTED;R
+ OLE=REQ-PARTICIPANT:MAILTO:noreply-8550c68a-4a50-4f44-9c2c-c9bdc3fac5c4@a
+ ula.dk
+ATTENDEE;CN=Ammar Kazim Muhsin (Timelønnet vikar - Odinskolen);PARTSTAT=AC
+ CEPTED;ROLE=REQ-PARTICIPANT:MAILTO:noreply-90e27b42-dfbd-4fa3-be7f-03932d
+ 7b1aeb@aula.dk
+DESCRIPTION:Denne kalenderbrik er synkroniseret fra din Aula kalender via 
+ kalendersynkronisering\, så du kan ikke interagere med den. Skal du eksem
+ pelvis svare på den eller redigere den\, så gør du dette i Aula. Tryk htt
+ ps://www.aula.dk/portal/#/kalender/begivenhed/384416493\, for at hoppe di
+ rekte til kalenderbrikken i Aula.\n\n
+DTEND;TZID=Europe/Copenhagen:20220825T100000
+DTSTAMP:20220825T222719Z
+DTSTART;TZID=Europe/Copenhagen:20220825T094500
+ORGANIZER;CN=Mohammad Khalil Jomaa (Lærer - Odinskolen):MAILTO:noreply-5e6
+ 9a405-6960-4f72-8add-2689e970bb56@aula.dk
+SEQUENCE:0
+SUMMARY:Delskole A torsdag
+UID:17e2bd52-5c3c-4496-9bf4-3c6136270ead
+END:VEVENT
+BEGIN:VEVENT
+ATTENDEE;CN=Ammar Kazim Muhsin (Timelønnet vikar - Odinskolen);PARTSTAT=AC
+ CEPTED;ROLE=REQ-PARTICIPANT:MAILTO:noreply-87ec5213-d8b5-4871-a3a8-1f1715
+ b42d73@aula.dk
+ATTENDEE;CN=Sandra Berg Bedford (Lærer - Odinskolen);PARTSTAT=ACCEPTED;ROL
+ E=REQ-PARTICIPANT:MAILTO:noreply-262d2ade-ff05-40ff-93de-c110be0f5ba4@aul
+ a.dk
+DESCRIPTION:Denne kalenderbrik er synkroniseret fra din Aula kalender via 
+ kalendersynkronisering\, så du kan ikke interagere med den. Skal du eksem
+ pelvis svare på den eller redigere den\, så gør du dette i Aula. Tryk htt
+ ps://www.aula.dk/portal/#/kalender/begivenhed/384418617\, for at hoppe di
+ rekte til kalenderbrikken i Aula.\n\n
+DTEND;TZID=Europe/Copenhagen:20220825T121500
+DTSTAMP:20220825T222719Z
+DTSTART;TZID=Europe/Copenhagen:20220825T114500
+ORGANIZER;CN=Sandra Berg Bedford (Lærer - Odinskolen):MAILTO:noreply-59897
+ b45-2243-4dde-bd35-52f3d7c5ae84@aula.dk
+SEQUENCE:0
+SUMMARY:Delskole A torsdag
+UID:0b4eb6aa-df4b-40a7-86c1-c01abe684f9a
+END:VEVENT
+END:VCALENDAR

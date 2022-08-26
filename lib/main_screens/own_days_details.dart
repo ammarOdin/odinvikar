@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -97,14 +98,18 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   Future<List> getShiftDetails() async {
     List shift = [];
 
-    final icsObj = ICalendar.fromLines(File(icsFilePath).readAsLinesSync());
+    //final icsObj = ICalendar.fromLines(File(icsFilePath).readAsLinesSync());
+    final icsObj = ICalendar.fromLines(File('assets/guide/download.ics').readAsLinesSync());
     var jsonObject = jsonEncode(icsObj.toJson());
-    print(jsonObject);
+    //print(jsonObject);
 
-    var decodedJson = json.decode(jsonObject);
+    Map<String, dynamic> data = jsonDecode(jsonObject);
+    print('Starttime: ${data['dtstart']}');
+
+    /*var decodedJson = json.decode(jsonObject);
     var jsonValue = json.decode(decodedJson['data']);
 
-    print(jsonValue['dtstart'].toString());
+    print(jsonValue['dtstart'].toString());*/
 
     /*for (var i = 0; i < 6; i++){
       shift.add(Container(
@@ -139,7 +144,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   _getSyncStatus() {
     FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
       setState((){
-        value['isSynced'] == true ? isSynced = true : null;
+        value['isSynced'] == true ? isSynced = true : isSynced = false;
       });
     });
   }
