@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -94,15 +93,10 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
   }
 
+  /// Live version method
   /*Future<void> _getAssetsFile() async {
     try {
-      //final directory = await getTemporaryDirectory();
-      //final myPath = path.join(directory.path, 'vikarlydata.ics');
-      //final data = await rootBundle.load("assets/guide/download.ics");
       final data = await File(icsFilePath).readAsLines();
-      //final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      //final file = await File(myPath).writeAsBytes(bytes);
-      //final lines = await file.readAsLines();
       setState(() {
         //_iCalendar = ICalendar.fromLines(lines);
         _iCalendar = ICalendar.fromLines(data);
