@@ -148,10 +148,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
           TextSpan(
               children: _iCalendar.data.map((e) => TextSpan(
                 children: e.keys.map((f) => TextSpan(children: [
-                  TextSpan(
-                      text: '${f.toUpperCase()}: ',
-                      style: style.copyWith(
-                          fontWeight: FontWeight.bold)),
+                  TextSpan(text: '${f.toUpperCase()}: ', style: style.copyWith(fontWeight: FontWeight.bold)),
                   TextSpan(text: '${e[f]}\n')
                 ])).toList(),)).toList()),
         ],
