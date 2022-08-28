@@ -1,7 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -9,10 +10,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
 import 'edit_shift_screen.dart';
 
 class OwnDaysDetailsScreen extends StatefulWidget {
@@ -31,6 +32,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
   final databaseReference = FirebaseFirestore.instance;
+  late ICalendar _iCalendar;
 
   late String time;
   late String comment;
@@ -73,10 +75,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       isSynced? _downloadIcsFile() : null;
     });
     Future.delayed(Duration(seconds: 2), () {
-     getShiftDetails();
+      _getAssetsFile();
     });
-
-    //_saveIcsFile();
   }
 
   _downloadIcsFile() async {
@@ -86,59 +86,84 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     var path = Platform.isAndroid ? "/sdcard/Download/" : directory.path + Platform.pathSeparator;
 
     FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) async {
-      response = await dio.download(value['syncURL'], path + 'vikarly-data.ics');
+      response = await dio.download(value['syncURL'], path + 'vikarlydata.ics');
     });
-    print(path+'vikarly-data.ics');
+    print(path+'vikarlydata.ics');
     setState(() {
-      loading = false;
-      icsFilePath = path + "vikarly-data.ics";
+      icsFilePath = path + "vikarlydata.ics";
     });
   }
 
-  Future<List> getShiftDetails() async {
-    List shift = [];
+  /*Future<void> _getAssetsFile() async {
+    try {
+      //final directory = await getTemporaryDirectory();
+      //final myPath = path.join(directory.path, 'vikarlydata.ics');
+      //final data = await rootBundle.load("assets/guide/download.ics");
+      final data = await File(icsFilePath).readAsLines();
+      //final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      //final file = await File(myPath).writeAsBytes(bytes);
+      //final lines = await file.readAsLines();
+      setState(() {
+        //_iCalendar = ICalendar.fromLines(lines);
+        _iCalendar = ICalendar.fromLines(data);
+      });
+    } catch (e) {
+      throw 'Error: $e';
+    }
+    setState(() {
+      loading = false;
+    });
+  }*/
 
-    //final icsObj = ICalendar.fromLines(File(icsFilePath).readAsLinesSync());
-    final icsObj = ICalendar.fromLines(File('assets/guide/download.ics').readAsLinesSync());
-    var jsonObject = jsonEncode(icsObj.toJson());
-    //print(jsonObject);
+  Future<void> _getAssetsFile() async {
+    try {
+      final directory = await getTemporaryDirectory();
+      final myPath = path.join(directory.path, 'download.ics');
+      final data = await rootBundle.load("assets/guide/download.ics");
+      final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      final file = await File(myPath).writeAsBytes(bytes);
+      final lines = await file.readAsLines();
+      setState(() {
+        _iCalendar = ICalendar.fromLines(lines);
+      });
+    } catch (e) {
+      throw 'Error: $e';
+    }
+    setState(() {
+      loading = false;
+    });
+  }
 
-    Map<String, dynamic> data = jsonDecode(jsonObject);
-    print('Starttime: ${data['dtstart']}');
-
-    /*var decodedJson = json.decode(jsonObject);
-    var jsonValue = json.decode(decodedJson['data']);
-
-    print(jsonValue['dtstart'].toString());*/
-
-    /*for (var i = 0; i < 6; i++){
-      shift.add(Container(
-        padding: EdgeInsets.only(top: 5, bottom: 5),
-        child: Row(
-          children: [
-            Container(
-              color: Colors.grey,
-              padding: EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
-              margin: EdgeInsets.only(left: 5),
-              child: Text("09:00\n12:00"),
-            ),
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 5),
-                  child: Text("MAT Vikar"),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 5),
-                  child: Text("5B (22)"),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ));
-    }*/
-    return shift;
+  Widget _generateTextContent() {
+    const style = TextStyle(color: Colors.black);
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+              text: 'VERSION: ${_iCalendar.version}\n',
+              style: style.copyWith(fontWeight: FontWeight.bold)),
+          TextSpan(
+              text: 'PRODID: ${_iCalendar.prodid}\n',
+              style: style.copyWith(fontWeight: FontWeight.bold)),
+          TextSpan(
+              text: 'CALSCALE: ${_iCalendar.calscale}\n',
+              style: style.copyWith(fontWeight: FontWeight.bold)),
+          TextSpan(
+              text: 'METHOD: ${_iCalendar.method}\n',
+              style: style.copyWith(fontWeight: FontWeight.bold)),
+          TextSpan(
+              children: _iCalendar.data.map((e) => TextSpan(
+                children: e.keys.map((f) => TextSpan(children: [
+                  TextSpan(
+                      text: '${f.toUpperCase()}: ',
+                      style: style.copyWith(
+                          fontWeight: FontWeight.bold)),
+                  TextSpan(text: '${e[f]}\n')
+                ])).toList(),)).toList()),
+        ],
+        style: style,
+      ),
+    );
   }
 
   _getSyncStatus() {
@@ -317,7 +342,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
               ],
             ),
           ),
-
           if (widget.awaitConfirmation == 1 || widget.awaitConfirmation == 2) Container(
             padding: EdgeInsets.only(top: 20),
             child: ListView(
@@ -325,7 +349,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
               shrinkWrap: true,
               children: [
                 Center(
-                  child: Text("Vagtoplysninger", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),),
+                  child: Text("Vagtoplysninger", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
                 ),
                 // Timerange
                 Container(
@@ -370,7 +394,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   ),
                 ),
 
-                /*Container(
+                Container(
                   padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Row(
                     children: [
@@ -383,38 +407,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     ],
                   ),
                 ),
-                FutureBuilder(
-                  future: getShiftDetails(), builder: (context, AsyncSnapshot<List> snapshot){
-                  if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-                    return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitFoldingCube(
-                      color: Colors.blue,
-                      size: 50,
-                    ));
-                  } else if (snapshot.data!.isEmpty) {
-                    return Container(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: Text(
-                        "Intet at vise",
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      ),);
-                  }
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data?.length,
-                      itemBuilder: (context, index){
-                        var shiftCard = snapshot.data?[index];
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              shiftCard
-                            ],
-                          ),
-                        );
-                      }
-                  );
-                }),*/
+                _generateTextContent(),
               ],
             ),
           ) else Container(
