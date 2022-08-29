@@ -13,6 +13,7 @@ import 'package:path/path.dart' as path;
 import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'calendar_item.dart';
 import 'edit_shift_screen.dart';
 
 class OwnDaysDetailsScreen extends StatefulWidget {
@@ -74,7 +75,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       isSynced? _downloadIcsFile() : null;
     });
     Future.delayed(Duration(seconds: 2), () {
-      _getAssetsFile();
+      //_getAssetsFile();
+      _getEvents();
     });
   }
 
@@ -93,6 +95,30 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
   }
 
+  Future _getData() async {
+    final icsString = await rootBundle.loadString('assets/guide/download.ics');
+    final iCalendar = ICalendar.fromString(icsString);
+    /// Use in production below
+    /*final data = await File(icsFilePath).readAsLines();
+    final iCalendar = ICalendar.fromLines(data);*/
+    print(iCalendar);
+    return iCalendar;
+  }
+
+  Future _getEvents() async {
+    ICalendar iCalendar = await _getData();
+    List<CalendarItem> items = [];
+
+    for (var item in iCalendar.data) {
+      items.add(CalendarItem.fromJson(item));
+    }
+    print(items);
+    setState(() {
+      loading = false;
+    });
+    return items;
+  }
+
   /// Live version method
   /*Future<void> _getAssetsFile() async {
     try {
@@ -109,7 +135,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
   }*/
 
-  Future<void> _getAssetsFile() async {
+  /*Future<void> _getAssetsFile() async {
     try {
       final directory = await getTemporaryDirectory();
       final myPath = path.join(directory.path, 'download.ics');
@@ -126,25 +152,13 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     setState(() {
       loading = false;
     });
-  }
+  }*/
 
-  Widget _generateTextContent() {
+  /*Widget _generateTextContent() {
     const style = TextStyle(color: Colors.black);
     return RichText(
       text: TextSpan(
         children: [
-          TextSpan(
-              text: 'VERSION: ${_iCalendar.version}\n',
-              style: style.copyWith(fontWeight: FontWeight.bold)),
-          TextSpan(
-              text: 'PRODID: ${_iCalendar.prodid}\n',
-              style: style.copyWith(fontWeight: FontWeight.bold)),
-          TextSpan(
-              text: 'CALSCALE: ${_iCalendar.calscale}\n',
-              style: style.copyWith(fontWeight: FontWeight.bold)),
-          TextSpan(
-              text: 'METHOD: ${_iCalendar.method}\n',
-              style: style.copyWith(fontWeight: FontWeight.bold)),
           TextSpan(
               children: _iCalendar.data.map((e) => TextSpan(
                 children: e.keys.map((f) => TextSpan(children: [
@@ -155,7 +169,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         style: style,
       ),
     );
-  }
+  }*/
 
   _getSyncStatus() {
     FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
@@ -398,7 +412,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     ],
                   ),
                 ),
-                _generateTextContent(),
+                //_generateTextContent(),
               ],
             ),
           ) else Container(
