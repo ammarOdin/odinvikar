@@ -76,7 +76,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
     Future.delayed(Duration(seconds: 2), () {
       //_getAssetsFile();
-      _getEvents();
+      _getIcsEvents();
     });
   }
 
@@ -95,24 +95,23 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
   }
 
-  Future _getData() async {
+  Future _getIcsData() async {
     final icsString = await rootBundle.loadString('assets/guide/download.ics');
     final iCalendar = ICalendar.fromString(icsString);
     /// Use in production below
     /*final data = await File(icsFilePath).readAsLines();
     final iCalendar = ICalendar.fromLines(data);*/
-    print(iCalendar);
     return iCalendar;
   }
 
-  Future _getEvents() async {
-    ICalendar iCalendar = await _getData();
+  Future _getIcsEvents() async {
+    ICalendar iCalendar = await _getIcsData();
     List<CalendarItem> items = [];
 
     for (var item in iCalendar.data) {
       items.add(CalendarItem.fromJson(item));
+      print(item['location'].toString());
     }
-    print(items);
     setState(() {
       loading = false;
     });
@@ -412,7 +411,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     ],
                   ),
                 ),
-                //_generateTextContent(),
+
+                // TODO futurebuilder for _getIcsEvents
+
               ],
             ),
           ) else Container(
