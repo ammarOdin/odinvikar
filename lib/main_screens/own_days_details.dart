@@ -110,7 +110,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
     for (var item in iCalendar.data) {
       items.add(CalendarItem.fromJson(item));
-      print(item['location'].toString());
+      //print(item['location'].toString());
     }
     setState(() {
       loading = false;
@@ -413,8 +413,19 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 ),
 
                 // TODO futurebuilder for _getIcsEvents
-
-              ],
+                FutureBuilder(
+                            future: _getIcsEvents(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(snapshot.data.toString());
+                              } else if (snapshot.hasError) {
+                                return Icon(Icons.error_outline);
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            })
+                      ],
             ),
           ) else Container(
             padding: EdgeInsets.only(left: 15, right: 15, top: 50),
