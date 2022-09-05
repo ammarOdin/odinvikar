@@ -76,7 +76,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
     Future.delayed(Duration(seconds: 2), () {
       //_getAssetsFile();
-      _getIcsEvents();
+      //_getIcsEvents();
     });
   }
 
@@ -92,6 +92,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     print(path+'vikarlydata.ics');
     setState(() {
       icsFilePath = path + "vikarlydata.ics";
+      loading = false;
     });
   }
 
@@ -104,17 +105,27 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     return iCalendar;
   }
 
-  Future _getIcsEvents() async {
+  Future<List> _getIcsEvents() async {
     ICalendar iCalendar = await _getIcsData();
-    List<CalendarItem> items = [];
+    List items = [];
 
     for (var item in iCalendar.data) {
-      items.add(CalendarItem.fromJson(item));
+      //items.add(CalendarItem.fromJson(item));
       //print(item['location'].toString());
+      items.add(
+        Column(
+          children: [
+            Text(item['dtstart'].toString() == 'null' ? 'Ukendt starttid' : item['dtstart'].toString()),
+            Text(item['dtend'].toString() == 'null' ? 'Ukendt sluttid' : item['dtend'].toString()),
+            Text(item['location'].toString() == 'null' ? 'Ukendt lokation' : item['location'].toString()),
+            Text(item['summary'].toString() == 'null' ? 'Ukendt klasse' : item['summary'].toString()),
+            Text(item['description'].toString() == 'null' ? 'Ingen beskeder' : item['description'].toString()),
+            Text("___________________"),
+          ],
+        )
+      );
     }
-    setState(() {
-      loading = false;
-    });
+    items.removeRange(0, 3);
     return items;
   }
 
@@ -183,9 +194,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text("Vagt detaljer"),
         actions: [
-          IconButton(onPressed: () async {
+          TextButton.icon(onPressed: () async {
             if (widget.awaitConfirmation != 0){
               showTopSnackBar(context, CustomSnackBar.error(message: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",),);
             } else {
@@ -196,7 +206,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 comment = result[1];
               });
             }
-          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,)),
+          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,), label: Text("Rediger", style: TextStyle(color: Colors.white),),),
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
@@ -416,9 +426,24 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 FutureBuilder(
                             future: _getIcsEvents(),
                             builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
+                                (BuildContext context, AsyncSnapshot<List> snapshot) {
                               if (snapshot.hasData) {
-                                return Text(snapshot.data.toString());
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: snapshot.data?.length,
+                                    itemBuilder: (context, index){
+                                      var calendarItem = snapshot.data?[index];
+                                      return SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            calendarItem
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                );
                               } else if (snapshot.hasError) {
                                 return Icon(Icons.error_outline);
                               } else {
