@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:core';
 import 'package:dio/dio.dart';
@@ -13,7 +14,6 @@ import 'package:path/path.dart' as path;
 import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'calendar_item.dart';
 import 'edit_shift_screen.dart';
 
 class OwnDaysDetailsScreen extends StatefulWidget {
@@ -32,7 +32,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
   final databaseReference = FirebaseFirestore.instance;
-  late ICalendar _iCalendar;
 
   late String time;
   late String comment;
@@ -73,10 +72,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     _getSyncStatus();
     Future.delayed(Duration(seconds: 1), () {
       isSynced? _downloadIcsFile() : null;
-    });
-    Future.delayed(Duration(seconds: 2), () {
-      //_getAssetsFile();
-      //_getIcsEvents();
+      _checkDate();
     });
   }
 
@@ -89,97 +85,71 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) async {
       response = await dio.download(value['syncURL'], path + 'vikarlydata.ics');
     });
-    print(path+'vikarlydata.ics');
     setState(() {
       icsFilePath = path + "vikarlydata.ics";
       loading = false;
     });
   }
 
-  Future _getIcsData() async {
+
+  Future<List> _checkDate() async {
     final icsString = await rootBundle.loadString('assets/guide/download.ics');
-    final iCalendar = ICalendar.fromString(icsString);
+    final calendar = ICalendar.fromString(icsString);
     /// Use in production below
     /*final data = await File(icsFilePath).readAsLines();
     final iCalendar = ICalendar.fromLines(data);*/
-    return iCalendar;
-  }
 
-  Future<List> _getIcsEvents() async {
-    ICalendar iCalendar = await _getIcsData();
     List items = [];
+    List dtstart = [];
+    List dtend = [];
 
-    for (var item in iCalendar.data) {
-      //items.add(CalendarItem.fromJson(item));
-      //print(item['location'].toString());
-      items.add(
+    List display = [];
+    List displayItems = [];
+
+    for (var data in calendar.data) {
+      dtstart.add(data['dtstart']);
+      dtend.add(data['dtend']);
+      items.add(data['location'].toString() + ';' + data['summary'].toString() + ';' + data['attendee'].toString() + ';' + data['description'].toString());
+    }
+    dtstart.removeRange(0, 3); items.removeRange(0, 3); dtend.removeRange(0, 3);
+
+    for (var item in items){
+      List itemList = item.split(';');
+      List classList = itemList.last.split(',');
+      String className = classList.length == 10 ? classList[8].substring(7) : "Ukendt klasse";
+      String description = itemList[3].substring(314);
+      List<String> lines = description.split('\n');
+      if (widget.date == DateFormat('dd-MM-yyyy').format(DateTime.parse(dtstart[items.indexOf(item)].dt)).toString()) {
+        Map itemMap = {
+          'start': DateTime.parse(dtstart[items.indexOf(item)].dt.toString()),
+          'end': DateTime.parse(dtend[items.indexOf(item)].dt.toString()),
+          'location': itemList[0],
+          'summary': itemList[1],
+          'classname': className,
+          'description': lines[0]
+        };
+        displayItems.add(itemMap);
+      }
+    }
+
+    displayItems.sort((a,b){
+      var aTime = a['start'];
+      var bTime = b['start'];
+      return aTime.compareTo(bTime);
+    });
+    print('SORTED LIST: \n${displayItems.toString()}');
+
+    for (var display in displayItems){
+      display.add(
         Column(
           children: [
-            Text(item['dtstart'].toString() == 'null' ? 'Ukendt starttid' : item['dtstart'].toString()),
-            Text(item['dtend'].toString() == 'null' ? 'Ukendt sluttid' : item['dtend'].toString()),
-            Text(item['location'].toString() == 'null' ? 'Ukendt lokation' : item['location'].toString()),
-            Text(item['summary'].toString() == 'null' ? 'Ukendt klasse' : item['summary'].toString()),
-            Text(item['description'].toString() == 'null' ? 'Ingen beskeder' : item['description'].toString()),
-            Text("___________________"),
+
           ],
         )
       );
     }
-    items.removeRange(0, 3);
-    return items;
+    return display;
   }
-
-  /// Live version method
-  /*Future<void> _getAssetsFile() async {
-    try {
-      final data = await File(icsFilePath).readAsLines();
-      setState(() {
-        //_iCalendar = ICalendar.fromLines(lines);
-        _iCalendar = ICalendar.fromLines(data);
-      });
-    } catch (e) {
-      throw 'Error: $e';
-    }
-    setState(() {
-      loading = false;
-    });
-  }*/
-
-  /*Future<void> _getAssetsFile() async {
-    try {
-      final directory = await getTemporaryDirectory();
-      final myPath = path.join(directory.path, 'download.ics');
-      final data = await rootBundle.load("assets/guide/download.ics");
-      final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      final file = await File(myPath).writeAsBytes(bytes);
-      final lines = await file.readAsLines();
-      setState(() {
-        _iCalendar = ICalendar.fromLines(lines);
-      });
-    } catch (e) {
-      throw 'Error: $e';
-    }
-    setState(() {
-      loading = false;
-    });
-  }*/
-
-  /*Widget _generateTextContent() {
-    const style = TextStyle(color: Colors.black);
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-              children: _iCalendar.data.map((e) => TextSpan(
-                children: e.keys.map((f) => TextSpan(children: [
-                  TextSpan(text: '${f.toUpperCase()}: ', style: style.copyWith(fontWeight: FontWeight.bold)),
-                  TextSpan(text: '${e[f]}\n')
-                ])).toList(),)).toList()),
-        ],
-        style: style,
-      ),
-    );
-  }*/
 
   _getSyncStatus() {
     FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
@@ -243,26 +213,36 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         children: [
           // Date
           Container(
-            padding: EdgeInsets.only(top: 20),
-            child: Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(right: 10, left: 5),
-                      child: Icon(Icons.date_range_outlined, color: Colors.grey,)),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            padding: EdgeInsets.only(top: 30),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Center(
+                    child: Text("Vagtdetaljer", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+                  ),
+                ),
+                Row(
                     children: [
                       Container(
-                        padding: EdgeInsets.only(bottom: 5),
-                          child: Text("Dato", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-                      Container(child: Text(getDayOfWeek(DateFormat('dd-MM-yyyy').parse(widget.date))
-                          + ", " + widget.date.substring(0,2)
-                          + " " + months[DateFormat('dd-MM-yyyy').parse(widget.date).month.toInt() - 1]
-                          + " " + widget.date.substring(6), style: TextStyle(color: Colors.grey),))
+                          padding: EdgeInsets.only(right: 10, left: 5),
+                          child: Icon(Icons.date_range_outlined, color: Colors.grey,)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(bottom: 5),
+                              child: Text("Dato", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                          Container(child: Text(getDayOfWeek(DateFormat('dd-MM-yyyy').parse(widget.date))
+                              + ", " + widget.date.substring(0,2)
+                              + " " + months[DateFormat('dd-MM-yyyy').parse(widget.date).month.toInt() - 1]
+                              + " " + widget.date.substring(6), style: TextStyle(color: Colors.grey),))
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+              ],
+            ),
           ),
           // Status
           Container(
@@ -357,13 +337,13 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
             ),
           ),
           if (widget.awaitConfirmation == 1 || widget.awaitConfirmation == 2) Container(
-            padding: EdgeInsets.only(top: 20),
+            padding: EdgeInsets.only(top: 30),
             child: ListView(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               children: [
                 Center(
-                  child: Text("Vagtoplysninger", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+                  child: Text("Vagtoplysninger", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 // Timerange
                 Container(
@@ -417,14 +397,14 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           child: Icon(Icons.school_outlined, color: Colors.grey,)),
                       Container(
                           padding: EdgeInsets.only(bottom: 5),
-                          child: Text("Lokalefordeling", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),)),
+                          child: Text("Timeoversigt", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),)),
                     ],
                   ),
                 ),
 
                 // TODO futurebuilder for _getIcsEvents
                 FutureBuilder(
-                            future: _getIcsEvents(),
+                            future: _checkDate(),
                             builder:
                                 (BuildContext context, AsyncSnapshot<List> snapshot) {
                               if (snapshot.hasData) {
