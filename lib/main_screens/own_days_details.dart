@@ -117,7 +117,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
       DateTime startTime = DateTime.parse(dtstart[items.indexOf(item)].dt.toString());
       DateTime endTime = DateTime.parse(dtend[items.indexOf(item)].dt.toString());
-      String className = classList.length == 10 ? classList[8].substring(7) : "Ukendt klasse";
+      String className = classList.length == 10 ? classList[8].substring(7) : " Ukendt klasse";
       String location = itemList[0] == 'null' ? 'Ukendt lokation' : itemList[0];
       String summary = itemList[1] == 'null' ? 'Ukendt fag' : itemList[1];
       String description = itemList[2].substring(314).contains(new RegExp(r'[a-z]')) ? itemList[2].substring(314) : 'Ingen vikarbesked';
@@ -140,7 +140,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       var bTime = b['start'];
       return aTime.compareTo(bTime);
     });
-    print('SORTED LIST: \n${displayItems.toString()}');
 
     for (var displayItem in displayItems){
       display.add(
@@ -170,7 +169,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Klasse: ${displayItem['classname']}'),
+                      Text('Klasse:${displayItem['classname']}'),
                       Padding(padding: EdgeInsets.only(top: 5)),
                       Text('Fag: ${displayItem['summary']}'),
                       Padding(padding: EdgeInsets.only(top: 5)),
