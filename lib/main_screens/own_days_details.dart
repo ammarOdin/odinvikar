@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:core';
 import 'package:dio/dio.dart';
@@ -10,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -96,8 +94,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     final icsString = await rootBundle.loadString('assets/guide/download.ics');
     final calendar = ICalendar.fromString(icsString);
     /// Use in production below
-    /*final data = await File(icsFilePath).readAsLines();
-    final iCalendar = ICalendar.fromLines(data);*/
+    //final data = await File(icsFilePath).readAsLines();
+    //final calendar = ICalendar.fromLines(data);
 
     List items = [];
     List dtstart = [];
@@ -109,24 +107,29 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     for (var data in calendar.data) {
       dtstart.add(data['dtstart']);
       dtend.add(data['dtend']);
-      items.add(data['location'].toString() + ';' + data['summary'].toString() + ';' + data['attendee'].toString() + ';' + data['description'].toString());
+      items.add(data['location'].toString() + ';' + data['summary'].toString() + ';' + data['description'].toString() + ';' + data['attendee'].toString());
     }
     dtstart.removeRange(0, 3); items.removeRange(0, 3); dtend.removeRange(0, 3);
 
     for (var item in items){
       List itemList = item.split(';');
       List classList = itemList.last.split(',');
+
+      DateTime startTime = DateTime.parse(dtstart[items.indexOf(item)].dt.toString());
+      DateTime endTime = DateTime.parse(dtend[items.indexOf(item)].dt.toString());
       String className = classList.length == 10 ? classList[8].substring(7) : "Ukendt klasse";
-      String description = itemList[3].substring(314);
-      List<String> lines = description.split('\n');
+      String location = itemList[0] == 'null' ? 'Ukendt lokation' : itemList[0];
+      String summary = itemList[1] == 'null' ? 'Ukendt fag' : itemList[1];
+      String description = itemList[2].substring(314).contains(new RegExp(r'[a-z]')) ? itemList[2].substring(314) : 'Ingen vikarbesked';
+
       if (widget.date == DateFormat('dd-MM-yyyy').format(DateTime.parse(dtstart[items.indexOf(item)].dt)).toString()) {
         Map itemMap = {
-          'start': DateTime.parse(dtstart[items.indexOf(item)].dt.toString()),
-          'end': DateTime.parse(dtend[items.indexOf(item)].dt.toString()),
-          'location': itemList[0],
-          'summary': itemList[1],
+          'start': startTime,
+          'end': endTime,
+          'location': location,
+          'summary': summary,
           'classname': className,
-          'description': lines[0]
+          'description': description
         };
         displayItems.add(itemMap);
       }
@@ -139,13 +142,57 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
     print('SORTED LIST: \n${displayItems.toString()}');
 
-    for (var display in displayItems){
+    for (var displayItem in displayItems){
       display.add(
-        Column(
-          children: [
-
-          ],
-        )
+        Row(
+           mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 6,
+                  padding: EdgeInsets.only(left: 10),
+                  child: Column(
+                    children: [
+                      Text('${DateFormat('hh:mm').format(displayItem['start'])}'),
+                      Padding(padding: EdgeInsets.only(top: 25)),
+                      Text('${DateFormat('hh:mm').format(displayItem['end'])}'),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 10, top: 10, bottom: 10),
+                  height: MediaQuery.of(context).size.height / 6,
+                  width: 3,
+                  color: Colors.blue,
+                ),
+                Container(
+                  height: 120,
+                  padding: EdgeInsets.only(left: 20, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Klasse: ${displayItem['classname']}'),
+                      Padding(padding: EdgeInsets.only(top: 5)),
+                      Text('Fag: ${displayItem['summary']}'),
+                      Padding(padding: EdgeInsets.only(top: 5)),
+                      Text('Lokale: ${displayItem['location']}'),
+                      Padding(padding: EdgeInsets.only(top: 10)),
+                      InkWell(
+                          onTap: (){
+                            showDialog(context: context, builder: (BuildContext context){
+                              return AlertDialog(
+                                title: const Text("Vikarbesked"),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                content: Text('${displayItem['description']}'),
+                                actions: [
+                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")),
+                                ],);});
+                          },
+                          child: Text(displayItem['description'] == 'Ingen vikarbesked' ? 'Ingen vikarbesked' : 'Se vikarbesked' , style: TextStyle(color: Colors.blue),))
+                    ],
+                  ),
+                )
+              ],
+            ),
       );
     }
     return display;
