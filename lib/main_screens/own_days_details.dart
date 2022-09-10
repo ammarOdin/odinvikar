@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:core';
 import 'package:dio/dio.dart';
@@ -70,7 +71,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     _getSyncStatus();
     Future.delayed(Duration(seconds: 1), () {
       isSynced? _downloadIcsFile() : null;
-      _checkDate();
     });
   }
 
@@ -90,20 +90,26 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   }
 
 
-  Future<List> _checkDate() async {
+  Future<List> _getCalenderEvents() async {
     final icsString = await rootBundle.loadString('assets/guide/download.ics');
     final calendar = ICalendar.fromString(icsString);
     /// Use in production below
     //final data = await File(icsFilePath).readAsLines();
     //final calendar = ICalendar.fromLines(data);
 
+    // List for calendar items
     List items = [];
+    // List for datetime start
     List dtstart = [];
+    // List for datetime end
     List dtend = [];
 
+    // List for displayable items for the user
     List display = [];
+    // List for parsed items that are fetched from icalendar
     List displayItems = [];
 
+    // Loop through all calendar events that have been downloaded - then save the relevant info
     for (var data in calendar.data) {
       dtstart.add(data['dtstart']);
       dtend.add(data['dtend']);
@@ -111,6 +117,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     }
     dtstart.removeRange(0, 3); items.removeRange(0, 3); dtend.removeRange(0, 3);
 
+    // Loop through the saved info, and parse/prettify the data
+    // then save to a map that will be used when displaying data
     for (var item in items){
       List itemList = item.split(';');
       List classList = itemList.last.split(',');
@@ -120,8 +128,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       String className = classList.length == 10 ? classList[8].substring(7) : " Ukendt klasse";
       String location = itemList[0] == 'null' ? 'Ukendt lokation' : itemList[0];
       String summary = itemList[1] == 'null' ? 'Ukendt fag' : itemList[1];
-      String description = itemList[2].substring(314).contains(new RegExp(r'[a-z]')) ? itemList[2].substring(314) : 'Ingen vikarbesked';
+      String description = itemList[2].substring(314).contains(new RegExp(r'[a-z]')) ? itemList[2].substring(314).toString().replaceAll('\\n', '\n') : 'Ingen vikarbesked';
 
+      // Check whether the date of the shift is the same as the date of the calendar events
       if (widget.date == DateFormat('dd-MM-yyyy').format(DateTime.parse(dtstart[items.indexOf(item)].dt)).toString()) {
         Map itemMap = {
           'start': startTime,
@@ -135,64 +144,68 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       }
     }
 
+    // The saved data from icalendar is not sorted timewise - we need to sort it in a ascending manner (hours)
     displayItems.sort((a,b){
       var aTime = a['start'];
       var bTime = b['start'];
       return aTime.compareTo(bTime);
     });
 
+    // Save the data to a widget that can be displayed in the futurebldr
     for (var displayItem in displayItems){
-      display.add(
-        Row(
-           mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width / 6,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Column(
-                    children: [
-                      Text('${DateFormat('hh:mm').format(displayItem['start'])}'),
-                      Padding(padding: EdgeInsets.only(top: 25)),
-                      Text('${DateFormat('hh:mm').format(displayItem['end'])}'),
-                    ],
-                  ),
+      if (widget.date == DateFormat('dd-MM-yyyy').format(displayItem['start']).toString()){
+        display.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width / 6,
+                padding: EdgeInsets.only(left: 10),
+                child: Column(
+                  children: [
+                    Text('${DateFormat('hh:mm').format(displayItem['start'])}'),
+                    Padding(padding: EdgeInsets.only(top: 25)),
+                    Text('${DateFormat('hh:mm').format(displayItem['end'])}'),
+                  ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 10, top: 10, bottom: 10),
-                  height: MediaQuery.of(context).size.height / 6,
-                  width: 3,
-                  color: Colors.blue,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10, top: 10, bottom: 10),
+                height: MediaQuery.of(context).size.height / 6,
+                width: 3,
+                color: Colors.blue,
+              ),
+              Container(
+                height: 120,
+                padding: EdgeInsets.only(left: 20, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Klasse:${displayItem['classname']}'),
+                    Padding(padding: EdgeInsets.only(top: 5)),
+                    Text('Fag: ${displayItem['summary']}'),
+                    Padding(padding: EdgeInsets.only(top: 5)),
+                    Text('Lokale: ${displayItem['location']}'),
+                    Padding(padding: EdgeInsets.only(top: 10)),
+                    InkWell(
+                        onTap: (){
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              title: const Text("Vikarbesked"),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                              content: Text('${displayItem['description']}'),
+                              actions: [
+                                TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")),
+                              ],);});
+                        },
+                        child: Text(displayItem['description'] == 'Ingen vikarbesked' ? 'Ingen vikarbesked' : 'Se vikarbesked' , style: TextStyle(color: Colors.blue),))
+                  ],
                 ),
-                Container(
-                  height: 120,
-                  padding: EdgeInsets.only(left: 20, top: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Klasse:${displayItem['classname']}'),
-                      Padding(padding: EdgeInsets.only(top: 5)),
-                      Text('Fag: ${displayItem['summary']}'),
-                      Padding(padding: EdgeInsets.only(top: 5)),
-                      Text('Lokale: ${displayItem['location']}'),
-                      Padding(padding: EdgeInsets.only(top: 10)),
-                      InkWell(
-                          onTap: (){
-                            showDialog(context: context, builder: (BuildContext context){
-                              return AlertDialog(
-                                title: const Text("Vikarbesked"),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                content: Text('${displayItem['description']}'),
-                                actions: [
-                                  TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("OK")),
-                                ],);});
-                          },
-                          child: Text(displayItem['description'] == 'Ingen vikarbesked' ? 'Ingen vikarbesked' : 'Se vikarbesked' , style: TextStyle(color: Colors.blue),))
-                    ],
-                  ),
-                )
-              ],
-            ),
-      );
+              )
+            ],
+          ),
+        );
+      }
     }
     return display;
   }
@@ -450,7 +463,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
                 // TODO futurebuilder for _getIcsEvents
                 FutureBuilder(
-                            future: _checkDate(),
+                            future: _getCalenderEvents(),
                             builder:
                                 (BuildContext context, AsyncSnapshot<List> snapshot) {
                               if (snapshot.hasData) {
