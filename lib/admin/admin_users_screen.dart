@@ -20,7 +20,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
   final CollectionReference usersRef = FirebaseFirestore.instance.collection('user');
 
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final GlobalKey<FormState> _updatekey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -352,33 +351,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 }
             ),
           ],),
-          /*
-          Container(margin: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 10), decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: const BackButton(color: Colors.black),
-            ),
-              body: Form(
-                key: _key,
-                child: Column(
-                  children: [
-                    const Align(alignment: Alignment.topCenter, child: Text('Tilføj Bruger', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
-                    Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateEmail, controller:emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10),) ,)),
-                    Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePassword, controller:passwordController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10),) ,)),
-                    Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validateName, controller:nameController, decoration: const InputDecoration(icon: Icon(Icons.drive_file_rename_outline), hintText: "Navn", hintMaxLines: 10),) ,)),
-                    Container(padding: const EdgeInsets.only(top: 20, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: validatePhone, controller:phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), hintText: "Telefon", hintMaxLines: 10),) ,)),
-                    Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {if(_key.currentState!.validate()){try{
-                      register(emailController.text, passwordController.text);
-                    }catch(e){_showSnackBar(context, "Fejl", Colors.red);  if (kDebugMode) {
-                      print(e.toString());
-                    }}}}, icon: const Icon(Icons.person_add, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj bruger", style: TextStyle(color: Colors.white),)),),),
-                  ],
-                ),
-              ),)));
-
-          }, child: Align(alignment: Alignment.centerLeft, child: Row(children: const [Align(alignment: Alignment.centerLeft, child: Text("Tilføj bruger", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),)), Spacer(), Align(alignment: Alignment.centerRight, child: Icon(Icons.person_add, color: Colors.green,))]),)) ,),*/
 
           Container(padding: const EdgeInsets.all(15),),
           Container(margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25), decoration: BoxDecoration(border: Border.all(color: Colors.blue, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () async {

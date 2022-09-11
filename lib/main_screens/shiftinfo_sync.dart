@@ -36,7 +36,7 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
       FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
         setState((){
           url = value['syncURL'];
-          value['isSynced'] == true ? linkExist = true : null;
+          value['isSynced'] == true ? linkExist = true : false;
         });
       });
   }
@@ -212,7 +212,7 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
                       Image.asset('assets/guide/4.jpg', fit: BoxFit.scaleDown,),
                       Padding(
                         padding: const EdgeInsets.only(top: 30),
-                        child: Text("Afkryds skema i bunden af siden, og tryk gem.", style: TextStyle(fontWeight: FontWeight.w500),),
+                        child: Text("Afkryds skema på bunden af siden, og tryk gem.", style: TextStyle(fontWeight: FontWeight.w500),),
                       ),
                     ],
                   ),),
@@ -231,7 +231,7 @@ class _ShiftInfoGuideState extends State<ShiftInfoGuide> {
               Step(
                   isActive: currentStep >=6,
                   title: Text("Sæt ind"),
-                  content: Text("Naviger tilbage fra denne side, og sæt det kopierede link ind på vagtsynkroniseringssiden - tryk dernæst synkronisér.", style: TextStyle(fontWeight: FontWeight.w500),)
+                  content: Text("Tryk på knappen fortsæt herunder, og sæt det kopierede link ind på tekstfeltet - tryk dernæst synkronisér.", style: TextStyle(fontWeight: FontWeight.w500),)
               ),
             ],
           )

@@ -94,8 +94,17 @@ Future<void> main() async {
   instance.currentUser;
   FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
 
+  // Disabled persistance for performane improvements
   var db = FirebaseFirestore.instance;
   db.settings = const Settings(persistenceEnabled: false);
+
+ /* var users = await FirebaseFirestore.instance.collection('user').get();
+  for (var users in users.docs){
+    users.reference.update({
+      'syncURL': "",
+      'isSynced': false
+    });
+  }*/
 
 // onboarding
   /*final preferences = await SharedPreferences.getInstance();

@@ -275,7 +275,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                         ),
                       ),
                       icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                      label: Text("Slet vagt")),
+                      label: Text("Slet")),
                 ),
 
                 // Summoned

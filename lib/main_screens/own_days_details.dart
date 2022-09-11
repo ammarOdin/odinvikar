@@ -1,14 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -70,7 +72,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     comment = widget.comment;
     _getSyncStatus();
     Future.delayed(Duration(seconds: 1), () {
-      isSynced? _downloadIcsFile() : null;
+      isSynced? _downloadIcsFile() : Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: ShiftInfoSyncScreen()));
     });
   }
 
@@ -91,11 +93,11 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
 
 
   Future<List> _getCalenderEvents() async {
-    final icsString = await rootBundle.loadString('assets/guide/download.ics');
-    final calendar = ICalendar.fromString(icsString);
+    //final icsString = await rootBundle.loadString('assets/guide/download.ics');
+    //final calendar = ICalendar.fromString(icsString);
     /// Use in production below
-    //final data = await File(icsFilePath).readAsLines();
-    //final calendar = ICalendar.fromLines(data);
+    final data = await File(icsFilePath).readAsLines();
+    final calendar = ICalendar.fromLines(data);
 
     // List for calendar items
     List items = [];
@@ -117,8 +119,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     }
     dtstart.removeRange(0, 3); items.removeRange(0, 3); dtend.removeRange(0, 3);
 
-    // Loop through the saved info, and parse/prettify the data
-    // then save to a map that will be used when displaying data
+    // Loop through the saved info, and parse/prettify the data, then save to a map that will be used when displaying data
     for (var item in items){
       List itemList = item.split(';');
       List classList = itemList.last.split(',');
@@ -154,7 +155,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     // Save the data to a widget that can be displayed in the futurebldr
     for (var displayItem in displayItems){
       if (widget.date == DateFormat('dd-MM-yyyy').format(displayItem['start']).toString()){
-        display.add(
+        display.add( 
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -265,6 +266,18 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 ),
               )
           ),
+          Shimmer.fromColors(
+              baseColor: Colors.grey,
+              highlightColor: Colors.white10,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 6,
+                margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white10
+                ),
+              )
+          ),
         ],
       ): ListView(
         shrinkWrap: true,
@@ -330,6 +343,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                             var adminRef = await databaseReference.collection('user').get();
                             var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
                             for (var admins in adminRef.docs){
+
                               if (admins.get(FieldPath(const ["isAdmin"])) == true){
                                 sendAcceptedShiftNotification(admins.get(FieldPath(const ["token"])), widget.date, userNameRef.get(FieldPath(const ["name"])));
                               }
@@ -337,7 +351,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 16),
-                            primary: Colors.green,
+                            backgroundColor: Colors.green,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -439,7 +453,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                               padding: EdgeInsets.only(bottom: 5),
                               child: Text("Detaljer", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                           Container(
-                              width: MediaQuery.of(context).size.width/1.2,
+                              width: MediaQuery.of(context).size.width / 1.2,
                               child: Text(widget.details!.substring(22), style: TextStyle(color: Colors.grey),))
                         ],
                       )
@@ -464,8 +478,8 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 // TODO futurebuilder for _getIcsEvents
                 FutureBuilder(
                             future: _getCalenderEvents(),
-                            builder:
-                                (BuildContext context, AsyncSnapshot<List> snapshot) {
+                            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                              int? ListLenght = snapshot.data?.length;
                               if (snapshot.hasData) {
                                 return ListView.builder(
                                     shrinkWrap: true,
@@ -484,9 +498,13 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                                     }
                                 );
                               } else if (snapshot.hasError) {
-                                return Icon(Icons.error_outline);
+                                return Icon(Icons.error_outline, size: 30,);
+                              } else if (snapshot.connectionState == ConnectionState.waiting){
+                                return SpinKitRing(color: Colors.blue, size: 50,);
+                              } else if (ListLenght!.toInt() == 0){
+                                return Text("Intet at vise", style: TextStyle(color: Colors.black),);
                               } else {
-                                return CircularProgressIndicator();
+                                return Container();
                               }
                             })
                       ],
