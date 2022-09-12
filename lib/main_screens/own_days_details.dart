@@ -37,7 +37,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   late String time;
   late String comment;
   late String? timeRange;
-  late String icsFilePath = "";
+  late String icsFilePath = "null";
 
   late bool isSynced = false;
   late bool loading = true;
@@ -72,7 +72,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     comment = widget.comment;
     _getSyncStatus();
     Future.delayed(Duration(seconds: 1), () {
-      isSynced? _downloadIcsFile() : Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: ShiftInfoSyncScreen()));
+      isSynced? _downloadIcsFile() : null;
     });
   }
 
@@ -90,7 +90,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       loading = false;
     });
   }
-
 
   Future<List> _getCalenderEvents() async {
     //final icsString = await rootBundle.loadString('assets/guide/download.ics');
@@ -155,7 +154,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     // Save the data to a widget that can be displayed in the futurebldr
     for (var displayItem in displayItems){
       if (widget.date == DateFormat('dd-MM-yyyy').format(displayItem['start']).toString()){
-        display.add( 
+        display.add(
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -164,9 +163,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                 padding: EdgeInsets.only(left: 10),
                 child: Column(
                   children: [
-                    Text('${DateFormat('hh:mm').format(displayItem['start'])}'),
+                    Text('${DateFormat('HH:mm').format(displayItem['start'])}'),
                     Padding(padding: EdgeInsets.only(top: 25)),
-                    Text('${DateFormat('hh:mm').format(displayItem['end'])}'),
+                    Text('${DateFormat('HH:mm').format(displayItem['end'])}'),
                   ],
                 ),
               ),
@@ -214,7 +213,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   _getSyncStatus() {
     FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
       setState((){
-        value['isSynced'] == true ? isSynced = true : isSynced = false;
+        value['isSynced'] == true ? isSynced = true : Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: ShiftInfoSyncScreen()));
       });
     });
   }

@@ -100,10 +100,12 @@ Future<void> main() async {
 
  /* var users = await FirebaseFirestore.instance.collection('user').get();
   for (var users in users.docs){
-    users.reference.update({
+  if (users['isAdmin'] == false){
+  users.reference.update({
       'syncURL': "",
       'isSynced': false
     });
+  }
   }*/
 
 // onboarding

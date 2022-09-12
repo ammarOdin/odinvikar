@@ -370,7 +370,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 30),
                   child: Text(
-                    DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                    _controller.index == 0 ? DateFormat('dd-MM-yyyy').format(DateTime.now()) : DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 1))),
                     style: const TextStyle(color: Colors.white, fontSize: 26),
                   )
                 ),
