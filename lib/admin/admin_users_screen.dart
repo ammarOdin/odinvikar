@@ -112,7 +112,10 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
   updateUserField(String uid, String reference, String field, TextEditingController controller, String name) {
     return Column(
       children: [
-        Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+        Container(
+          margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5),
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))),
+          child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -174,8 +177,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
       'password': password,
     });
   }
-
-
 
   // Below explain themselves
   String? validateUpdateField(String reference , String? input){
