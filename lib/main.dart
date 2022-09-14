@@ -98,16 +98,6 @@ Future<void> main() async {
   var db = FirebaseFirestore.instance;
   db.settings = const Settings(persistenceEnabled: false);
 
- /* var users = await FirebaseFirestore.instance.collection('user').get();
-  for (var users in users.docs){
-  if (users['isAdmin'] == false){
-  users.reference.update({
-      'syncURL': "",
-      'isSynced': false
-    });
-  }
-  }*/
-
 // onboarding
   /*final preferences = await SharedPreferences.getInstance();
   screen = preferences.getBool("on_boarding") ?? true;*/
