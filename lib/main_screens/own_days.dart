@@ -164,33 +164,45 @@ class OwnDays extends State<OwnDaysScreen> {
         body: SizedBox(
           child: ListView(
             //physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 25),
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 1.5,
-                width: MediaQuery.of(context).size.width,
-                child: SfCalendar(
-                  /*todayHighlightColor: Colors.lightBlueAccent,
-                  backgroundColor: Colors.blueGrey,*/
-                  onTap: calendarTapped,
-                  view: CalendarView.month,
-                  firstDayOfWeek: 1,
-                  showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
-                    startHour: 7,
-                    endHour: 19,
-                    nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
-                  monthViewSettings: const MonthViewSettings(
-                    showAgenda: true,
-                    agendaViewHeight: 100,
-                    agendaItemHeight: 40,),
-                  //monthCellBuilder: monthCellBuilder,
-                  dataSource: events,
-                  cellBorderColor: Colors.transparent,
-                  selectionDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.blue, width: 2),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    shape: BoxShape.rectangle,),
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Kalender",
+                      style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
+                    ))
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.5,
+                  width: MediaQuery.of(context).size.width,
+                  child: SfCalendar(
+                    /*todayHighlightColor: Colors.lightBlueAccent,
+                    backgroundColor: Colors.blueGrey,*/
+                    onTap: calendarTapped,
+                    view: CalendarView.month,
+                    firstDayOfWeek: 1,
+                    showCurrentTimeIndicator: true, timeSlotViewSettings: const TimeSlotViewSettings(
+                      startHour: 7,
+                      endHour: 19,
+                      nonWorkingDays: <int>[DateTime.saturday, DateTime.sunday]),
+                    monthViewSettings: const MonthViewSettings(
+                      showAgenda: true,
+                      agendaViewHeight: 100,
+                      agendaItemHeight: 40,),
+                    //monthCellBuilder: monthCellBuilder,
+                    dataSource: events,
+                    cellBorderColor: Colors.transparent,
+                    selectionDecoration: BoxDecoration(
+                      color: Colors.transparent,
+                      border: Border.all(color: Colors.blue, width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      shape: BoxShape.rectangle,),
+                  ),
                 ),
               ),
 
