@@ -186,7 +186,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                               data: reference,
                             )));
                           });
-                        } else if (document['week'] == DateTime.now().weekOfYear && document['awaitConfirmation'] != 0 && DateTime.now().isBefore(DateFormat('dd-MM-yyyy').parse(document['date']))) {
+                        } else if (document['week'] == DateTime.now().weekOfYear && document['awaitConfirmation'] != 0 ) {
                           return AvailableShiftCard(time: document['details'].substring(0,11), icon: Icon(Icons.square_rounded, color: Color(int.parse(document['color'])), size: 18,), day: getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date'])), text: document['date'].substring(0,5), icon2: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 20,), onPressed: () {
                               var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
                               Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(

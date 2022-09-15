@@ -90,9 +90,10 @@ Future<void> main() async {
   }
 
   // User token saver
-  User? user = FirebaseAuth.
-  instance.currentUser;
-  FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user?.uid != null){
+    FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
+  }
 
   // Disabled persistance for performane improvements
   var db = FirebaseFirestore.instance;

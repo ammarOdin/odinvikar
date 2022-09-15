@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:odinvikar/main_screens/dashboard.dart';
+import 'package:odinvikar/main_screens/home_screen.dart';
 import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -46,7 +48,7 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Vagtsynkronisering"),
-        leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 18, color: Colors.white,),),
+        leading: IconButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));}, icon: Icon(Icons.arrow_back_ios, size: 18, color: Colors.white,),),
       ),
       body: ListView(
         shrinkWrap: true,
@@ -98,7 +100,7 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
                             urlController.clear();
                           });
                           showTopSnackBar(context, CustomSnackBar.success(message: "Synkronisering fuldført",),);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
                         } on FirebaseException catch (e) {
                           showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke synkronisere. Prøv igen. Fejlkode: ${e.code}",),);
                         }
