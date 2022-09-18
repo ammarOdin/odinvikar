@@ -80,7 +80,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     Response response;
     var dio = Dio();
     var directory = await getApplicationDocumentsDirectory();
-    var path = Platform.isAndroid ? "/sdcard/Download/" : directory.path + Platform.pathSeparator;
+    var path = directory.path + Platform.pathSeparator;
 
     FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) async {
       response = await dio.download(value['syncURL'], path + 'vikarlydata.ics');

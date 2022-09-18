@@ -2,15 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.odinvikar.odinvikar">
    <application
-        android:label="Vikarly Dev"
-        android:icon="@mipmap/ic_launcher">
+       android:label="Vikarly Dev"
+       android:icon="@mipmap/ic_launcher"
+       android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:exported="true"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:requestLegacyExternalStorage="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
