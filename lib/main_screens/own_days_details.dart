@@ -218,6 +218,28 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     });
   }
 
+  Widget buildShimmer(){
+    return Shimmer.fromColors(
+        baseColor: Colors.grey,
+        highlightColor: Colors.white10,
+        child: Row(
+          children: [
+            Container(
+                margin: EdgeInsets.only(left: 10, right: 10, top: 40),
+                child: Icon(Icons.square_rounded, color: Colors.grey.withOpacity(0.25), size: 30,)),
+            Container(
+              width: MediaQuery.of(context).size.width / 1.5,
+              height: MediaQuery.of(context).size.height / 30,
+              margin: EdgeInsets.only(left: 10, right: 10, top: 40),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey.withOpacity(0.25)
+              ),
+            )
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,44 +262,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: loading? Column(
-        children: <Widget> [
-          Shimmer.fromColors(
-              baseColor: Colors.grey,
-              highlightColor: Colors.white10,
-              child: Container(
-                height: MediaQuery.of(context).size.height / 6,
-                margin: EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white10
-                ),
-              )
-          ),
-          Shimmer.fromColors(
-              baseColor: Colors.grey,
-              highlightColor: Colors.white10,
-              child: Container(
-                height: MediaQuery.of(context).size.height / 6,
-                margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white10
-                ),
-              )
-          ),
-          Shimmer.fromColors(
-              baseColor: Colors.grey,
-              highlightColor: Colors.white10,
-              child: Container(
-                height: MediaQuery.of(context).size.height / 6,
-                margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white10
-                ),
-              )
-          ),
-        ],
+        children: List.generate(5, (index) {
+          return buildShimmer();
+        })
       ): ListView(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),

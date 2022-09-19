@@ -3,10 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import '../missing_connection.dart';
 import '../shift_system/shifts_screen.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
@@ -28,8 +30,11 @@ class _HomescreenState extends State<Dashboard> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    _getSyncStatus();
+    _getConnectionStatus();
     Future.delayed(Duration(seconds: 1), (){
+      _getSyncStatus();
+    });
+    Future.delayed(Duration(seconds: 2), (){
       isSynced? _downloadIcsFile() : null;
     });
   }
@@ -48,6 +53,13 @@ class _HomescreenState extends State<Dashboard> {
         }
       });
     });
+  }
+
+  _getConnectionStatus() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == false) {
+      Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: MissingConnectionPage()));
+    }
   }
 
   _downloadIcsFile() async {

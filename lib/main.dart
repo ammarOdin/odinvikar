@@ -5,8 +5,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/auth/login.dart';
+import 'package:odinvikar/missing_connection.dart';
+import 'package:page_transition/page_transition.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -149,19 +152,15 @@ class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
 
   isAdmin(context)  async  {
-    var admin = await
-    FirebaseFirestore.instance
-        .collection('user')
+    var admin = await FirebaseFirestore.instance.collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) async {
-      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
-        /*final preferences = await SharedPreferences.getInstance();
-        await preferences.setBool("on_boarding", false);*/
-        return true;
-      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
-        return false;
-      }
+          if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+            return true;
+          } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
+            return false;
+          }
     });
     return admin;
   }

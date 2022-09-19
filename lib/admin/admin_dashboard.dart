@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:odinvikar/admin/admin_calendar.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:page_transition/page_transition.dart';
+import '../missing_connection.dart';
 import '../shift_system/admin/admin_shifts_screen.dart';
 import 'admin_calendar_new.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
-
-
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class _HomescreenState extends State<AdminDashboard> {
   @override
   void initState() {
     super.initState();
+    _getConnectionStatus();
     _pageController = PageController();
   }
 
@@ -37,6 +38,13 @@ class _HomescreenState extends State<AdminDashboard> {
       _pageController.animateToPage(index,
           duration: Duration(milliseconds: 250), curve: Curves.easeOutCirc);
     });
+  }
+
+  _getConnectionStatus() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == false) {
+      Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: MissingConnectionPage()));
+    }
   }
 
   @override
