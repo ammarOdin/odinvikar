@@ -11,9 +11,6 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
-import '../shift_system/shifts_screen.dart';
-import 'dashboard.dart';
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
@@ -40,6 +37,7 @@ class _State extends State<SettingsScreen> {
   final feedbackController = TextEditingController();
 
   bool isSynced = false;
+  bool loading = true;
 
   @override
   initState(){
@@ -96,6 +94,7 @@ class _State extends State<SettingsScreen> {
     FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
       setState((){
         value['isSynced'] == true ? isSynced = true : null;
+        loading = false;
       });
     });
   }
@@ -170,38 +169,13 @@ class _State extends State<SettingsScreen> {
         elevation: 0,
         toolbarHeight: kToolbarHeight + 2,
       ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                      color: Colors.blue
-                  ),
-                  child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontSize: 22),))),
-              ListTile(
-                title: Text("Hjem"),
-                leading: Icon(Icons.home_outlined),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
-                },
-              ),
-              ListTile(
-                title: Text("Vagtbanken"),
-                leading: Icon(Icons.work_outline),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ShiftScreen()));
-                },
-              ),
-              ListTile(
-                title: Text("Profil", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ),),
-                leading: Icon(Icons.account_box_outlined),
-                selected: true,
-              ),
-            ],
-          ),
+      body: loading? Center(
+        child: SpinKitCircle(
+          size: 50,
+          color: Colors.blue,
         ),
-      body: ListView(
+      ) :
+      ListView(
         physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),
         children: [
@@ -313,17 +287,25 @@ class _State extends State<SettingsScreen> {
                 )
             )),),),
 
-          isSynced? Container(
-            height: 50,
-            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-            child: ElevatedButton.icon(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
-            }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Colors.blue)
-                )
-            )),),) : Badge(
+          isSynced? Badge(
+            toAnimate: false,
+            shape: BadgeShape.square,
+            badgeColor: Colors.green,
+            borderRadius: BorderRadius.circular(8),
+            badgeContent: Text('SYNKRONISERET', style: TextStyle(color: Colors.white)),
+            position: BadgePosition.topEnd(end: 10),
+            child: Container(
+              height: 50,
+              margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+              child: ElevatedButton.icon(onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
+              }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: Colors.blue)
+                  )
+              )),),),
+          ) : Badge(
             toAnimate: false,
             shape: BadgeShape.square,
             badgeColor: Colors.orange,

@@ -3,15 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../missing_connection.dart';
 import '../shift_system/shifts_screen.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
+import 'package:intl/intl.dart';
+
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -22,20 +27,23 @@ class Dashboard extends StatefulWidget {
 
 class _HomescreenState extends State<Dashboard> {
 
+  User? user = FirebaseAuth.instance.currentUser;
+
   int _currentIndex = 0;
   late PageController _pageController;
   bool isSynced = false;
+  late String icsFilePath = "null";
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _getConnectionStatus();
+    _getSyncStatus();
     Future.delayed(Duration(seconds: 1), (){
-      _getSyncStatus();
+      isSynced? _downloadIcsFile() : null;
     });
     Future.delayed(Duration(seconds: 2), (){
-      isSynced? _downloadIcsFile() : null;
+      isSynced? _updateShiftStatus() : null;
     });
   }
 
@@ -55,13 +63,6 @@ class _HomescreenState extends State<Dashboard> {
     });
   }
 
-  _getConnectionStatus() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result == false) {
-      Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: MissingConnectionPage()));
-    }
-  }
-
   _downloadIcsFile() async {
     Response response;
     var dio = Dio();
@@ -71,6 +72,27 @@ class _HomescreenState extends State<Dashboard> {
     FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) async {
       response = await dio.download(value['syncURL'], path + 'vikarlydata.ics');
     });
+
+    setState(() {
+      icsFilePath = path + "vikarlydata.ics";
+    });
+  }
+
+  _updateShiftStatus() async {
+    final data = await File(icsFilePath).readAsLines();
+    final calendar = ICalendar.fromLines(data);
+    if (calendar.data.length > 3){
+      FirebaseFirestore.instance.collection(user!.uid).doc(DateFormat('dd-MM-yyyy').format((DateTime.now()))).get().then((value) {
+        if (value['awaitConfirmation'] == 0){
+          value.reference.update({
+            'awaitConfirmation': 2,
+            'color': '0xFF4CAF50',
+            'isAccepted': true,
+            'details' : "Godkendt              Ingen"
+          });
+        }
+      });
+    }
   }
 
   void _onItemTapped(int index) {
@@ -83,101 +105,75 @@ class _HomescreenState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //extendBodyBehindAppBar: true,
-     appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0,
-        toolbarHeight: kToolbarHeight + 2,
-        //iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue
-                ),
-                child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
-            Padding(padding: EdgeInsets.only(bottom: 20)),
-            ListTile(
-              title: Text("Hjem", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ),),
-              leading: Icon(Icons.home_outlined),
-              selected: true,
-            ),
-            ListTile(
-              title: Text("Vagtbanken"),
-              leading: Icon(Icons.work_outline),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ShiftScreen()));
-              },
-            ),
-            ListTile(
-              title: Text("Profil"),
-              leading: Icon(Icons.account_box_outlined),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-              },
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke navigere tilbage",),);
+        return false;
+      },
+      child: Scaffold(
+        //extendBodyBehindAppBar: true,
+       appBar: AppBar(
+          backgroundColor: Colors.blue,
+          elevation: 0,
+          toolbarHeight: kToolbarHeight + 2,
+          //iconTheme: const IconThemeData(color: Colors.black),
         ),
-      ),
-      body: SizedBox.expand(
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-          children: const <Widget>[
-            HomeScreen(),
-            OwnDaysScreen(),
-            /*ShiftScreen(),
-            SettingsScreen(),*/
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          /*borderRadius: BorderRadius.only(
-              topRight: Radius.circular(30), topLeft: Radius.circular(30)),*/
-          boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.black,
-            blurRadius: 0.1,
-          ),
-        ],
-        ),
-        child: ClipRRect(
-          /*borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-          ),*/
-          child: BottomNavigationBar(
-            enableFeedback: false,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _currentIndex,
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.grey,
-            onTap: _onItemTapped,
-            items: const [
-              BottomNavigationBarItem(
-                  label: 'Oversigt',
-                  icon: Icon(Icons.home_outlined)
-              ),
-              BottomNavigationBarItem(
-                  label: 'Kalender',
-                  icon: Icon(Icons.today_outlined)
-              ),
-             /* BottomNavigationBarItem(
-                  label: 'Vagtbanken',
-                  icon: Icon(Icons.work_outline)
-              ),
-              BottomNavigationBarItem(
-                  label: 'Profil',
-                  icon: Icon(Icons.account_box_outlined)
-              ),*/
+        body: SizedBox.expand(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
+            children: const <Widget>[
+              HomeScreen(),
+              OwnDaysScreen(),
+              //ShiftScreen(),
+              SettingsScreen(),
             ],
+          ),
+        ),
+        bottomNavigationBar: Container(
+          decoration: const BoxDecoration(
+            /*borderRadius: BorderRadius.only(
+                topRight: Radius.circular(30), topLeft: Radius.circular(30)),*/
+            boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 0.1,
+            ),
+          ],
+          ),
+          child: ClipRRect(
+            /*borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),*/
+            child: BottomNavigationBar(
+              enableFeedback: false,
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _currentIndex,
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+              onTap: _onItemTapped,
+              items: const [
+                BottomNavigationBarItem(
+                    label: 'Oversigt',
+                    icon: Icon(Icons.home_outlined)
+                ),
+                BottomNavigationBarItem(
+                    label: 'Kalender',
+                    icon: Icon(Icons.today_outlined)
+                ),
+               /* BottomNavigationBarItem(
+                    label: 'Vagtbanken',
+                    icon: Icon(Icons.work_outline)
+                ),*/
+                BottomNavigationBarItem(
+                    label: 'Profil',
+                    icon: Icon(Icons.account_box_outlined)
+                ),
+              ],
+            ),
           ),
         ),
       ),

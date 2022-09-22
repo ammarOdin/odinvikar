@@ -61,38 +61,6 @@ class _State extends State<AdminSettingsScreen> {
         toolbarHeight: kToolbarHeight + 2,
         //iconTheme: const IconThemeData(color: Colors.black),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-                decoration: BoxDecoration(
-                    color: Colors.blue
-                ),
-                child: Center(child: Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),))),
-            Padding(padding: EdgeInsets.only(bottom: 20)),
-            ListTile(
-              title: Text("Hjem", style: TextStyle(fontSize: 16),),
-              leading: Icon(Icons.home_outlined),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminDashboard()));
-              },
-            ),
-            ListTile(
-              title: Text("Vagtbanken"),
-              leading: Icon(Icons.work_outline),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminShiftsScreen()));
-              },
-            ),
-            ListTile(
-              title: Text("Indstillinger"),
-              leading: Icon(Icons.settings_outlined),
-              selected: true,
-            ),
-          ],
-        ),
-      ),
       body: ListView(
         physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),

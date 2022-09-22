@@ -66,7 +66,7 @@ class PdfApi {
         );
       },
     ));
-    return saveDocument(name: 'faktura_vikarly.pdf', pdf: pdf);
+    return saveDocument(name: 'timeoversigt_vikarly.pdf', pdf: pdf);
   }
 
   static Future<File> saveDocument({required name, required pdf}) async {

@@ -94,6 +94,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
       }
     }
     assignedShiftList.removeWhere((element) => element.contains("Tilkaldt"));
+    assignedShiftList.removeWhere((element) => element.contains("Godkendt"));
 
     // save bookingsystem shifts
     var shiftsRef = await FirebaseFirestore.instance.collection("shifts").get();

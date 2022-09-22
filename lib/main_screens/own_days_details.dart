@@ -207,6 +207,14 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         );
       }
     }
+    FirebaseFirestore.instance.collection(user!.uid).doc(widget.date).get().then((value) {
+      if (calendar.data.length > 3 && displayItems.isNotEmpty && value['awaitConfirmation'] == 0){
+        value.reference.update({
+          'status': 'Godkendt vagt',
+          'details': DateFormat('HH:mm').format(displayItems.first['start']).toString() + "-" + DateFormat('HH:mm').format(displayItems.last['end']).toString() + "\n\nDetaljer: Ingen",
+        });
+      }
+    });
     return display;
   }
 
@@ -262,7 +270,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: loading? Column(
-        children: List.generate(5, (index) {
+        children: List.generate(4, (i) {
           return buildShimmer();
         })
       ): ListView(
