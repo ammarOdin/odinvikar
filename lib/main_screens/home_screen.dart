@@ -79,16 +79,16 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           Container(
             color: Colors.blue,
-            height: MediaQuery.of(context).size.height / 4,
+            height: MediaQuery.of(context).size.height / 3,
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 20),
+                        top: MediaQuery.of(context).size.height / 10),
                     child: const Center(
                         child: Text(
-                          "Kommende vagter",
+                          "Odinskolen",
                           style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
                         ))),
                 Container(
@@ -145,10 +145,10 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
 
           if (_controller.index == 1) Container(
               padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-              child: Text(months[DateTime.now().month.toInt() - 1], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+              child: Text(months[DateTime.now().month.toInt() - 1].toString().toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),)),
           if (_controller.index == 0) Container(
               padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-              child: Text("Uge " + getWeekOfYear(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
+              child: Text("UGE " + getWeekOfYear(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),)),
 
           Container(
             padding: EdgeInsets.only(top: 10),

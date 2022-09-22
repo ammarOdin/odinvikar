@@ -164,7 +164,7 @@ class OwnDays extends State<OwnDaysScreen> {
         body: SizedBox(
           child: ListView(
             //physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 25),
+            padding: const EdgeInsets.only(top: 75),
             children: [
               Container(
                 padding: EdgeInsets.only(left: 5),

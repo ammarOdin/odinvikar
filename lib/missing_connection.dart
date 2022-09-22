@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -38,14 +37,14 @@ class _MissingConnectionPageState extends State<MissingConnectionPage> {
             height: 50,
             margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 40),
             child: ElevatedButton.icon(onPressed: () async {
-
+/*
               bool result = await InternetConnectionChecker().hasConnection;
               if (result == true) {
                 Navigator.pop(context);
               } else {
                 showTopSnackBar(context, CustomSnackBar.error(message: "Ingen forbindelse. Prøv igen",),);
               }
-            }, icon: const Icon(Icons.wifi), label: const Align(alignment: Alignment.centerLeft, child: Text("Test forbindelse")), style: ButtonStyle(shape: MaterialStateProperty.all(
+            */}, icon: const Icon(Icons.wifi), label: const Align(alignment: Alignment.centerLeft, child: Text("Test forbindelse")), style: ButtonStyle(shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.blue)

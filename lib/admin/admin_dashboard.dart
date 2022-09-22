@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../missing_connection.dart';
-import '../shift_system/admin/admin_shifts_screen.dart';
+import 'package:upgrader/upgrader.dart';
+import '../upgrader_messages.dart';
 import 'admin_calendar.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
@@ -49,23 +47,24 @@ class _HomescreenState extends State<AdminDashboard> {
         return false;
         },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          elevation: 0,
-          toolbarHeight: kToolbarHeight + 2,
-          //iconTheme: const IconThemeData(color: Colors.black),
-        ),
-        body: SizedBox.expand(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() => _currentIndex = index);
-            },
-            children: const <Widget>[
-              AdminHomeScreen(),
-              AdminCalendar(),
-              AdminSettingsScreen()
-            ],
+        body: UpgradeAlert(
+          upgrader: Upgrader(
+              showLater: false,
+              showIgnore: false,
+              messages: MyUpgraderMessages()
+          ),
+          child: SizedBox.expand(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() => _currentIndex = index);
+              },
+              children: const <Widget>[
+                AdminHomeScreen(),
+                AdminCalendar(),
+                AdminSettingsScreen()
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Container(

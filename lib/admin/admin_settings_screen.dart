@@ -55,12 +55,6 @@ class _State extends State<AdminSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0,
-        toolbarHeight: kToolbarHeight + 2,
-        //iconTheme: const IconThemeData(color: Colors.black),
-      ),
       body: ListView(
         physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 0),

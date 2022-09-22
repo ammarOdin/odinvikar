@@ -4,15 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../missing_connection.dart';
-import '../shift_system/shifts_screen.dart';
+import 'package:upgrader/upgrader.dart';
+import '../upgrader_messages.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
 import 'package:intl/intl.dart';
@@ -81,18 +80,19 @@ class _HomescreenState extends State<Dashboard> {
   _updateShiftStatus() async {
     final data = await File(icsFilePath).readAsLines();
     final calendar = ICalendar.fromLines(data);
-    if (calendar.data.length > 3){
       FirebaseFirestore.instance.collection(user!.uid).doc(DateFormat('dd-MM-yyyy').format((DateTime.now()))).get().then((value) {
-        if (value['awaitConfirmation'] == 0){
+
+        var date = DateTime.parse(calendar.data.last['dtstart'].dt);
+        if (value['awaitConfirmation'] == 0 && calendar.data.length > 3 && date == DateTime.now()){
           value.reference.update({
             'awaitConfirmation': 2,
             'color': '0xFF4CAF50',
             'isAccepted': true,
+            'status': 'Godkendt vagt',
             'details' : "Godkendt              Ingen"
           });
         }
       });
-    }
   }
 
   void _onItemTapped(int index) {
@@ -112,24 +112,25 @@ class _HomescreenState extends State<Dashboard> {
       },
       child: Scaffold(
         //extendBodyBehindAppBar: true,
-       appBar: AppBar(
-          backgroundColor: Colors.blue,
-          elevation: 0,
-          toolbarHeight: kToolbarHeight + 2,
-          //iconTheme: const IconThemeData(color: Colors.black),
-        ),
-        body: SizedBox.expand(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() => _currentIndex = index);
-            },
-            children: const <Widget>[
-              HomeScreen(),
-              OwnDaysScreen(),
-              //ShiftScreen(),
-              SettingsScreen(),
-            ],
+        body: UpgradeAlert(
+          upgrader: Upgrader(
+            showLater: false,
+            showIgnore: false,
+              messages: MyUpgraderMessages()
+          ),
+          child: SizedBox.expand(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() => _currentIndex = index);
+              },
+              children: const <Widget>[
+                HomeScreen(),
+                OwnDaysScreen(),
+                //ShiftScreen(),
+                SettingsScreen(),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Container(

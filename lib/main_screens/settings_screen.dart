@@ -164,11 +164,6 @@ class _State extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 0,
-        toolbarHeight: kToolbarHeight + 2,
-      ),
       body: loading? Center(
         child: SpinKitCircle(
           size: 50,
@@ -185,7 +180,7 @@ class _State extends State<SettingsScreen> {
             height: MediaQuery
                 .of(context)
                 .size
-                .height / 4,
+                .height / 3,
             child: ListView(
               children: [
                 Container(
@@ -193,7 +188,7 @@ class _State extends State<SettingsScreen> {
                       top: MediaQuery
                           .of(context)
                           .size
-                          .height / 20),
+                          .height / 10),
                   child: const Center(
                       child: Text(
                         "Profil",
