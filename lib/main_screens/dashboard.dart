@@ -114,6 +114,8 @@ class _HomescreenState extends State<Dashboard> {
         //extendBodyBehindAppBar: true,
         body: UpgradeAlert(
           upgrader: Upgrader(
+            debugDisplayAlways: true,
+            dialogStyle: Platform.isIOS ? UpgradeDialogStyle.cupertino : UpgradeDialogStyle.material,
             showLater: false,
             showIgnore: false,
               messages: MyUpgraderMessages()
