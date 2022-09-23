@@ -80,8 +80,9 @@ class _HomescreenState extends State<Dashboard> {
     final calendar = ICalendar.fromLines(data);
       FirebaseFirestore.instance.collection(user!.uid).doc(DateFormat('dd-MM-yyyy').format((DateTime.now()))).get().then((value) {
         if (calendar.data.length > 3){
-          var date = DateTime.parse(calendar.data.last['dtstart'].dt);
-          if (value['awaitConfirmation'] == 0 && date == DateTime.now()){
+          var date = DateFormat('dd-MM-yyyy').format(DateTime.parse(calendar.data.last['dtstart'].dt));
+          var dateNow = DateFormat('dd-MM-yyyy').format(DateTime.now());
+          if (value['awaitConfirmation'] == 0 && date == dateNow){
             value.reference.update({
               'awaitConfirmation': 2,
               'color': '0xFF4CAF50',

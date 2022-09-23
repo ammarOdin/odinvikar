@@ -208,7 +208,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
       }
     }
     FirebaseFirestore.instance.collection(user!.uid).doc(widget.date).get().then((value) {
-      if (calendar.data.length > 3 && displayItems.isNotEmpty && value['awaitConfirmation'] == 0){
+      if (calendar.data.length > 3 && displayItems.isNotEmpty && widget.date == value['date']){
         value.reference.update({
           'status': 'Godkendt vagt',
           'details': DateFormat('HH:mm').format(displayItems.first['start']).toString() + "-" + DateFormat('HH:mm').format(displayItems.last['end']).toString() + "\n\nDetaljer: Ingen",
