@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:upgrader/upgrader.dart';
-import '../upgrader_messages.dart';
 import 'admin_calendar.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
@@ -49,14 +45,7 @@ class _HomescreenState extends State<AdminDashboard> {
         return false;
         },
       child: Scaffold(
-        body: UpgradeAlert(
-          upgrader: Upgrader(
-              dialogStyle: Platform.isIOS ? UpgradeDialogStyle.cupertino : UpgradeDialogStyle.material,
-              showLater: false,
-              showIgnore: false,
-              messages: MyUpgraderMessages()
-          ),
-          child: SizedBox.expand(
+        body: SizedBox.expand(
             child: PageView(
               controller: _pageController,
               onPageChanged: (index) {
@@ -69,7 +58,6 @@ class _HomescreenState extends State<AdminDashboard> {
               ],
             ),
           ),
-        ),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
             /*borderRadius: BorderRadius.only(

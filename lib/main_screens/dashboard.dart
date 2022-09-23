@@ -10,8 +10,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:upgrader/upgrader.dart';
-import '../upgrader_messages.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
 import 'package:intl/intl.dart';
@@ -81,16 +79,17 @@ class _HomescreenState extends State<Dashboard> {
     final data = await File(icsFilePath).readAsLines();
     final calendar = ICalendar.fromLines(data);
       FirebaseFirestore.instance.collection(user!.uid).doc(DateFormat('dd-MM-yyyy').format((DateTime.now()))).get().then((value) {
-
-        var date = DateTime.parse(calendar.data.last['dtstart'].dt);
-        if (value['awaitConfirmation'] == 0 && calendar.data.length > 3 && date == DateTime.now()){
-          value.reference.update({
-            'awaitConfirmation': 2,
-            'color': '0xFF4CAF50',
-            'isAccepted': true,
-            'status': 'Godkendt vagt',
-            'details' : "Godkendt              Ingen"
-          });
+        if (calendar.data.length > 3){
+          var date = DateTime.parse(calendar.data.last['dtstart'].dt);
+          if (value['awaitConfirmation'] == 0 && date == DateTime.now()){
+            value.reference.update({
+              'awaitConfirmation': 2,
+              'color': '0xFF4CAF50',
+              'isAccepted': true,
+              'status': 'Godkendt vagt',
+              'details' : "Godkendt              Ingen"
+            });
+          }
         }
       });
   }
@@ -112,15 +111,7 @@ class _HomescreenState extends State<Dashboard> {
       },
       child: Scaffold(
         //extendBodyBehindAppBar: true,
-        body: UpgradeAlert(
-          upgrader: Upgrader(
-            debugDisplayAlways: true,
-            dialogStyle: Platform.isIOS ? UpgradeDialogStyle.cupertino : UpgradeDialogStyle.material,
-            showLater: false,
-            showIgnore: false,
-              messages: MyUpgraderMessages()
-          ),
-          child: SizedBox.expand(
+        body: SizedBox.expand(
             child: PageView(
               controller: _pageController,
               onPageChanged: (index) {
@@ -134,7 +125,6 @@ class _HomescreenState extends State<Dashboard> {
               ],
             ),
           ),
-        ),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
             /*borderRadius: BorderRadius.only(
