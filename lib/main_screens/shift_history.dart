@@ -71,6 +71,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
     }
     // remove "Tilkaldt" from list, if exists
     assignedShiftList.removeWhere((element) => element.contains("Tilkaldt"));
+    assignedShiftList.removeWhere((element) => element.contains("Godkendt"));
 
     // save hours and minutes by looping through lists
     for (var assignedTime in assignedShiftList){

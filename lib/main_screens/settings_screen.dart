@@ -164,6 +164,20 @@ class _State extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: IconButton(onPressed: (){
+        showAboutDialog(
+          context: context,
+          applicationIcon: Image.asset("assets/icon_android.png", fit: BoxFit.contain,),
+          applicationName: 'Vikarly',
+          applicationVersion: '2.3.6',
+          applicationLegalese: 'vikarly.dk',
+          children: [
+            Padding(padding: EdgeInsets.only(top: 20),),
+            Text("Udviklet af WebFinity. Alle rettigheder forbeholdt.")
+          ]
+        );
+      }, icon: Icon(Icons.info_outline, color: Colors.blue,),),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: loading? Center(
         child: SpinKitCircle(
           size: 50,
@@ -222,42 +236,9 @@ class _State extends State<SettingsScreen> {
               ],
             ),
           ),
-          Row(
-            children: [
-              Container(padding: const EdgeInsets.only(left: 20),
-                child: const Text("Indstillinger",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-              const Spacer(),
-
-              Container(
-                child: IconButton(onPressed: () {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return Form(
-                      key: _feedbackKey,
-                      child: AlertDialog(title: const Text("Feedback"),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        content: const Text("Er der fejl eller mangler? Eller har du forslag til forbedringer? Brug nedenstående felt."),
-                        actions: [
-                          Container(
-                              padding: EdgeInsets.only(right: 20),
-                              child: TextFormField(validator: validateFeedbackField, controller: feedbackController, decoration: const InputDecoration(icon: Icon(Icons.feedback), hintText: "Besked"),)),
-                          TextButton(onPressed: () async {
-                            if (_feedbackKey.currentState!.validate()){
-                              try {
-                                feedbackReference.doc().set({'message': feedbackController.text, 'user': user!.uid});
-                                Navigator.pop(context);
-                                showTopSnackBar(context, CustomSnackBar.success(message: "Feedback sendt",),);
-                              } catch (e) {
-                                showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke sende meddelelse. Prøv igen",),);
-                              }
-                            }
-                            }, child: const Text("Send"))
-                        ],),
-                    );
-                  });} , icon: const Icon(Icons.feedback_outlined, color: Colors.blue,)),)
-            ],
-          ),
-
+          Container(padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
+            child: const Text("Indstillinger",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
           const Divider(thickness: 1, height: 15),
 
           Container(
