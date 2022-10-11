@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'main_screens/dashboard.dart';
@@ -135,7 +136,7 @@ class MyApp extends StatelessWidget {
           /*colorSchemeSeed: Colors.blue,
           useMaterial3: true,*/
           primaryColor: const Color(0xFF3EBACE),
-          //textTheme: GoogleFonts.oxygenTextTheme(Theme.of(context).textTheme),
+          //textTheme: GoogleFonts.outfitTextTheme(Theme.of(context).textTheme),
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
           appBarTheme: const AppBarTheme(elevation: 0),
         ),

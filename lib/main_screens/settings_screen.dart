@@ -179,7 +179,7 @@ class _State extends State<SettingsScreen> {
       }, icon: Icon(Icons.info_outline, color: Colors.blue,),),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: loading? Center(
-        child: SpinKitCircle(
+        child: SpinKitRing(
           size: 50,
           color: Colors.blue,
         ),

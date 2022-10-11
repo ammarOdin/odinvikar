@@ -82,7 +82,7 @@ class _HomescreenState extends State<Dashboard> {
         if (calendar.data.length > 3){
           var date = DateFormat('dd-MM-yyyy').format(DateTime.parse(calendar.data.last['dtstart'].dt));
           var dateNow = DateFormat('dd-MM-yyyy').format(DateTime.now());
-          if (value['awaitConfirmation'] == 0 && date == dateNow){
+          if (value['awaitConfirmation'] != 2 && date == dateNow){
             value.reference.update({
               'awaitConfirmation': 2,
               'color': '0xFF4CAF50',

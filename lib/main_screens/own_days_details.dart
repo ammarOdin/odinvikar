@@ -210,7 +210,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
     FirebaseFirestore.instance.collection(user!.uid).doc(widget.date).get().then((value) {
       if (calendar.data.length > 3 && displayItems.isNotEmpty && widget.date == value['date']){
         value.reference.update({
-          'status': 'Godkendt vagt',
           'details': DateFormat('HH:mm').format(displayItems.first['start']).toString() + "-" + DateFormat('HH:mm').format(displayItems.last['end']).toString() + "\n\nDetaljer: Ingen",
         });
       }
@@ -231,18 +230,43 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         baseColor: Colors.grey,
         highlightColor: Colors.white10,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
                 margin: EdgeInsets.only(left: 10, right: 10, top: 40),
-                child: Icon(Icons.square_rounded, color: Colors.grey.withOpacity(0.25), size: 30,)),
-            Container(
-              width: MediaQuery.of(context).size.width / 1.5,
-              height: MediaQuery.of(context).size.height / 30,
-              margin: EdgeInsets.only(left: 10, right: 10, top: 40),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.grey.withOpacity(0.25)
-              ),
+                child: Icon(Icons.square_rounded, color: Colors.grey.withOpacity(0.25), size: 100,)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.75,
+                  height: MediaQuery.of(context).size.height / 40,
+                  margin: EdgeInsets.only(left: 10, right: 10, top: 40),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.grey.withOpacity(0.25)
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  height: MediaQuery.of(context).size.height / 40,
+                  margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.grey.withOpacity(0.25)
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 4,
+                  height: MediaQuery.of(context).size.height / 40,
+                  margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.grey.withOpacity(0.25)
+                  ),
+                ),
+              ],
             )
           ],
         ));

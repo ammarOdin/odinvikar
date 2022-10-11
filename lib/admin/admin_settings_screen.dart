@@ -32,9 +32,6 @@ class _State extends State<AdminSettingsScreen> {
   get getUserInfo => FirebaseFirestore.instance.collection('user').doc(user!.uid);
   final feedbackReference = FirebaseFirestore.instance.collection("feedback");
   User? user = FirebaseAuth.instance.currentUser;
-
-
-  final GlobalKey<FormState> _feedbackKey = GlobalKey<FormState>();
   final feedbackController = TextEditingController();
 
   @override
