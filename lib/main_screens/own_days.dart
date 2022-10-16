@@ -161,6 +161,20 @@ class OwnDays extends State<OwnDaysScreen> {
       displacement: 70,
       edgeOffset: 0,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          if (getDateTap.weekday == 6  || getDateTap.weekday == 7){
+            showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke tilføje på en weekend",),);
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
+              setState(() {
+                getFirestoreShift();
+              });
+            });
+          }
+        },
+          child: Icon(Icons.add,),
+          backgroundColor: Colors.green,
+        ),
         body: SizedBox(
           child: ListView(
             //physics: const NeverScrollableScrollPhysics(),
@@ -181,8 +195,6 @@ class OwnDays extends State<OwnDaysScreen> {
                   height: MediaQuery.of(context).size.height / 1.5,
                   width: MediaQuery.of(context).size.width,
                   child: SfCalendar(
-                    /*todayHighlightColor: Colors.lightBlueAccent,
-                    backgroundColor: Colors.blueGrey,*/
                     onTap: calendarTapped,
                     view: CalendarView.month,
                     firstDayOfWeek: 1,
@@ -193,41 +205,35 @@ class OwnDays extends State<OwnDaysScreen> {
                     monthViewSettings: const MonthViewSettings(
                       showAgenda: true,
                       agendaViewHeight: 100,
-                      agendaItemHeight: 40,),
-                    //monthCellBuilder: monthCellBuilder,
+                      agendaItemHeight: 60,
+                      agendaStyle: AgendaStyle(
+                        backgroundColor: Colors.transparent,
+                        appointmentTextStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white),
+                        dateTextStyle: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black),
+                        dayTextStyle: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black),
+                      ),
+                    ),
                     dataSource: events,
                     cellBorderColor: Colors.transparent,
                     selectionDecoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       shape: BoxShape.rectangle,),
                   ),
                 ),
               ),
-
-              const Divider(thickness: 1, height: 4),
-
-              Container(
-                height: 50,
-                margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 10),
-                child: ElevatedButton.icon(onPressed: () async {
-                  if (getDateTap.weekday == 6  || getDateTap.weekday == 7){
-                    showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke tilføje på en weekend",),);
-                  } else {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
-                      setState(() {
-                        getFirestoreShift();
-                      });});
-                  }
-                  }, icon: const Icon(Icons.add_circle_outline, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilføj dag")), style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 16),
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                ),),
             ],
           ),
         ),

@@ -66,6 +66,7 @@ dependencies:
   shimmer: ^2.0.0
   page_transition: ^2.0.9
   tap_to_expand: ^0.6.1
+  custom_sliding_segmented_control: ^1.7.2
 
   # Loading
   widget_loading: ^0.3.2

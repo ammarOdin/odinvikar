@@ -276,21 +276,12 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 3,
+        centerTitle: false,
         backgroundColor: Colors.blue,
-        actions: [
-          TextButton.icon(onPressed: () async {
-            if (widget.awaitConfirmation != 0){
-              showTopSnackBar(context, CustomSnackBar.error(message: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",),);
-            } else {
-              var userRef = await databaseReference.collection(user!.uid);
-              final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
-              setState(() {
-                time = result[0];
-                comment = result[1];
-              });
-            }
-          }, icon: Icon(Icons.edit_calendar_outlined, color: Colors.white,), label: Text("Rediger", style: TextStyle(color: Colors.white),),),
-        ],
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Vagtdetaljer",  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: loading? Column(
@@ -303,15 +294,9 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         children: [
           // Date
           Container(
-            padding: EdgeInsets.only(top: 30),
+            padding: EdgeInsets.only(top: 20),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Center(
-                    child: Text("Vagtdetaljer", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
-                  ),
-                ),
                 Row(
                     children: [
                       Container(
@@ -478,7 +463,6 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                     ],
                   ),
                 ),
-
                 Container(
                   padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Row(
@@ -528,10 +512,34 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                       ],
             ),
           ) else Container(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 50),
+            padding: EdgeInsets.only(left: 15, right: 15, top: 30),
             height: 100,
             width: 250,
-            child: ElevatedButton.icon(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: () async {
+                  try{
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(title: Text("Slet dag"),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        content: Text("Er du sikker på at slette dagen?"),
+                        actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
+                        }
+                            , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                  } on FirebaseAuthException catch (e){
+                    /// show error snackbar
+                  }
+                },
+                  child: Text("Slet dag", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.white)),
+                  style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(const Size(130, 50)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                      elevation: MaterialStateProperty.all(3),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                  ),),
+              ],
+            ),/*ElevatedButton.icon(
                 onPressed: () async {
                   showDialog(context: context, builder: (BuildContext context){
                     return AlertDialog(title: Text("Slet dag"),
@@ -549,114 +557,27 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                   ),
                 ),
                 icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                label: Text("Slet dag")),
+                label: Text("Slet dag")),*/
           ),
-          if (widget.status == "Tilkaldt") Container(
-            //padding: EdgeInsets.only(left: 10),
-            child: ListView(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: 10, bottom: 20),
-                  child: Row(
-                    children: [
-                      Container(
-                          padding: EdgeInsets.only(top: 20),
-                          child: TextButton.icon(onPressed: null, icon: Icon(Icons.timelapse), label: Text("Timer"))),
-                      const Spacer(),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Flexible(
-                                child: Container(
-                                  padding: EdgeInsets.only(right: 5),
-                                  child: Column(
-                                    children: [
-                                      Container(padding: EdgeInsets.only(bottom: 5), child: Text("Fra")),
-                                      Container(
-                                        padding: EdgeInsets.only(left: 5, right: 5),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: Colors.white
-                                        ),
-                                        child: TextButton(onPressed: () async {
-                                          startTime = (await showTimePicker(initialTime: startTime, context: context))!;
-                                          setState(() {
-                                            startTime.format(context);
-                                          });
-                                        },
-                                          child: Text(startTime.format(context)),),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: Column(
-                                    children: [
-                                      Container(padding: EdgeInsets.only(bottom: 5), child: Text("Til")),
-                                      Container(
-                                        padding: EdgeInsets.only(left: 5, right: 5),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: Colors.white
-                                        ),
-                                        child: TextButton(onPressed: () async {
-                                          endTime = (await showTimePicker(initialTime: endTime, context: context))!;
-                                          setState(() {
-                                            endTime.format(context);
-                                          });
-                                        },
-                                          child: Text(endTime.format(context)),),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: Container(
-                                  padding: EdgeInsets.only(top: 20, left: 15),
-                                  child: ElevatedButton.icon(onPressed: (){
-                                    showDialog(context: context, builder: (BuildContext context){
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                        elevation: 0,
-                                        title: Text("Gem timer"),
-                                        content: Text("Du er ved at gemme dine timer."),
-                                        actions: [
-                                          TextButton(onPressed: () async {
-                                            await widget.data.reference.update({'details': startTime.format(context) + "-" + endTime.format(context) + "\n\nDetaljer: Ingen",});
-                                            setState((){
-                                              timeRange = startTime.format(context) + "-" + endTime.format(context);
-                                            });
-                                            Navigator.pop(context);
-                                            showTopSnackBar(context, CustomSnackBar.success(message: "Nyt tidsrum gemt",),);
-                                          }, child: Text("GEM", style: TextStyle(color: Colors.green),))
-                                        ],
-                                      );
-                                    });
-                                  }, icon: Icon(Icons.save, size: 18,), label: Text("Gem", style: TextStyle(fontSize: 12),), ),
-                                ),
-                              ),
-                            ],),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: Text("Du har mulighed for at indskrive dine timer, hvis du er blevet tilkaldt. Således kan timerne inkluderes inde under 'Mine timer'."
-                      , style: TextStyle(color: Colors.grey, fontSize: 14),)),
-              ],
-            ),
-          ) else Container()
+          Container(
+            padding: EdgeInsets.only(right: 15, top: 20),
+            alignment: Alignment.centerRight,
+            child: FloatingActionButton(onPressed: () async {
+              if (widget.awaitConfirmation != 0){
+                showTopSnackBar(context, CustomSnackBar.error(message: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",),);
+              } else {
+                var userRef = await databaseReference.collection(user!.uid);
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
+                setState(() {
+                  time = result[0];
+                  comment = result[1];
+                });
+              }
+            }, shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                backgroundColor: Colors.orange,
+                child: Icon(Icons.edit, color: Colors.white, size: 20,)),
+          ),
         ],
       ),
     );

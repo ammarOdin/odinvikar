@@ -218,7 +218,7 @@ class _State extends State<SettingsScreen> {
           Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
-              child: Text("Kontoinformationer",
+              child: Text("Profilindstillinger",
                 style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400),)),
           GestureDetector(
             onTap: (){

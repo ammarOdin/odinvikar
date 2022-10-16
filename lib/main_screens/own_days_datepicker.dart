@@ -125,8 +125,12 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
     return Scaffold(
       //resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Tilføj dag"),
+          elevation: 3,
+          centerTitle: false,
+          backgroundColor: Colors.blue,
+          toolbarHeight: 100,
+          automaticallyImplyLeading: false,
+        title: Text("Tilføj dag", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(icon: Icon(Icons.arrow_back_ios, size: 20,), onPressed: (){Navigator.pop(context);},)
     ),
       body: ListView(
@@ -271,65 +275,60 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                       ),
                     ),
                   ),),
-
-                  //Spacer(),
-                        Container(
-                            padding: EdgeInsets.all(15),
-                            height: 80,
-                            width: 250,
-                            margin: EdgeInsets.only(top: 20),
-                            child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  textStyle: const TextStyle(fontSize: 16),
-                                  primary: Colors.green,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  final f = DateFormat('dd-MM-yyyy');
-                                  var pickedDate = f.format(_pickedDay!);
-                                  var pickedMonth = _pickedDay?.month;
-                                  var pickedWeek = _pickedDay?.weekOfYear;
-                                  var starting = startTime.format(context);
-                                  var ending = endTime.format(context);
-                                  var timeRange = '';
-                                  var comment = commentController.text;
-                                  if (commentController.text == "" || commentController.text.isEmpty){
-                                    comment = "Ingen";
-                                  }
-                                  if (isSwitched == false){
-                                     timeRange = '$starting - $ending';
-                                  } else if (isSwitched == true){
-                                    timeRange = 'Hele dagen';
-                                  }
-                                  saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
-                                    if (documentSnapshot.exists) {
-                                      showTopSnackBar(context, CustomSnackBar.error(message: "${pickedDate} er allerede oprettet",),);
-                                    } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
-                                      try{
-                                        await saveShift.doc(pickedDate).set(
-                                            {
-                                          'date': pickedDate,
-                                          'month': pickedMonth,
-                                          'week': pickedWeek,
-                                          'time': timeRange,
-                                          'comment': comment,
-                                          'isAccepted': false,
-                                          'color': '0xFFFFA500',
-                                          'status': 'Tilgængelig',
-                                          'awaitConfirmation': 0
-                                            });
-                                        Navigator.pop(context);
-                                        showTopSnackBar(context, CustomSnackBar.success(message: "${pickedDate} oprettet",),);
-                                      } catch (e) {
-                                        showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse af vagt. Prøv igen",),);
-                                      }
-                                    }
-                                  });
-                                },
-                                icon: Icon(Icons.add_circle_outline),
-                                label: Text("Tilføj dag", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))),
+            Padding(padding: EdgeInsets.only(top: 30)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: () async {
+                  final f = DateFormat('dd-MM-yyyy');
+                  var pickedDate = f.format(_pickedDay!);
+                  var pickedMonth = _pickedDay?.month;
+                  var pickedWeek = _pickedDay?.weekOfYear;
+                  var starting = startTime.format(context);
+                  var ending = endTime.format(context);
+                  var timeRange = '';
+                  var comment = commentController.text;
+                  if (commentController.text == "" || commentController.text.isEmpty){
+                    comment = "Ingen";
+                  }
+                  if (isSwitched == false){
+                    timeRange = '$starting - $ending';
+                  } else if (isSwitched == true){
+                    timeRange = 'Hele dagen';
+                  }
+                  saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
+                    if (documentSnapshot.exists) {
+                      showTopSnackBar(context, CustomSnackBar.error(message: "${pickedDate} er allerede oprettet",),);
+                    } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
+                      try{
+                        await saveShift.doc(pickedDate).set(
+                            {
+                              'date': pickedDate,
+                              'month': pickedMonth,
+                              'week': pickedWeek,
+                              'time': timeRange,
+                              'comment': comment,
+                              'isAccepted': false,
+                              'color': '0xFFFFA500',
+                              'status': 'Tilgængelig',
+                              'awaitConfirmation': 0
+                            });
+                        Navigator.pop(context);
+                        showTopSnackBar(context, CustomSnackBar.success(message: "${pickedDate} oprettet",),);
+                      } catch (e) {
+                        showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse af vagt. Prøv igen",),);
+                      }
+                    }
+                  });
+                }, child: Text("Tilføj dag", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.white)),
+                  style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(const Size(130, 50)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                      elevation: MaterialStateProperty.all(3),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                  ),),
+              ],
+            ),
               ]
           ),
       );

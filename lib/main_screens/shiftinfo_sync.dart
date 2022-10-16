@@ -47,7 +47,12 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Vagtsynkronisering"),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Vagtsynkronisering",  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));}, icon: Icon(Icons.arrow_back_ios, size: 18, color: Colors.white,),),
       ),
       body: ListView(

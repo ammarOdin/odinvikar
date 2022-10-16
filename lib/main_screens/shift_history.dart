@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/assets/card_assets.dart';
 import 'package:intl/intl.dart';
-
-import '../shift_system/shift_details.dart';
 import 'own_days_details.dart';
 
 
@@ -162,7 +160,12 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Mine timer"),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Mine timer",  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 18, color: Colors.white,),),
       ),
       body: ListView(
@@ -244,7 +247,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(left: 10, bottom: 20, top: 20),
-                    child: Text("Tilgængelighedskalenderen", style: TextStyle(fontSize: 16),),
+                    child: Text("Registrerede vagter", style: TextStyle(fontSize: 16),),
                   ),
                   Column(
                     children: snapshot.data!.docs.map((document){
@@ -273,7 +276,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
           ),
 
           // shiftsystem shifts
-          StreamBuilder(
+          /*StreamBuilder(
             stream: shifsystemShifts.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (!snapshot.hasData){
@@ -314,7 +317,7 @@ class _ShiftHistoryScreenState extends State<ShiftHistoryScreen> {
                 ],
               );
             },
-          )
+          )*/
         ],
       ),
     );

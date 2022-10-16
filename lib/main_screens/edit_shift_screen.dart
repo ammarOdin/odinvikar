@@ -34,8 +34,12 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        toolbarHeight: kToolbarHeight + 2,
+          elevation: 3,
+          centerTitle: false,
+          backgroundColor: Colors.blue,
+          toolbarHeight: 100,
+          automaticallyImplyLeading: false,
+          title: Text("Rediger vagt", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),)
       ),
       body: ListView(
@@ -44,30 +48,7 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
         shrinkWrap: true,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height / 3.5,
-            padding: EdgeInsets.only(bottom: 30),
-            color: Colors.blue,
-            child: ListView(
-              padding: EdgeInsets.only(top: 40),
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Center(
-                  child: Text("Rediger vagt \n", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
-                ),
-                Center(
-                  child: Text("Dato: "+widget.date + "\n" + "Tidsrum: " + widget.details, style: TextStyle(fontSize: 18, color: Colors.white),),
-                ),
-              ],
-            ),
-          ),
-          Container(
-              padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
-              child: Text("Indtast nye oplysninger", style:TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),)
-          ),
-
-          const Divider(thickness: 1),
-          Container(
-            padding: EdgeInsets.only(top: 10, bottom: 20),
+            padding: EdgeInsets.only(top: 20, bottom: 20),
             child: Row(
               children: [
                 TextButton.icon(onPressed: null, icon: Icon(Icons.access_time), label: Text("Varighed")),
@@ -177,15 +158,10 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
               height: 80,
               width: 250,
               margin: EdgeInsets.only(top: 20),
-              child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 16),
-                    primary: Colors.orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () async {
+              child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: () async {
                     List<String> stateUpdater = [];
                     var comment = commentController.text;
                     var timeRange = '';
@@ -200,7 +176,6 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
                     if (commentController.text == "" || commentController.text.isEmpty){
                       comment = "Ingen";
                     }
-
                     if (_commentKey.currentState!.validate()){
                       try{
                         await widget.userRef.doc(widget.date).update({
@@ -214,9 +189,16 @@ class _EditShiftScreenState extends State<EditShiftScreen> {
                         showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);
                       }
                     }
-                  },
-                  icon: Icon(Icons.edit_outlined),
-                  label: Text("Rediger vagt", style: TextStyle(fontSize: 18),))),
+                },
+                  child: Text("Gem redigering", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.white)),
+                  style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(const Size(130, 50)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+                      elevation: MaterialStateProperty.all(3),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                  ),),
+              ],
+            ),),
         ],
       ),
     );
