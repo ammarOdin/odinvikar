@@ -5,7 +5,7 @@ import 'package:odinvikar/admin/admin_shift_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../card_assets.dart';
+import '../assets/card_assets.dart';
 
 
 class AdminCalendar extends StatefulWidget {

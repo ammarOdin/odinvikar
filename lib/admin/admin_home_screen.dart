@@ -7,7 +7,7 @@ import 'package:odinvikar/admin/admin_edit_shift.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../card_assets.dart';
+import '../assets/card_assets.dart';
 import 'admin_assign_shift.dart';
 import 'admin_shift_details.dart';
 

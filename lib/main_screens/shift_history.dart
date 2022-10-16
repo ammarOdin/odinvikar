@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:odinvikar/card_assets.dart';
+import 'package:odinvikar/assets/card_assets.dart';
 import 'package:intl/intl.dart';
 
 import '../shift_system/shift_details.dart';

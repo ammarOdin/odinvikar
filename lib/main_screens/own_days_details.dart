@@ -294,7 +294,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: loading? Column(
-        children: List.generate(4, (i) {
+        children: List.generate(3, (i) {
           return buildShimmer();
         })
       ): ListView(

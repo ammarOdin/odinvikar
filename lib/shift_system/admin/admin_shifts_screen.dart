@@ -5,7 +5,7 @@ import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import '../../admin/admin_home_screen.dart';
 import '../../admin/admin_settings_screen.dart';
-import '../../card_assets.dart';
+import '../../assets/card_assets.dart';
 import 'admin_add_shift.dart';
 import 'admin_shift_system_details.dart';
 import 'package:intl/intl.dart';

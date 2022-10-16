@@ -164,6 +164,33 @@ class _State extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Velkommen', style: TextStyle(fontSize: 34, fontWeight: FontWeight.w700),),
+            Padding(padding: EdgeInsets.only(top: 10)),
+            StreamBuilder(
+                stream: getUserInfo.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData){
+                    var name = snapshot.data as DocumentSnapshot;
+                    return Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),);
+                  }
+                  return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
+                    color: Colors.blue,
+                    size: 50,
+                  )));
+                }
+            ),
+          ],
+        ),
+        toolbarHeight: 125,
+        automaticallyImplyLeading: false,
+      ),
       floatingActionButton: IconButton(onPressed: (){
         showAboutDialog(
           context: context,
@@ -189,130 +216,132 @@ class _State extends State<SettingsScreen> {
         padding: const EdgeInsets.only(top: 0),
         children: [
           Container(
-            color: Colors.blue,
-            margin: const EdgeInsets.only(bottom: 10),
-            height: MediaQuery
-                .of(context)
-                .size
-                .height / 3,
-            child: ListView(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery
-                          .of(context)
-                          .size
-                          .height / 10),
-                  child: const Center(
-                      child: Text(
-                        "Profil",
-                        style: TextStyle(color: Colors.white,
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery
-                          .of(context)
-                          .size
-                          .height / 30),
-                  child: Center(
-                      child: StreamBuilder(
-                          stream: getUserInfo.snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData){
-                              var name = snapshot.data as DocumentSnapshot;
-                              return Center(
-                                  child: Text(name['name'].toString(), style: const TextStyle(color: Colors.white, fontSize: 22),));
-                            }
-                            return SizedBox(height: 10, width: 10, child: Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
-                              color: Colors.blue,
-                              size: 50,
-                            )));
-                          }
-                      ),),
-                ),
-              ],
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
+              child: Text("Kontoinformationer",
+                style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400),)),
+          GestureDetector(
+            onTap: (){
+              showContactInfo();
+            },
+            child: Container(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              decoration: BoxDecoration(
+              ),
+              child:  Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text("Personlige oplysninger", style: TextStyle(fontWeight: FontWeight.w500 ),)),
+                      const Spacer(),
+                      Container(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.arrow_forward_ios, size: 20,))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          Container(padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
-            child: const Text("Indstillinger",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),),
-          const Divider(thickness: 1, height: 15),
-
-          Container(
-            height: 50,
-            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5, top: 20),
-            child: ElevatedButton.icon(onPressed: () {showContactInfo(); /*FirebaseMessaging.instance.getToken().then((value) {if (kDebugMode){print(value);}});*/}, icon: const Icon(Icons.contact_page, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine oplysninger", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Colors.blue)
-                )
-            )),),),
-
-          Container(
-            height: 50,
-            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-            child: ElevatedButton.icon(onPressed: () {
+          GestureDetector(
+            onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftHistoryScreen()));
-            }, icon: const Icon(Icons.access_time, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Mine timer", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Colors.blue)
-                )
-            )),),),
-
-          isSynced? Badge(
-            toAnimate: false,
-            shape: BadgeShape.square,
-            badgeColor: Colors.green,
-            borderRadius: BorderRadius.circular(8),
-            badgeContent: Text('SYNKRONISERET', style: TextStyle(color: Colors.white)),
-            position: BadgePosition.topEnd(end: 10),
+            },
             child: Container(
-              height: 50,
-              margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-              child: ElevatedButton.icon(onPressed: () {
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              decoration: BoxDecoration(
+              ),
+              child:  Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text("Mine timer", style: TextStyle(fontWeight: FontWeight.w500 ),)),
+                      const Spacer(),
+                      Container(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.arrow_forward_ios, size: 20,))
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+              onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen()));
-              }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: const BorderSide(color: Colors.blue)
-                  )
-              )),),),
-          ) : Badge(
-            toAnimate: false,
-            shape: BadgeShape.square,
-            badgeColor: Colors.orange,
-            borderRadius: BorderRadius.circular(8),
-            badgeContent: Text('MANGLER SYNKRONISERING', style: TextStyle(color: Colors.white)),
-            position: BadgePosition.topEnd(end: 10),
-            child: Container(
-              height: 50,
-              margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-              child: ElevatedButton.icon(onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ShiftInfoSyncScreen())).then((value) {
-                  setState(() {
-                    _getSyncStatus();
-                  });
-                });
-              }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Vagtsynkronisering", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: const BorderSide(color: Colors.blue)
-                  )
-              )),),),
+              },
+              child: Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                decoration: BoxDecoration(
+                ),
+                child:  Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Text("Vagtsynkronisering", style: TextStyle(fontWeight: FontWeight.w500 ),)),
+                        Padding(padding: EdgeInsets.only(left: 10)),
+                        isSynced? Icon(Icons.check, color: Colors.green, size: 24,) : Icon(Icons.error, color: Colors.red, size: 24,),
+                        const Spacer(),
+                        Container(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.arrow_forward_ios, size: 20,))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          Padding(padding: EdgeInsets.only(top: 70),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(onPressed: (){
+                try{
+                  showDialog(context: context,
+                      builder: (BuildContext context){
+                        return AlertDialog(
+                          title: const Text("Log ud"),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          content: const Text("Er du sikker på at logge ud?"),
+                          actions: [
+                            TextButton(onPressed: () {Navigator.pop(context);},
+                                child: const Text("Annuller")),
+                            TextButton(onPressed: () async {
+                              Navigator.pop(context);
+                              await FirebaseAuth.instance.signOut();
+                              showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),);
+                              Future.delayed(const Duration(seconds: 2));
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                            },
+                                child: const Text("Log ud"))],);});
+                } on FirebaseAuthException catch (e){
+                  showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke udføre handling",),);
+                }
+              },
+                child: Text("Log ud", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.black)),
+                style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(const Size(130, 50)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    elevation: MaterialStateProperty.all(3),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                ),),
+            ],
           ),
           Container(
-            height: 50,
-            margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-            child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)),style: ButtonStyle(shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Colors.blue)
-                )
-            )),),),
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Text("Appversion: 2.3.6",
+                style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400),)),
         ],
       ),
     );

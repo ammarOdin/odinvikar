@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:odinvikar/card_assets.dart';
+import 'package:odinvikar/assets/card_assets.dart';
 import 'package:odinvikar/shift_system/shift_details.dart';
 import 'package:intl/intl.dart';
 import 'package:week_of_year/date_week_extensions.dart';

@@ -65,6 +65,7 @@ dependencies:
   dio: ^4.0.6
   shimmer: ^2.0.0
   page_transition: ^2.0.9
+  tap_to_expand: ^0.6.1
 
   # Loading
   widget_loading: ^0.3.2
