@@ -20,22 +20,21 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginScreen> {
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final GlobalKey<FormState> _resetKey = GlobalKey<FormState>();
 
-  String? validateEmail(String? email){
-    if (email == null || email.isEmpty){
+  String? validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
       return "Indsæt e-mail";
-    } else if (!email.contains("@") || !email.contains(".")){
+    } else if (!email.contains("@") || !email.contains(".")) {
       return "Ugyldig e-mail";
     }
   }
 
-  String? validatePassword(String? password){
-    if (password == null || password.isEmpty){
+  String? validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
       return "Indsæt password";
     }
   }
@@ -44,16 +43,15 @@ class _LoginState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke navigere tilbage",),);
-      return false;
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message: "Du kan ikke navigere tilbage",
+          ),
+        );
+        return false;
       },
       child: Scaffold(
-        /*extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black),
-        ),*/
         body: ListView(
           physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.only(top: 0),
@@ -67,12 +65,16 @@ class _LoginState extends State<LoginScreen> {
                 children: [
                   Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 10, left: MediaQuery.of(context).size.width / 20 ),
+                          top: MediaQuery.of(context).size.height / 10,
+                          left: MediaQuery.of(context).size.width / 20),
                       child: const Align(
-                        alignment: Alignment.centerLeft,
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             "Vikarly \nOdinskolen",
-                            style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
                           ))),
                 ],
               ),
@@ -83,78 +85,227 @@ class _LoginState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Container(
-                      padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
+                      padding: const EdgeInsets.only(
+                          bottom: 10, top: 40, left: 15, right: 15),
                       margin: const EdgeInsets.only(top: 10),
-                      child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'E-mail',),)),
-                  Container(
-                      padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                      child: TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Adgangskode',),)),
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
-                    child: ElevatedButton.icon(onPressed: () async {
-                      if (_key.currentState!.validate()){
-                        showDialog(barrierDismissible: false, context: context, builder: (BuildContext context){
-                          return AlertDialog(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            content: SpinKitRing(
-                              color: Colors.blue,
+                      child: TextFormField(
+                          validator: validateEmail,
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Colors.grey.withOpacity(0.75),
                             ),
-                          );
-                        });
-                        try{
-                          await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                          User? user = FirebaseAuth.instance.currentUser;
-                          FirebaseMessaging.instance.getToken().then((value) {FirebaseFirestore.instance.collection('user').doc(user!.uid).update({'token': value});});
-                          Navigator.pop(context);
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthenticationWrapper()));
-                        } on FirebaseAuthException catch(e){
-                          if(e.code == "user-not-found"){
-                            Navigator.pop(context);
-                            showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);
-                          } else {
-                            Navigator.pop(context);
-                            showTopSnackBar(context, CustomSnackBar.error(message: "Forkert e-mail eller adgangskode",),);}
-                        }
-                      }}, icon: const Icon(Icons.login), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ind")), style: ButtonStyle(shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            side: const BorderSide(color: Colors.blue)
-                        )
-                    )),),
+                            fillColor: Colors.grey.withOpacity(0.25),
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(15)),
+                            labelText: 'Email',
+                            labelStyle: TextStyle(color: Colors.black),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                ),
+                                borderRadius: BorderRadius.circular(15)),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            hintText: "Indtast e-mail",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ))),
+                  Container(
+                      padding: const EdgeInsets.only(
+                          bottom: 10, top: 10, left: 15, right: 15),
+                      child: TextFormField(
+                          validator: validatePassword,
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey.withOpacity(0.75),
+                            ),
+                            fillColor: Colors.grey.withOpacity(0.25),
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(15)),
+                            labelText: 'Adgangskode',
+                            labelStyle: TextStyle(color: Colors.black),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                ),
+                                borderRadius: BorderRadius.circular(15)),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            hintText: "Indtast adgangskode",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ))),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                            onPressed: () async {
+                              if (_key.currentState!.validate()) {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        elevation: 0,
+                                        backgroundColor: Colors.transparent,
+                                        content: SpinKitRing(
+                                          color: Colors.blue,
+                                        ),
+                                      );
+                                    });
+                                try {
+                                  await FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                          email: emailController.text,
+                                          password: passwordController.text);
+                                  User? user = FirebaseAuth.instance.currentUser;
+                                  FirebaseMessaging.instance.getToken().then((value) {
+                                    FirebaseFirestore.instance
+                                        .collection('user')
+                                        .doc(user!.uid)
+                                        .update({'token': value});
+                                  });
+                                  Navigator.pop(context);
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AuthenticationWrapper()));
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == "user-not-found") {
+                                    Navigator.pop(context);
+                                    showTopSnackBar(
+                                      context,
+                                      CustomSnackBar.error(
+                                        message: "Bruger eksisterer ikke",
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.pop(context);
+                                    showTopSnackBar(
+                                      context,
+                                      CustomSnackBar.error(
+                                        message: "Forkert e-mail eller adgangskode",
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            },
+                            icon: const Icon(Icons.login),
+                            label: const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text("Log ind", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.white))),
+                              style: ButtonStyle(
+                                  minimumSize: MaterialStateProperty.all(const Size(200, 50)),
+                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                  elevation: MaterialStateProperty.all(3),
+                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                              )
+                          ),
+                      ],
+                    ),
                   ),
+
                   Form(
                     key: _resetKey,
-                    child: TextButton(onPressed: () async {
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."), actions: [
-                          TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
-                          TextButton(onPressed: () async {
-                            if(_resetKey.currentState!.validate()){
-                              try{
-                                await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail afsendt",),);
-                              } on FirebaseAuthException catch (e){
-                                if(e.code == "user-not-found"){
-                                  showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);
-                                } else {
-                                  showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);}
-                              }
-
-                            }}, child: const Text("Send e-mail"))],);});
-                    }, child: Text("Glemt adgangskode")),
+                    child: TextButton(
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Nulstil adgangskode"),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25)),
+                                  content: Text(
+                                      "Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."),
+                                  actions: [
+                                    TextFormField(
+                                      validator: validateEmail,
+                                      controller: emailController,
+                                      decoration: const InputDecoration(
+                                        icon: Icon(Icons.email),
+                                        hintText: "E-mail",
+                                        hintMaxLines: 10,
+                                      ),
+                                    ),
+                                    TextButton(
+                                        onPressed: () async {
+                                          if (_resetKey.currentState!
+                                              .validate()) {
+                                            try {
+                                              await FirebaseAuth.instance
+                                                  .sendPasswordResetEmail(
+                                                      email:
+                                                          emailController.text);
+                                              Navigator.pop(context);
+                                              showTopSnackBar(
+                                                context,
+                                                CustomSnackBar.success(
+                                                  message: "E-mail afsendt",
+                                                ),
+                                              );
+                                            } on FirebaseAuthException catch (e) {
+                                              if (e.code == "user-not-found") {
+                                                showTopSnackBar(
+                                                  context,
+                                                  CustomSnackBar.error(
+                                                    message:
+                                                        "Bruger eksisterer ikke",
+                                                  ),
+                                                );
+                                              } else {
+                                                showTopSnackBar(
+                                                  context,
+                                                  CustomSnackBar.error(
+                                                    message:
+                                                        "En fejl opstod. Prøv igen",
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
+                                        },
+                                        child: const Text("Send e-mail"))
+                                  ],
+                                );
+                              });
+                        },
+                        child: Text("Glemt adgangskode")),
                   ),
-                  TextButton(onPressed: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AuthRegisterPage()));
-                  }, child: Text("Ny vikar? Opret bruger")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const AuthRegisterPage()));
+                      },
+                      child: Text("Ny vikar? Opret bruger")),
                 ],
               ),
             ),
             Container(
               padding: EdgeInsets.only(left: 20, right: 20, top: 30),
-              child: Center(child: Text("Har du problemer med din konto, kan du kontakte os via telefon")),
+              child: Center(
+                  child: Text(
+                      "Har du problemer med din konto, kan du kontakte os via telefon")),
             ),
-            TextButton(onPressed: (){launch("tel://42750701");}, child: Text("42 75 07 01")),
+            TextButton(
+                onPressed: () {
+                  launch("tel://42750701");
+                },
+                child: Text("42 75 07 01")),
           ],
         ),
       ),
@@ -166,22 +317,25 @@ class AuthenticationLogin extends StatelessWidget {
   const AuthenticationLogin({Key? key}) : super(key: key);
 
   isAdmin() async {
-    var login = await
-    FirebaseFirestore.instance
+    var login = await FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
-        .then((DocumentSnapshot documentSnapshot){
-      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true){
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == true) {
         return true;
-      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false){
+      } else if (documentSnapshot.get(FieldPath(const ['isAdmin'])) == false) {
         return false;
       }
     });
     return login;
   }
+
   @override
-  Widget build(BuildContext context)  {
-    return FutureBuilder(future: isAdmin(), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: isAdmin(),
+        builder: (context, snapshot) =>
+            snapshot.data == true ? const AdminDashboard() : const Dashboard());
   }
 }
