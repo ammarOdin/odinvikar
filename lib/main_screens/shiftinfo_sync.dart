@@ -1,11 +1,8 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
-import 'package:odinvikar/main_screens/home_screen.dart';
-import 'package:odinvikar/main_screens/settings_screen.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ShiftInfoSyncScreen extends StatefulWidget {
   const ShiftInfoSyncScreen({Key? key}) : super(key: key);
@@ -104,10 +101,24 @@ class _ShiftInfoSyncScreenState extends State<ShiftInfoSyncScreen> {
                             linkExist = true;
                             urlController.clear();
                           });
-                          showTopSnackBar(context, CustomSnackBar.success(message: "Synkronisering fuldført",),);
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Vagtsynkronisering',
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                              message: 'Synkronisering successfuld',
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
                         } on FirebaseException catch (e) {
-                          showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke synkronisere. Prøv igen. Fejlkode: ${e.code}",),);
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Vagtsynkronisering',
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 3),
+                              message: "Kunne ikke synkronisere. Prøv igen. Fejlkode: ${e.code}",
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                         }
                       }
                     }, icon: const Icon(Icons.sync_sharp, color: Colors.white), label: const Align(alignment: Alignment.centerLeft, child: Text("Synkronisér", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(

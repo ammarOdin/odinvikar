@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:odinvikar/main_screens/own_days_datepicker.dart';
 import 'package:odinvikar/main_screens/own_days_details.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class OwnDaysScreen extends StatefulWidget {
   const OwnDaysScreen({Key? key}) : super(key: key);
@@ -163,7 +161,14 @@ class OwnDays extends State<OwnDaysScreen> {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
           if (getDateTap.weekday == 6  || getDateTap.weekday == 7){
-            showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke tilføje på en weekend",),);
+            Flushbar(
+                margin: EdgeInsets.all(10),
+                borderRadius: BorderRadius.circular(10),
+                title: 'Vagt',
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 3),
+                message: 'Du kan ikke oprette på en weekend',
+                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
           } else {
             Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDatepicker(date: getDateTap))).then((value) {
               setState(() {

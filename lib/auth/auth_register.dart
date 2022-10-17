@@ -1,9 +1,8 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/register.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AuthRegisterPage extends StatefulWidget {
   const AuthRegisterPage({Key? key}) : super(key: key);
@@ -91,16 +90,38 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
                       var getAuthInfo = await FirebaseFirestore.instance.collection('auth').doc('authInfo').get();
                       //await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailauthController.text, password: passwordauthController.text);
                       if (passwordauthController.text.trim() == getAuthInfo.data()!['OTP']){
-                        showTopSnackBar(context, CustomSnackBar.success(message: "Forespørgsel godkendt",),);
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Brugeroprettelse',
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                            message: 'Kode godkendt',
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+
                         Navigator.pop(context);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const RegisterPage()));
                       } else {
                         Navigator.pop(context);
-                        showTopSnackBar(context, CustomSnackBar.error(message: "Forkert kode",),);
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Brugeroprettelse',
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                            message: 'Forkert kode',
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                       }
                     } catch(e){
                       Navigator.pop(context);
-                      showTopSnackBar(context, CustomSnackBar.error(message: "Forkert kode",),);
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Brugeroprettelse',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 3),
+                          message: 'Forkert kode',
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     }
                   }}, icon: const Icon(Icons.check_circle_outline), label: const Align(alignment: Alignment.centerLeft, child: Text("Autentificer")), style: ButtonStyle(shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(

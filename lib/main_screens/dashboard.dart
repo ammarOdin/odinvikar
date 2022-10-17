@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +9,6 @@ import 'package:odinvikar/main_screens/settings_screen.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'home_screen.dart';
 import 'own_days.dart';
 import 'package:intl/intl.dart';
@@ -107,7 +106,14 @@ class _HomescreenState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke navigere tilbage",),);
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Navigation',
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+            message: 'Du kan ikke navigere tilbage',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
         return false;
       },
       child: Scaffold(

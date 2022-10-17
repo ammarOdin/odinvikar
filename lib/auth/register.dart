@@ -1,11 +1,10 @@
 import 'dart:math';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
 
@@ -69,7 +68,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showTopSnackBar(context, CustomSnackBar.info(message: "Tryk på tilbage-knappen for at navigere tilbage til hjemmeskærmen",),);
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Navigation',
+            backgroundColor: Colors.blue,
+            duration: Duration(seconds: 3),
+            message: 'Tryk på tilbage-knappen for at navigere tilbage',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
         return false;
         },
       child: Scaffold(
@@ -79,8 +85,14 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 0,
           leading: IconButton(onPressed: (){
             FirebaseAuth.instance.signOut();
-            showTopSnackBar(context, CustomSnackBar.info(message: "Brugeroprettelse afbrudt",),);
-
+            Flushbar(
+                margin: EdgeInsets.all(10),
+                borderRadius: BorderRadius.circular(10),
+                title: 'Brugeroprettelse',
+                backgroundColor: Colors.blue,
+                duration: Duration(seconds: 3),
+                message: 'Brugeroprettelse afbrudt',
+                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
             Navigator.pop(context);
           }, icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),),
         ),
@@ -229,7 +241,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
                           usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
                             if (documentSnapshot.exists) {
-                              showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer allerede",),);
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Brugeroprettelse',
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Bruger eksisterer allerede',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                             } else if (!documentSnapshot.exists) {
                               // get token
                               var token;
@@ -254,13 +273,27 @@ class _RegisterPageState extends State<RegisterPage> {
 
                               var otp = getRandomString(8);
                               await FirebaseFirestore.instance.collection('auth').doc('authInfo').set({'OTP': otp});
-                              showTopSnackBar(context, CustomSnackBar.success(message: "Logget ind",),);
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Login',
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Logget ind',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
                             }
                           });
                           //launch("https://vikarly.dk/?page_id=1685");
                         } on FirebaseAuthException catch(e){
-                          showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse - ${e.code}",),);
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Brugeroprettelse',
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 3),
+                              message: "Fejl ved oprettelse - ${e.code}",
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                         }
                       }},child: Container(
                         width: MediaQuery.of(context).size.width / 2,

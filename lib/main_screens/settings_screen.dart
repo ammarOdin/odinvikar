@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +7,6 @@ import 'package:odinvikar/auth/login.dart';
 import 'package:odinvikar/main_screens/shift_history.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -102,60 +100,231 @@ class _State extends State<SettingsScreen> {
   updateUserField(String uid, String reference, String field, TextEditingController controller) {
     return Column(
       children: [
-        Container(margin:const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.8), borderRadius: const BorderRadius.all(Radius.circular(10))), child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: const BackButton(color: Colors.black),
-          ),
-            body: Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              key: _updateInfokey,
-              child: Column(
-                children: [
-                  Container(padding: const EdgeInsets.only(top: 50, left: 15, right: 20), child: Align(alignment: Alignment.center, child: TextFormField(validator: (input) => validateUpdateField(reference, controller.text), controller: controller, decoration: InputDecoration(icon: const Icon(Icons.edit), hintText: field, hintMaxLines: 10,),) ,)),
-                  Container(height: 50, width: MediaQuery.of(context).size.width, margin: const EdgeInsets.only(top: 50, left: 20, right: 20), child: ElevatedButton.icon(onPressed: () async {
-                    final validForm = _updateInfokey.currentState!.validate();
-                    if (validForm){
-                      switch(reference){
-                        case "phone":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Telefonnummer gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme telefonnummer",),);}
-                        }
-                        break;
-                        case "email":{
-                          showDialog(context: context, builder: (BuildContext context){
-                            emailController.clear();
-                            return Form(
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              key: _authUserkey,
-                              child: AlertDialog(title: const Text("Autentificer konto"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."), actions: [
-                              TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), hintText: "E-mail", hintMaxLines: 10,),),
-                              TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.password), hintText: "Adgangskode", hintMaxLines: 10,),),
-                              TextButton(onPressed: () async {
-                                if (_authUserkey.currentState!.validate()){
-                                  try{
-                                  /*AuthCredential credential = EmailAuthProvider.credential(email: emailController.text, password: passwordController.text);
-                                  await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);*/
-                                    await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                                  showTopSnackBar(context, CustomSnackBar.success(message: "Autentificering godkendt",),);
-                                  FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
-                                  usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail gemt",),); Navigator.pop(context); Navigator.pop(context);
-                                  }
-                                  on FirebaseAuthException catch(e){if(e.code == "wrong-password"){showTopSnackBar(context, CustomSnackBar.error(message: "Forkert adgangskode",),);} else if (e.code == "invalid-email"){ showTopSnackBar(context, CustomSnackBar.error(message: "Forkert e-mail",),);} else if (e.code == "user-not-found"){showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer ikke",),);} else {showTopSnackBar(context, CustomSnackBar.error(message: "Fejlkode ${e.code}",),);}}
+        Container(
+          margin: const EdgeInsets.only(right: 10, left: 10, top: 5,bottom: 5),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 0.8),
+              borderRadius: const BorderRadius.all(Radius.circular(10))),
+          child: ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent), onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                Scaffold(resizeToAvoidBottomInset: false, appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leading: const BackButton(color: Colors.black),
+                ),
+                  body: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _updateInfokey,
+                    child: Column(
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.only(top: 50, left: 15, right: 20),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: TextFormField(
+                                validator: (input) => validateUpdateField(reference, controller.text),
+                                controller: controller,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.edit,
+                                    color: Colors.grey.withOpacity(0.75),
+                                  ),
+                                  fillColor: Colors.grey.withOpacity(0.25),
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  labelText: 'Rediger',
+                                  labelStyle: TextStyle(color: Colors.black),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.black,
+                                      ),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                  hintText: "Indtast nye oplysninger",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                )) ,)),
+                        Container(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                          child: ElevatedButton.icon(onPressed: () async {
+                          final validForm = _updateInfokey.currentState!.validate();
+                          if (validForm){
+                            switch(reference){
+                              case "phone":{
+                                try{
+                                  usersRef.doc(uid).update({reference:controller.text});
+                                  Flushbar(
+                                      margin: EdgeInsets.all(10),
+                                      borderRadius: BorderRadius.circular(10),
+                                      title: 'Telefonnummer',
+                                      backgroundColor: Colors.green,
+                                      duration: Duration(seconds: 3),
+                                      message: "Telefonnummer gemt",
+                                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                  Navigator.pop(context);}
+                                catch(e){
+                                  Flushbar(
+                                      margin: EdgeInsets.all(10),
+                                      borderRadius: BorderRadius.circular(10),
+                                      title: 'Telefonnummer',
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 3),
+                                      message: "Kunne ikke gemme telefonnummer",
+                                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                 }
-                              }, child: const Text("Godkend")),
-                          ],),
-                            );});
-                        }
-                        break;
-                      }
-                    }
-                  }, icon: const Icon(Icons.save, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
-                ],
-              ),
-            ),)));
-        }, child: Center(child: Row(children: [Align(alignment: Alignment.centerLeft, child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))]),),),
+                              }
+                              break;
+                              case "email":{
+                                showDialog(context: context, builder: (BuildContext context){
+                                  emailController.clear();
+                                  return Form(
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    key: _authUserkey,
+                                    child: AlertDialog(title: const Text("Autentificer konto"),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."),
+                                      actions: [
+                                      TextFormField(validator: validateEmail, controller: emailController, decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.email,
+                                          color: Colors.grey.withOpacity(0.75),
+                                        ),
+                                        fillColor: Colors.grey.withOpacity(0.25),
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.transparent),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        labelText: 'Email',
+                                        labelStyle: TextStyle(color: Colors.black),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                            ),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        hintText: "Indtast e-mail",
+                                        hintStyle: TextStyle(color: Colors.grey),
+                                      )),
+                                      TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color: Colors.grey.withOpacity(0.75),
+                                        ),
+                                        fillColor: Colors.grey.withOpacity(0.25),
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.transparent),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        labelText: 'Adgangskode',
+                                        labelStyle: TextStyle(color: Colors.black),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                            ),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        hintText: "Indtast adgangskode",
+                                        hintStyle: TextStyle(color: Colors.grey),
+                                      ),),
+                                      TextButton(onPressed: () async {
+                                        if (_authUserkey.currentState!.validate()){
+                                          try{
+                                            await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                                            Flushbar(
+                                                margin: EdgeInsets.all(10),
+                                                borderRadius: BorderRadius.circular(10),
+                                                title: 'Telefonnummer',
+                                                backgroundColor: Colors.green,
+                                                duration: Duration(seconds: 3),
+                                                message: "Telefonnummer gemt",
+                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
+                                            usersRef.doc(uid).update({reference:controller.text});
+                                            Flushbar(
+                                                margin: EdgeInsets.all(10),
+                                                borderRadius: BorderRadius.circular(10),
+                                                title: 'E-mail',
+                                                backgroundColor: Colors.green,
+                                                duration: Duration(seconds: 3),
+                                                message: "E-mail gemt",
+                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          } on FirebaseAuthException catch(e){
+                                            if(e.code == "wrong-password"){
+                                              Flushbar(
+                                                  margin: EdgeInsets.all(10),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  title: 'Fejl',
+                                                  backgroundColor: Colors.red,
+                                                  duration: Duration(seconds: 3),
+                                                  message: "Forkert adgangskode",
+                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            } else if (e.code == "invalid-email") {
+                                              Flushbar(
+                                                  margin: EdgeInsets.all(10),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  title: 'Fejl',
+                                                  backgroundColor: Colors.red,
+                                                  duration: Duration(seconds: 3),
+                                                  message: "Forkert e-mail",
+                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            } else if (e.code == "user-not-found"){
+                                              Flushbar(
+                                                  margin: EdgeInsets.all(10),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  title: 'Fejl',
+                                                  backgroundColor: Colors.red,
+                                                  duration: Duration(seconds: 3),
+                                                  message: "Bruger eksisterer ikke",
+                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            } else {
+                                              Flushbar(
+                                                  margin: EdgeInsets.all(10),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  title: 'Fejl',
+                                                  backgroundColor: Colors.red,
+                                                  duration: Duration(seconds: 3),
+                                                  message: "Fejlkode ${e.code}",
+                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                            }
+                                          }
+                                        }
+                                        }, child: const Text("Godkend")),
+                                    ],),);
+                                });
+                              }
+                              break;
+                            }
+                          }
+                          },
+                          icon: const Icon(Icons.save, color: Colors.white,),
+                          label: const Align(alignment: Alignment.centerLeft,
+                              child: Text("Gem", style: TextStyle(color: Colors.white),)),),),
+                      ],
+                    ),),)));}, child: Center(
+              child: Row(children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(field, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)),
+                const Spacer(),
+                const Align(alignment: Alignment.centerRight, child: Icon(Icons.edit, color: Colors.blue,))
+          ]
+          )
+          )
+          ),
         ),
       ],
     );
@@ -319,13 +488,27 @@ class _State extends State<SettingsScreen> {
                             TextButton(onPressed: () async {
                               Navigator.pop(context);
                               await FirebaseAuth.instance.signOut();
-                              showTopSnackBar(context, CustomSnackBar.success(message: "Logget ud",),);
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Log ud',
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Du er nu logget ud',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               Future.delayed(const Duration(seconds: 2));
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
                             },
                                 child: const Text("Log ud"))],);});
                 } on FirebaseAuthException catch (e){
-                  showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke udføre handling",),);
+                  Flushbar(
+                      margin: EdgeInsets.all(10),
+                      borderRadius: BorderRadius.circular(10),
+                      title: 'Log ud',
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                      message: 'Kunne ikke udføre handlingen. Prøv igen',
+                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                 }
               },
                 child: Text("Log ud", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.black)),
@@ -442,7 +625,20 @@ class _State extends State<SettingsScreen> {
                       Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
                           TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                          TextButton(onPressed: () async {await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']); Navigator.pop(context); Navigator.pop(context); showTopSnackBar(context, CustomSnackBar.success(message: "E-mail sendt",),);}, child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
+                          TextButton(onPressed: () async {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Nulstil adgangskode',
+                                backgroundColor: Colors.blue,
+                                duration: Duration(seconds: 3),
+                                message: 'E-mail afsendt',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            },
+                              child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
                           child: const Text("Nulstil adgangskode")))),
                       /*Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [

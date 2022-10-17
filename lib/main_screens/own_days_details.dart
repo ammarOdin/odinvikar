@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:core';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -13,8 +14,6 @@ import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'edit_shift_screen.dart';
 
 class OwnDaysDetailsScreen extends StatefulWidget {
@@ -342,7 +341,14 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                           onPressed: () async {
                             await widget.data.reference.update({"awaitConfirmation": 2, 'status': "Godkendt vagt", 'color' : '0xFF4CAF50'});
                             Navigator.pop(context);
-                            showTopSnackBar(context, CustomSnackBar.success(message: "Vagt accepteret",),);
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Vagt',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: "Vagt accepteret",
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                             var adminRef = await databaseReference.collection('user').get();
                             var userNameRef = await databaseReference.collection('user').doc(user!.uid).get();
                             for (var admins in adminRef.docs){
@@ -524,7 +530,18 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                       return AlertDialog(title: Text("Slet dag"),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                         content: Text("Er du sikker på at slette dagen?"),
-                        actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
+                        actions: [TextButton(onPressed: () {
+                          widget.data.reference.delete();
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Vagt',
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                              message: "Vagt slettet",
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                         }
                             , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                   } on FirebaseAuthException catch (e){
@@ -564,7 +581,14 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
             alignment: Alignment.centerRight,
             child: FloatingActionButton(onPressed: () async {
               if (widget.awaitConfirmation != 0){
-                showTopSnackBar(context, CustomSnackBar.error(message: "En vagt er allerede tildelt. Du kan ikke redigere dagen.",),);
+                Flushbar(
+                    margin: EdgeInsets.all(10),
+                    borderRadius: BorderRadius.circular(10),
+                    title: 'Vagt',
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                    message: "En vagt er allerede tildelt. Du kan ikke redigere dagen",
+                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
               } else {
                 var userRef = await databaseReference.collection(user!.uid);
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));

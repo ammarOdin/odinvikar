@@ -1,9 +1,8 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 
@@ -298,7 +297,14 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                   }
                   saveShift.doc(pickedDate).get().then((DocumentSnapshot documentSnapshot) async {
                     if (documentSnapshot.exists) {
-                      showTopSnackBar(context, CustomSnackBar.error(message: "${pickedDate} er allerede oprettet",),);
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Vagt',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 3),
+                          message: "${pickedDate} er allerede oprettet",
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     } else if (!documentSnapshot.exists && _commentKey.currentState!.validate()){
                       try{
                         await saveShift.doc(pickedDate).set(
@@ -314,9 +320,23 @@ class _OwnDaysDatepickerState extends State<OwnDaysDatepicker> {
                               'awaitConfirmation': 0
                             });
                         Navigator.pop(context);
-                        showTopSnackBar(context, CustomSnackBar.success(message: "${pickedDate} oprettet",),);
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Vagt',
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                            message: "${pickedDate} oprettet",
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                       } catch (e) {
-                        showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse af vagt. Prøv igen",),);
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Vagt',
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                            message: "Fejl ved oprettelse. Prøv igen",
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                       }
                     }
                   });

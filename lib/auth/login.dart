@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../assets/bezier_shape.dart';
 import '../main.dart';
 import 'auth_register.dart';
@@ -42,12 +41,14 @@ class _LoginState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showTopSnackBar(
-          context,
-          CustomSnackBar.error(
-            message: "Du kan ikke navigere tilbage",
-          ),
-        );
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Navigation',
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+            message: 'Du kan ikke navigere tilbage fra denne skærm',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
         return false;
       },
       child: Scaffold(
@@ -183,20 +184,24 @@ class _LoginState extends State<LoginScreen> {
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == "user-not-found") {
                                     Navigator.pop(context);
-                                    showTopSnackBar(
-                                      context,
-                                      CustomSnackBar.error(
-                                        message: "Bruger eksisterer ikke",
-                                      ),
-                                    );
+                                    Flushbar(
+                                        margin: EdgeInsets.all(10),
+                                        borderRadius: BorderRadius.circular(10),
+                                        title: 'Login',
+                                        backgroundColor: Colors.red,
+                                        duration: Duration(seconds: 3),
+                                        message: 'Bruger eksisterer ikke',
+                                        flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                   } else {
                                     Navigator.pop(context);
-                                    showTopSnackBar(
-                                      context,
-                                      CustomSnackBar.error(
-                                        message: "Forkert e-mail eller adgangskode",
-                                      ),
-                                    );
+                                    Flushbar(
+                                        margin: EdgeInsets.all(10),
+                                        borderRadius: BorderRadius.circular(10),
+                                        title: 'Login',
+                                        backgroundColor: Colors.red,
+                                        duration: Duration(seconds: 3),
+                                        message: 'Forkert brugernavn eller adgangskode',
+                                        flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                   }
                                 }
                               }
@@ -267,29 +272,33 @@ class _LoginState extends State<LoginScreen> {
                                                       email:
                                                           emailController.text);
                                               Navigator.pop(context);
-                                              showTopSnackBar(
-                                                context,
-                                                CustomSnackBar.success(
-                                                  message: "E-mail afsendt",
-                                                ),
-                                              );
+                                              Flushbar(
+                                                  margin: EdgeInsets.all(10),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  title: 'Glemt kodeord',
+                                                  backgroundColor: Colors.blue,
+                                                  duration: Duration(seconds: 3),
+                                                  message: 'E-mail afsendt',
+                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                             } on FirebaseAuthException catch (e) {
                                               if (e.code == "user-not-found") {
-                                                showTopSnackBar(
-                                                  context,
-                                                  CustomSnackBar.error(
-                                                    message:
-                                                        "Bruger eksisterer ikke",
-                                                  ),
-                                                );
+                                                Flushbar(
+                                                    margin: EdgeInsets.all(10),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    title: 'Navigation',
+                                                    backgroundColor: Colors.red,
+                                                    duration: Duration(seconds: 3),
+                                                    message: 'Du kan ikke navigere tilbage fra denne skærm',
+                                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                               } else {
-                                                showTopSnackBar(
-                                                  context,
-                                                  CustomSnackBar.error(
-                                                    message:
-                                                        "En fejl opstod. Prøv igen",
-                                                  ),
-                                                );
+                                                Flushbar(
+                                                    margin: EdgeInsets.all(10),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    title: 'Navigation',
+                                                    backgroundColor: Colors.red,
+                                                    duration: Duration(seconds: 3),
+                                                    message: 'En fejl opstod. Prøv igen',
+                                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                               }
                                             }
                                           }
