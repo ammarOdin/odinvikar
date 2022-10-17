@@ -7,8 +7,7 @@ import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import '../assets/bezier_shape.dart';
 import '../main.dart';
 import 'auth_register.dart';
 
@@ -52,18 +51,15 @@ class _LoginState extends State<LoginScreen> {
         return false;
       },
       child: Scaffold(
-        body: ListView(
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.only(top: 0),
-          shrinkWrap: true,
-          children: [
-            Container(
-              color: Colors.blue,
-              height: MediaQuery.of(context).size.height / 3,
+        body: Form(
+              key: _key,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: ListView(
-                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 children: [
                   Container(
+                    color: Colors.blue,
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height / 10,
                           left: MediaQuery.of(context).size.width / 20),
@@ -76,14 +72,15 @@ class _LoginState extends State<LoginScreen> {
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold),
                           ))),
-                ],
-              ),
-            ),
-            Form(
-              key: _key,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Column(
-                children: [
+                  ClipPath(
+                    clipper: LoginHeaderCustomClipPath(),
+                    child: ClipRRect(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 8,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
                   Container(
                       padding: const EdgeInsets.only(
                           bottom: 10, top: 40, left: 15, right: 15),
@@ -218,7 +215,6 @@ class _LoginState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-
                   Form(
                     key: _resetKey,
                     child: TextButton(
@@ -236,11 +232,30 @@ class _LoginState extends State<LoginScreen> {
                                     TextFormField(
                                       validator: validateEmail,
                                       controller: emailController,
-                                      decoration: const InputDecoration(
-                                        icon: Icon(Icons.email),
-                                        hintText: "E-mail",
-                                        hintMaxLines: 10,
-                                      ),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.email,
+                                          color: Colors.grey.withOpacity(0.75),
+                                        ),
+                                        fillColor: Colors.grey.withOpacity(0.25),
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: Colors.transparent),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        labelText: 'Email',
+                                        labelStyle: TextStyle(color: Colors.black),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                            ),
+                                            borderRadius: BorderRadius.circular(15)),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        hintText: "Indtast e-mail",
+                                        hintStyle: TextStyle(color: Colors.grey),
+                                      )
                                     ),
                                     TextButton(
                                         onPressed: () async {
@@ -295,19 +310,6 @@ class _LoginState extends State<LoginScreen> {
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 30),
-              child: Center(
-                  child: Text(
-                      "Har du problemer med din konto, kan du kontakte os via telefon")),
-            ),
-            TextButton(
-                onPressed: () {
-                  launch("tel://42750701");
-                },
-                child: Text("42 75 07 01")),
-          ],
-        ),
       ),
     );
   }

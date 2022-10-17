@@ -28,26 +28,54 @@ class _AuthRegisterPageState extends State<AuthRegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Opret bruger"),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 75,
+        automaticallyImplyLeading: false,
+        title: Text("Opret bruger", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20,), color: Colors.white),
       ),
       body: ListView(
         shrinkWrap: true,
         children: [
           Container(
-            padding: EdgeInsets.only(left: 10, top: 40),
-            child: Text("For at oprette dig som bruger, skal du først autentificeres.\n\nIndtast kodeordet som du har modtaget fra din institution.",
+            padding: EdgeInsets.only(left: 15, top: 30),
+            child: Text("For at oprette dig som bruger, skal du først autentificeres. Indtast kodeordet som du har modtaget fra din institution.",
               style: TextStyle(fontSize: 14, color: Colors.grey),),
           ),
           Form(
             key: _authkey, child: Column(
             children: [
               Container(
-                  padding: const EdgeInsets.only(bottom: 10, top: 10, left: 15, right: 15),
-                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, decoration: const InputDecoration(border: UnderlineInputBorder(), labelText: 'Kode'),)),
+                  padding: const EdgeInsets.only(bottom: 10, top: 30, left: 15, right: 15),
+                  child: TextFormField(validator: validatePassword, controller: passwordauthController, keyboardType: TextInputType.number, decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Colors.grey.withOpacity(0.75),
+                    ),
+                    fillColor: Colors.grey.withOpacity(0.25),
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(15)),
+                    labelText: 'Engangskode',
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                        ),
+                        borderRadius: BorderRadius.circular(15)),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: "Indtast kode",
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),)),
               Container(
                 height: 50,
-                margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
+                margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 15),
                 child: ElevatedButton.icon(onPressed: () async {
                   if (_authkey.currentState!.validate()) {
                     showDialog(barrierDismissible: false, context: context, builder: (BuildContext context){

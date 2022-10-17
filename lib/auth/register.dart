@@ -114,19 +114,111 @@ class _RegisterPageState extends State<RegisterPage> {
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.only(bottom: 10, top: 10, left: 5, right: 15),
                       margin: const EdgeInsets.only(top: 10),
-                      child: TextFormField(validator: validateEmail, controller: emailController, decoration: const InputDecoration(icon: Icon(Icons.email), border: UnderlineInputBorder(), labelText: 'E-mail',),)),
+                      child: TextFormField(validator: validateEmail, keyboardType: TextInputType.emailAddress, controller: emailController, decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey.withOpacity(0.75),
+                        ),
+                        fillColor: Colors.grey.withOpacity(0.25),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "Indtast e-mail",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),)),
                   Container(
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.only(bottom: 10, top: 10, left: 5, right: 15),
-                      child: TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: const InputDecoration(icon: Icon(Icons.password_rounded), border: UnderlineInputBorder(), labelText: 'Adgangskode',),)),
+                      child: TextFormField(validator: validatePassword, controller: passwordController, keyboardType: TextInputType.text, obscureText: true, decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Colors.grey.withOpacity(0.75),
+                        ),
+                        fillColor: Colors.grey.withOpacity(0.25),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Adgangskode',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "Indtast adgangskode",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),)),
                   Container(
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.only(bottom: 10, top: 10, left: 5, right: 15),
-                      child: TextFormField(validator: validateName, controller: nameController, decoration: const InputDecoration(icon: Icon(Icons.person), border: UnderlineInputBorder(), labelText: 'Navn',),)),
+                      child: TextFormField(validator: validateName, controller: nameController, keyboardType: TextInputType.text, decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.person_add,
+                          color: Colors.grey.withOpacity(0.75),
+                        ),
+                        fillColor: Colors.grey.withOpacity(0.25),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Navn',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "Indtast dit navn",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),)),
                   Container(
                       width: MediaQuery.of(context).size.width / 1.2,
                       padding: const EdgeInsets.only(bottom: 10, top: 10, left: 5, right: 15),
-                      child: TextFormField(validator: validatePhone, controller: phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone), border: UnderlineInputBorder(), labelText: 'Telefon',),)),
+                      child: TextFormField(validator: validatePhone, controller: phoneController, keyboardType: TextInputType.phone, decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.phone,
+                          color: Colors.grey.withOpacity(0.75),
+                        ),
+                        fillColor: Colors.grey.withOpacity(0.25),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Telefon',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "Indtast telefonnummer",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),)),
                   Container(
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: 60,
