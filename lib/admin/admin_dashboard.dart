@@ -1,6 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'admin_calendar.dart';
 import 'admin_home_screen.dart';
 import 'admin_settings_screen.dart';
@@ -41,7 +40,14 @@ class _HomescreenState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showTopSnackBar(context, CustomSnackBar.error(message: "Du kan ikke navigere tilbage",),);
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Navigation',
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+            message: 'Du kan ikke navigere tilbage',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
         return false;
         },
       child: Scaffold(

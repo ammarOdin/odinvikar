@@ -1,8 +1,7 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class AssignShiftScreen extends StatefulWidget {
   final String date;
@@ -169,21 +168,23 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
                       stateUpdater.add("1");
                       Navigator.pop(context, stateUpdater);
                       sendAssignedShiftNotification(widget.token, widget.date.toString(), timeRange);
-                      showTopSnackBar(
-                        context,
-                        CustomSnackBar.success(
-                          message:
-                          "Vagt tildelt",
-                        ),
-                      );
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Vagt',
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 3),
+                          message: 'Vagt tildelt',
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     } catch (e) {
-                      showTopSnackBar(
-                        context,
-                        CustomSnackBar.error(
-                          message:
-                          "En fejl opstod. Prøv igen",
-                        ),
-                      );
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Vagt',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 3),
+                          message: 'En fejl opstod. Prøv igen',
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     }
                   }
                 },

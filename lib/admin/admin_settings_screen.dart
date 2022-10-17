@@ -1,23 +1,14 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/admin/admin_users_screen.dart';
 import 'package:odinvikar/auth/login.dart';
-import 'package:odinvikar/shift_system/admin/admin_shifts_screen.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:validators/validators.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-
-import 'admin_home_screen.dart';
 import 'admin_total_hours.dart';
-import 'generate_pdf_invoice.dart';
+
 
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({Key? key}) : super(key: key);
@@ -163,18 +154,44 @@ class _State extends State<AdminSettingsScreen> {
             width: 150,
             margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
             //padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 10, right: MediaQuery.of(context).size.width / 10, bottom: MediaQuery.of(context).size.height / 40),
-            child: ElevatedButton.icon(onPressed: () {showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Log ud"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at logge ud?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {Navigator.pop(context); await FirebaseAuth.instance.signOut(); showTopSnackBar(
-              context,
-              CustomSnackBar.success(
-                message:
-                "Logget ud",
-              ),
-            ); Future.delayed(const Duration(seconds: 2)); Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));}, child: const Text("Log ud"))],);});}, icon: const Icon(Icons.logout, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Log ud", style: TextStyle(color: Colors.white),)), style: ButtonStyle(shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showDialog(context: context,
+                    builder: (BuildContext context){
+                  return AlertDialog(
+                    title: const Text("Log ud"),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    content: const Text("Er du sikker på at logge ud?"),
+                    actions: [
+                      TextButton(onPressed: () {
+                            Navigator.pop(context);
+                        },
+                          child: const Text("Annuller")),
+                      TextButton(onPressed: () async {
+                        Navigator.pop(context);
+                        await FirebaseAuth.instance.signOut();
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Log ud',
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                            message: 'Du er logget ud',
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                        Future.delayed(const Duration(seconds: 2));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                        },
+                          child: const Text("Log ud"))
+                    ]);
+                });
+                }, icon: const Icon(Icons.logout, color: Colors.white,),
+              label: const Align(alignment: Alignment.centerLeft,
+                  child: Text("Log ud", style: TextStyle(color: Colors.white),)),
+              style: ButtonStyle(shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                     side: const BorderSide(color: Colors.blue)
-                )
-            )),),),
+                  ))))),
         ],
       ),
     );

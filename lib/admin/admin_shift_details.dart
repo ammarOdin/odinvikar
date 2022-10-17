@@ -1,11 +1,9 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
 import 'admin_edit_shift.dart';
 
 class AdminShiftDetailsScreen extends StatefulWidget {
@@ -257,13 +255,14 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                             actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
-                            showTopSnackBar(
-                              context,
-                              CustomSnackBar.success(
-                                message:
-                                "Vagt slettet",
-                              ),
-                            );
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Vagt',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Vagt slettet',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               }
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
@@ -305,13 +304,14 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                                 details = "Tilkaldt              Ingen";
                               });
                               Navigator.pop(context); Navigator.pop(context);
-                              showTopSnackBar(
-                                context,
-                                CustomSnackBar.success(
-                                  message:
-                                  "Vikar status ændret",
-                                ),
-                              );
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Vagt',
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Vikar status ændret',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               }
                                 , child: const Text("SKIFT STATUS", style: TextStyle(color: Colors.blue),))],); });
                       },
@@ -342,13 +342,14 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
                             actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
-                            showTopSnackBar(
-                              context,
-                              CustomSnackBar.success(
-                                message:
-                                "Vagt slettet",
-                              ),
-                            );
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Vagt',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Vagt slettet',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               }
                                 , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
                       },
@@ -381,15 +382,16 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                           sendCanceledShift(widget.token, widget.date);
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          showTopSnackBar(
-                            context,
-                            CustomSnackBar.success(
-                              message:
-                              "Vagt gjort tilgængelig",
-                            ),
-                          );
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Vagt',
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                              message: 'Vikar status ændret til tilgængelig',
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                           }
-                            , child: const Text("AFBOOK", style: TextStyle(color: Colors.blue),))],); });
+                            , child: const Text("Ændre status", style: TextStyle(color: Colors.blue),))],); });
                   },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 16),

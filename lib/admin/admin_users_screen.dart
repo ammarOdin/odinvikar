@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,8 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
 
 class AdminUsersScreen extends StatefulWidget {
@@ -46,22 +45,24 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
       usersRef.doc(userCredential.user?.uid).get().then((DocumentSnapshot documentSnapshot) async {
         if (documentSnapshot.exists){
-          showTopSnackBar(
-            context,
-            CustomSnackBar.error(
-              message:
-              "Bruger eksisterer i databasen",
-            ),
-          );
+          Flushbar(
+              margin: EdgeInsets.all(10),
+              borderRadius: BorderRadius.circular(10),
+              title: 'Login',
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+              message: 'Bruger eksisterer allerede',
+              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
         } else if (!documentSnapshot.exists){
           await usersRef.doc(userCredential.user?.uid).set({'email': emailController.text, 'isAdmin':false, 'name': nameController.text, 'phone': phoneController.text, 'token': ''});
-          showTopSnackBar(
-            context,
-            CustomSnackBar.success(
-              message:
-              "Bruger oprettet",
-            ),
-          );
+          Flushbar(
+              margin: EdgeInsets.all(10),
+              borderRadius: BorderRadius.circular(10),
+              title: 'Bruger',
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+              message: 'Bruger oprettet',
+              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
           emailController.clear();
           passwordController.clear();
           nameController.clear();
@@ -75,21 +76,23 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     }
     on FirebaseAuthException catch (e) {
       if (e.code == "invalid-email"){
-        showTopSnackBar(
-          context,
-          CustomSnackBar.error(
-            message:
-            "Ugyldig e-mail",
-          ),
-        );
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Bruger',
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+            message: 'Ugyldig e-mail',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
       } else {
-        showTopSnackBar(
-          context,
-          CustomSnackBar.error(
-            message:
-            "Bruger kunne ikke oprettes",
-          ),
-        );
+        Flushbar(
+            margin: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10),
+            title: 'Bruger',
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+            message: 'Bruger kunne ikke oprettes. Prøv igen',
+            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
       }
       /*if (kDebugMode) {
         print(e.toString());
@@ -133,19 +136,111 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                     if (validForm){
                       switch(reference){
                         case "email":{
-                          try{updateUserEmail(uid, controller.text); usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Ny e-mail gemt",),); Navigator.pop(context);}on FirebaseAuthException catch(e){if(e.code == 'invalid-email'){showTopSnackBar(context, CustomSnackBar.error(message: "Ugyldig e-mail",),);} else {showTopSnackBar(context, CustomSnackBar.error(message: "En fejl opstod. Prøv igen",),);}}
+                          try{
+                            updateUserEmail(uid, controller.text);
+                            usersRef.doc(uid).update({reference:controller.text});
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Ny e-mail gemt',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            Navigator.pop(context);
+                          } on FirebaseAuthException catch(e) {
+                            if(e.code == 'invalid-email'){
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Bruger',
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Ugyldig e-mail',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            } else {
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Bruger',
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 3),
+                                  message: 'En fejl opstod. Prøv igen',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            }
+                          }
                         }
                         break;
                         case "password":{
-                          try{updateUserPassword(uid, controller.text); showTopSnackBar(context, CustomSnackBar.success(message: "Ny adgangskode gemt",),); Navigator.pop(context);} catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme adgangskoden",),);}
+                          try{
+                            updateUserPassword(uid, controller.text);
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Ny adgangskode gemt',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            Navigator.pop(context);
+                          } catch(e) {
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 3),
+                                message: 'En fejl opstod. Prøv igen',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                          }
                         }
                         break;
                         case "phone":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Nyt telefonnummer gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme telefonnummer",),);}
+                          try{
+                            usersRef.doc(uid).update({reference:controller.text});
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Telefonnummer gemt',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            Navigator.pop(context);
+                          } catch(e) {
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 3),
+                                message: 'En fejl opstod. Prøv igen',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                          }
                         }
                         break;
                         case "name":{
-                          try{usersRef.doc(uid).update({reference:controller.text}); showTopSnackBar(context, CustomSnackBar.success(message: "Nyt navn gemt",),); Navigator.pop(context);}catch(e){showTopSnackBar(context, CustomSnackBar.error(message: "Kunne ikke gemme navn",),);}
+                          try{
+                            usersRef.doc(uid).update({reference:controller.text});
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: 'Nyt navn gemt',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            Navigator.pop(context);
+                          } catch(e) {
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Bruger',
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 3),
+                                message: 'En fejl opstod. Prøv igen',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                          }
                         }
                         break;
                       }
@@ -320,7 +415,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                         if (e['isAdmin'] == true){
                                           showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Fjern administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at fjerne administrator?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
                                             e.reference.update({'isAdmin': false});
-                                          showTopSnackBar(context, CustomSnackBar.success(message: "Administrator fjernet",),);
+                                            Flushbar(
+                                                margin: EdgeInsets.all(10),
+                                                borderRadius: BorderRadius.circular(10),
+                                                title: 'Administrator',
+                                                backgroundColor: Colors.green,
+                                                duration: Duration(seconds: 3),
+                                                message: 'Administratorrettigheder fjernet',
+                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                           Navigator.pop(context);
                                           Navigator.pop(context);
                                           },
@@ -328,7 +430,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                         } else {
                                           showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Tilføj administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du er ved at tilføje administrator-privilegier til denne bruger."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
                                             e.reference.update({'isAdmin': true});
-                                            showTopSnackBar(context, CustomSnackBar.success(message: "Administrator tilføjet",),);
+                                            Flushbar(
+                                                margin: EdgeInsets.all(10),
+                                                borderRadius: BorderRadius.circular(10),
+                                                title: 'Administrator',
+                                                backgroundColor: Colors.green,
+                                                duration: Duration(seconds: 3),
+                                                message: 'Administratorrettigheder tilføjet',
+                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                             Navigator.pop(context);
                                             Navigator.pop(context);
                                           },
@@ -343,7 +452,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
                                 deleteUser(e.id);
                                 Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
-                                showTopSnackBar(context, CustomSnackBar.success(message: "Bruger fjernet",),);
+                                Flushbar(
+                                    margin: EdgeInsets.all(10),
+                                    borderRadius: BorderRadius.circular(10),
+                                    title: 'Bruger',
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 3),
+                                    message: 'Bruger fjernet fra systemet',
+                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                 },
                                   child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)),),
                     );
@@ -366,7 +482,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 actions: [
                   TextButton(onPressed: (){
                     Clipboard.setData(ClipboardData(text: getAuthInfo.data()!['OTP'].toString()));
-                    showTopSnackBar(context, CustomSnackBar.success(message: "Kopieret til udklipsholderen",),);
+                    Flushbar(
+                        margin: EdgeInsets.all(10),
+                        borderRadius: BorderRadius.circular(10),
+                        title: 'Kopier',
+                        backgroundColor: Colors.blue,
+                        duration: Duration(seconds: 3),
+                        message: 'Kode kopieret til udklipsholderen',
+                        flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     }, child: Text("Kopier"))
                 ],
               );

@@ -1,11 +1,10 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_edit_shift.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../assets/card_assets.dart';
 import 'admin_assign_shift.dart';
@@ -101,13 +100,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                 children: [
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                      showTopSnackBar(
-                        context,
-                        CustomSnackBar.info(
-                          message:
-                          "En vagt er allerede tildelt",
-                        ),
-                      );
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Vagt',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 3),
+                          message: 'En vagt er allerede tildelt',
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
                     }
@@ -117,13 +117,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     icon: Icons.add,),
                   SlidableAction(onPressed: (BuildContext context) {
                     if (int.parse(shiftSplit[9]) == 0){
-                      showTopSnackBar(
-                        context,
-                        CustomSnackBar.info(
-                          message:
-                          "Der er ikke tildelt en vagt endnu. Du kan ikke redigere dagen",
-                        ),
-                      );
+                      Flushbar(
+                          margin: EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(10),
+                          title: 'Vagt',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 3),
+                          message: 'Der er ikke tildelt en vagt på denne dato',
+                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
                     }
@@ -141,13 +142,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         TextButton(onPressed: () {
                           FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
                           Navigator.pop(context);
-                          showTopSnackBar(
-                            context,
-                            CustomSnackBar.success(
-                              message:
-                              "Vagt slettet",
-                            ),
-                          );
+                          Flushbar(
+                              margin: EdgeInsets.all(10),
+                              borderRadius: BorderRadius.circular(10),
+                              title: 'Vagt',
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                              message: 'Vagt slettet',
+                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                           }, child: const Text("Slet")),
                         TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
                       ],
@@ -221,13 +223,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                   children: [
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.info(
-                            message:
-                            "En vagt er allerede tildelt",
-                          ),
-                        );
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Vagt',
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                            message: 'En vagt er allerede tildelt brugeren',
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
                       }
@@ -237,13 +240,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       icon: Icons.add,),
                     SlidableAction(onPressed: (BuildContext context) {
                       if (int.parse(shiftSplit[9]) == 0){
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.info(
-                            message:
-                            "Der er ikke tildelt en vagt endnu. Du kan ikke redigere den",
-                          ),
-                        );
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Vagt',
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                            message: 'Der eksisterer ikke en vagt på datoen',
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                       } else {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
                       }
@@ -261,13 +265,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                             TextButton(onPressed: () {
                               FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
                               Navigator.pop(context);
-                              showTopSnackBar(
-                                context,
-                                CustomSnackBar.success(
-                                  message:
-                                  "Vagt slettet",
-                                ),
-                              );
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Vagt',
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Vagt slettet',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                               }, child: const Text("Slet")),
                             TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
                           ],
