@@ -281,6 +281,88 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
         toolbarHeight: 100,
         automaticallyImplyLeading: false,
         title: Text("Vagtdetaljer",  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),),
+        actions: [
+          PopupMenuButton(itemBuilder: (context){
+            return[
+              PopupMenuItem<int>(
+                value: 0,
+                child: Row(
+                  children: [
+                    Icon(Icons.edit, color: Colors.orange,),
+                    Padding(padding: EdgeInsets.only(left: 10),),
+                    Text("Rediger", style: TextStyle(color: Colors.black)),
+                  ],
+                )
+              ),
+              PopupMenuItem<int>(
+                value: 1,
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Colors.red,),
+                    Padding(padding: EdgeInsets.only(left: 10),),
+                    Text("Slet", style: TextStyle(color: Colors.black)),
+                  ],
+                )
+              ),
+            ];
+          },
+          onSelected: (value) async {
+            if (value == 0){
+              if (widget.awaitConfirmation != 0){
+                Flushbar(
+                    margin: EdgeInsets.all(10),
+                    borderRadius: BorderRadius.circular(10),
+                    title: 'Vagt',
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                    message: "En vagt er allerede tildelt. Du kan ikke redigere dagen",
+                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+              } else {
+                var userRef = await databaseReference.collection(user!.uid);
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
+                setState(() {
+                  time = result[0];
+                  comment = result[1];
+                });
+              }
+            } else if (value == 1){
+              try{
+                if (widget.awaitConfirmation != 0) {
+                  Flushbar(
+                      margin: EdgeInsets.all(10),
+                      borderRadius: BorderRadius.circular(10),
+                      title: 'Vagt',
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                      message: "En vagt er allerede tildelt. Du kan ikke slette dagen",
+                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                } else {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(title: Text("Slet dag"),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      content: Text("Er du sikker på at slette dagen?"),
+                      actions: [TextButton(onPressed: () {
+                        widget.data.reference.delete();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Flushbar(
+                            margin: EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(10),
+                            title: 'Vagt',
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                            message: "Vagt slettet",
+                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                      }
+                          , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                }
+              } on FirebaseAuthException catch (e){
+                /// show error snackbar
+              }
+            }
+          },
+          )
+        ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: loading? Column(
@@ -517,91 +599,7 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                             })
                       ],
             ),
-          ) else Container(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 30),
-            height: 100,
-            width: 250,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(onPressed: () async {
-                  try{
-                    showDialog(context: context, builder: (BuildContext context){
-                      return AlertDialog(title: Text("Slet dag"),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        content: Text("Er du sikker på at slette dagen?"),
-                        actions: [TextButton(onPressed: () {
-                          widget.data.reference.delete();
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Flushbar(
-                              margin: EdgeInsets.all(10),
-                              borderRadius: BorderRadius.circular(10),
-                              title: 'Vagt',
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                              message: "Vagt slettet",
-                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                        }
-                            , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
-                  } on FirebaseAuthException catch (e){
-                    /// show error snackbar
-                  }
-                },
-                  child: Text("Slet dag", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.white)),
-                  style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(const Size(130, 50)),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                      elevation: MaterialStateProperty.all(3),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
-                  ),),
-              ],
-            ),/*ElevatedButton.icon(
-                onPressed: () async {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: Text("Slet dag"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: Text("Er du sikker på at slette dagen?"),
-                      actions: [TextButton(onPressed: () {widget.data.reference.delete(); Navigator.pop(context); Navigator.pop(context);  showTopSnackBar(context, CustomSnackBar.success(message: "Vagt slettet",),);
-                        }
-                          , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
-                },
-                style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 16),
-                  primary: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                label: Text("Slet dag")),*/
-          ),
-          Container(
-            padding: EdgeInsets.only(right: 15, top: 20),
-            alignment: Alignment.centerRight,
-            child: FloatingActionButton(onPressed: () async {
-              if (widget.awaitConfirmation != 0){
-                Flushbar(
-                    margin: EdgeInsets.all(10),
-                    borderRadius: BorderRadius.circular(10),
-                    title: 'Vagt',
-                    backgroundColor: Colors.red,
-                    duration: Duration(seconds: 3),
-                    message: "En vagt er allerede tildelt. Du kan ikke redigere dagen",
-                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-              } else {
-                var userRef = await databaseReference.collection(user!.uid);
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditShiftScreen(date: widget.date, userRef: userRef, details: widget.time)));
-                setState(() {
-                  time = result[0];
-                  comment = result[1];
-                });
-              }
-            }, shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                backgroundColor: Colors.orange,
-                child: Icon(Icons.edit, color: Colors.white, size: 20,)),
-          ),
+          ) else Container(),
         ],
       ),
     );

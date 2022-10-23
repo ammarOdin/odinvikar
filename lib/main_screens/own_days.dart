@@ -177,6 +177,8 @@ class OwnDays extends State<OwnDaysScreen> {
             });
           }
         },
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
           child: Icon(Icons.add,),
           backgroundColor: Colors.green,
         ),

@@ -95,7 +95,8 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
             clipper: HomeHeaderCustomClipPath(),
             child: ClipRRect(
               child: Container(
-                height: MediaQuery.of(context).size.height / 8,
+                //height: MediaQuery.of(context).size.height / 8,
+                height: 80,
                 color: Colors.blue,
               ),
             ),
@@ -165,7 +166,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                   }
                   return Column(
                     children: snapshot.data!.docs.map((document){
-                      var date = DateFormat('dd-MM-yyyy').parse(document['date']);
+                      DateTime date = DateFormat('dd-MM-yyyy').parse(document['date']);
                       int currentWeek = DateTime.now().weekOfYear.toInt();
                       int documentWeek = document['week'];
                       int currentMonth = DateTime.now().month.toInt();
@@ -235,7 +236,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                             color: Color(int.parse(document['color'])),
                           );
-                        } else if (document['awaitConfirmation'] != 0 && date.isAfter(DateTime.now())) {
+                        } else if (document['awaitConfirmation'] != 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
                           return TapToExpand(
                             openedHeight: 275,
                             content: Column(
@@ -295,7 +296,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                             color: Color(int.parse(document['color'])),
                           );
-                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now())) {
+                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
                           return TapToExpand(
                             openedHeight: 250,
                             content: Column(
