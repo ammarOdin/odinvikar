@@ -1,11 +1,14 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/admin/admin_edit_shift.dart';
+import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../assets/bezier_shape.dart';
 import '../assets/card_assets.dart';
 import 'admin_assign_shift.dart';
 import 'admin_shift_details.dart';
@@ -22,24 +25,16 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
   get users => FirebaseFirestore.instance.collection('user');
   final databaseReference = FirebaseFirestore.instance;
-  late TabController _controller;
+  late int sliderValue;
 
   @override
   void initState() {
-    _controller = TabController(length: 2, vsync: this);
-    _controller.addListener((){
-      /*if (kDebugMode) {
-        print('my index is '+ _controller.index.toString());
-      }*/
-      setState(() {
-      });
-    });
+    sliderValue = 1;
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -47,15 +42,15 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
   Future<List> getUserInfo() async {
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
-    List<Slidable> todayList = [];
-    List<Slidable> tomorrowList = [];
+    List todayList = [];
+    List tomorrowList = [];
 
     for (var users in userRef.docs){
       var shiftRef;
-      if (_controller.index == 0){
+      if (sliderValue == 1){
         shiftRef = await databaseReference.collection(users.id).
         where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()).get();
-      } else if (_controller.index == 1){
+      } else if (sliderValue == 2){
         shiftRef = await databaseReference.collection(users.id).
         where("date", isEqualTo: DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 1))).toString()).get();
       }
@@ -94,73 +89,66 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       List shiftSplit = shifts.split(";");
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
         todayList.add(
-            Slidable(
-              endActionPane: ActionPane(
-                motion: DrawerMotion(),
+          TapToExpand(content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SlidableAction(onPressed: (BuildContext context) {
-                    if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                      Flushbar(
-                          margin: EdgeInsets.all(10),
-                          borderRadius: BorderRadius.circular(10),
-                          title: 'Vagt',
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 3),
-                          message: 'En vagt er allerede tildelt',
-                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                    } else {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
-                    }
-                  },
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    icon: Icons.add,),
-                  SlidableAction(onPressed: (BuildContext context) {
-                    if (int.parse(shiftSplit[9]) == 0){
-                      Flushbar(
-                          margin: EdgeInsets.all(10),
-                          borderRadius: BorderRadius.circular(10),
-                          title: 'Vagt',
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 3),
-                          message: 'Der er ikke tildelt en vagt på denne dato',
-                          flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                    } else {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
-                    }
-                  },
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                    icon: Icons.edit,),
-                  SlidableAction(onPressed: (BuildContext context) {
-                    showDialog(context: context, builder: (BuildContext context){
-                      return AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Text("Slet dag"),
-                      content: const Text("Er du sikker på at slette dagen?"),
-                      actions: [
-                        TextButton(onPressed: () {
-                          FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
-                          Navigator.pop(context);
-                          Flushbar(
-                              margin: EdgeInsets.all(10),
-                              borderRadius: BorderRadius.circular(10),
-                              title: 'Vagt',
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                              message: 'Vagt slettet',
-                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                          }, child: const Text("Slet")),
-                        TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
-                      ],
-                    );});
-                  },
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,),
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: ElevatedButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
+                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: ElevatedButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
                 ],
               ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+             Padding(padding: EdgeInsets.only(top: 20)),
+              Center(child: ElevatedButton(onPressed: () async {
+                var userRef = await databaseReference.collection(shiftSplit[8]);
+                var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+                if (int.parse(shiftSplit[9]) != 0){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                    date: shiftSplit[0],
+                    status: shiftSplit[1],
+                    name: shiftSplit[6],
+                    token: shiftSplit[7],
+                    time: shiftSplit[3],
+                    comment: shiftSplit[4],
+                    awaitConfirmation: int.parse(shiftSplit[9]),
+                    details: shiftSplit[10],
+                    color: shiftSplit[2],
+                    data: dataRef,
+                    userRef: userRef,
+                  ))); } else if (int.parse(shiftSplit[9]) == 0){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                    date: shiftSplit[0],
+                    status: shiftSplit[1],
+                    name: shiftSplit[6],
+                    token: shiftSplit[7],
+                    time: shiftSplit[3],
+                    comment: shiftSplit[4],
+                    awaitConfirmation: int.parse(shiftSplit[9]),
+                    color: shiftSplit[2],
+                    data: dataRef,
+                    userRef: userRef,
+                  )));
+                }
+              }, style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                  shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      )
+                  )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16),))),
+              Padding(padding: EdgeInsets.only(bottom: 10)),
+            ],
+          ), title: Row(
+            children: [
+              Icon(Icons.work_history_outlined, color: Colors.white),
+              Padding(padding: EdgeInsets.only(right: 10)),
+              Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+            ],
+          ),
+            color: Color(int.parse(shiftSplit[2])),
+          )
+            /*AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -213,77 +201,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         ),
                       ],
                   );});
-                }))
+                })*/
         );
       } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
         tomorrowList.add(
-            Slidable(
-                endActionPane: ActionPane(
-                  motion: DrawerMotion(),
-                  children: [
-                    SlidableAction(onPressed: (BuildContext context) {
-                      if (int.parse(shiftSplit[9]) == 1 || int.parse(shiftSplit[9]) == 2 ){
-                        Flushbar(
-                            margin: EdgeInsets.all(10),
-                            borderRadius: BorderRadius.circular(10),
-                            title: 'Vagt',
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 3),
-                            message: 'En vagt er allerede tildelt brugeren',
-                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AssignShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]))));
-                      }
-                    },
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                      icon: Icons.add,),
-                    SlidableAction(onPressed: (BuildContext context) {
-                      if (int.parse(shiftSplit[9]) == 0){
-                        Flushbar(
-                            margin: EdgeInsets.all(10),
-                            borderRadius: BorderRadius.circular(10),
-                            title: 'Vagt',
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 3),
-                            message: 'Der eksisterer ikke en vagt på datoen',
-                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: shiftSplit[0], token: shiftSplit[7], userRef: FirebaseFirestore.instance.collection(shiftSplit[8]), name: shiftSplit[6])));
-                      }
-                    },
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
-                      icon: Icons.edit,),
-                    SlidableAction(onPressed: (BuildContext context) {
-                      showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          title: Text("Slet dag"),
-                          content: const Text("Er du sikker på at slette dagen?"),
-                          actions: [
-                            TextButton(onPressed: () {
-                              FirebaseFirestore.instance.collection(shiftSplit[8]).doc(shiftSplit[0]).delete();
-                              Navigator.pop(context);
-                              Flushbar(
-                                  margin: EdgeInsets.all(10),
-                                  borderRadius: BorderRadius.circular(10),
-                                  title: 'Vagt',
-                                  backgroundColor: Colors.green,
-                                  duration: Duration(seconds: 3),
-                                  message: 'Vagt slettet',
-                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                              }, child: const Text("Slet")),
-                            TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("Annuller")),
-                          ],
-                        );});
-                    },
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      icon: Icons.delete,),
-                  ],
-                ),
-                child: AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
+            AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
                     return SimpleDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -336,14 +258,14 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                         ),
                       ],
                     );});
-                }))
+                })
         );
       }
     }
 
-    if (_controller.index == 0){
+    if (sliderValue == 1){
       return todayList;
-    } else if (_controller.index == 1){
+    } else if (sliderValue == 2){
       return tomorrowList;
     }
     return [];
@@ -351,140 +273,143 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: ClampingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 0),
-      shrinkWrap: true,
-      children: [
-        Container(
-          color: Colors.blue,
-          height: MediaQuery.of(context).size.height / 3,
-          child: ListView(
-            physics: ClampingScrollPhysics(),
-            children: [
-              Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 10),
-                  child: const Center(
-                      child: Text(
-                        "Vikaroversigt",
-                        style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
-                      ))),
-              Center(
-                child: Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 30),
+    return Scaffold(
+      body: ListView(
+        physics: ClampingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 0),
+        shrinkWrap: true,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height / 4.5,
+              color: Colors.blue,
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height / 12),
+              child: const Center(
                   child: Text(
-                    _controller.index == 0 ? DateFormat('dd-MM-yyyy').format(DateTime.now()) : DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 1))),
-                    style: const TextStyle(color: Colors.white, fontSize: 26),
-                  )
+                    "Vikaroversigt",
+                    style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                  ))),
+          ClipPath(
+            clipper: HomeHeaderCustomClipPath(),
+            child: ClipRRect(
+              child: Container(
+                //height: MediaQuery.of(context).size.height / 8,
+                height: 80,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 20),
+                child: Text(
+                  sliderValue == 1 ? DateFormat('dd-MM-yyyy').format(DateTime.now()) : DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 1))),
+                  style: const TextStyle(color: Colors.grey, fontSize: 22, fontWeight: FontWeight.w500),
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(right: 25, top: 20),
+                child: CustomSlidingSegmentedControl(
+                  onValueChanged: (value) {
+                    setState(() {
+                      sliderValue = int.parse(value.toString());
+                    });
+                  },
+                  children: {
+                    1: Text('I dag'),
+                    2: Text('I morgen'),
+                  },
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  thumbDecoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.3),
+                        blurRadius: 4.0,
+                        spreadRadius: 1.0,
+                        offset: Offset(
+                          0.0,
+                          2.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInToLinear,
                 ),
               ),
             ],
           ),
-        ),
-        Container(padding: const EdgeInsets.only(bottom: 10), child: TabBar(labelColor: Colors.black, unselectedLabelColor: Colors.grey, indicatorColor: Colors.blue, controller: _controller, tabs: const [Tab(text: "I dag",), Tab(text: "I morgen",)])),
-
-        Row(
-          children: [
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.square_rounded, color: Colors.orange, size: 16,),
-                ),
-                Text(" Tilgængelig", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(Icons.square_rounded, color: Colors.red, size: 16,),
-                ),
-                Text(" Afventer accept", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 5),
-                  child: Icon(Icons.square_rounded, color: Colors.green, size: 16,),
-                ),
-                Text(" Godkendt vagt", style: TextStyle(fontSize: 12),)
-              ],
-            ),
-          ],
-        ),
-
-        const Divider(thickness: 1),
-
-        SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.only(top: 10),
-            child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
-              IconButton button = IconButton(
-                onPressed: () {
-                  setState((){});
-                },
-                color: Colors.blue, icon: Icon(Icons.refresh),
-              );
-              if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
-                return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
-                  color: Colors.blue,
-                  size: 50,
-                ));
-              } else if (snapshot.data!.isEmpty) {
-                return Container(
-                  padding: const EdgeInsets.all(50),
-                  child: const Center(child: Text(
-                    "Ingen vikarer",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),),
+          SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(top: 10),
+              child: FutureBuilder(future: getUserInfo(), builder: (context, AsyncSnapshot<List> snapshot){
+                IconButton button = IconButton(
+                  onPressed: () {
+                    setState((){});
+                  },
+                  color: Colors.blue, icon: Icon(Icons.refresh),
                 );
-              }
-              return ListView(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(left: 15, bottom: 5),
-                        child: Text("Opdater", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
-                      ),
-                      Spacer(),
-                      Container(
-                          padding: EdgeInsets.only(right: 10, bottom: 5),
-                          child: button),
-                    ],
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data?.length,
-                      itemBuilder: (context, index){
-                        Slidable shiftCard = snapshot.data?[index];
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              shiftCard
-                            ],
-                          ),
-                        );
-                      }
-                  ),
-                ],
-              );
-            }),
+                if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
+                  return Container(padding: const EdgeInsets.only(left: 50, right: 50, top: 50), child: SpinKitRing(
+                    color: Colors.blue,
+                    size: 50,
+                  ));
+                } else if (snapshot.data!.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(50),
+                    child: const Center(child: Text(
+                      "Ingen vikarer",
+                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                    ),),
+                  );
+                }
+                return ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 15, bottom: 5),
+                          child: Text("Opdater", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
+                        ),
+                        Spacer(),
+                        Container(
+                            padding: EdgeInsets.only(right: 10, bottom: 5),
+                            child: button),
+                      ],
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data?.length,
+                        itemBuilder: (context, index){
+                          var shiftCard = snapshot.data?[index];
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                shiftCard
+                              ],
+                            ),
+                          );
+                        }
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
