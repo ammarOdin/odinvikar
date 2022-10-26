@@ -89,176 +89,142 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       List shiftSplit = shifts.split(";");
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
         todayList.add(
-          TapToExpand(content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            TapToExpand(
+              openedHeight: 175,
+              borderRadius: 20,
+              content: Column(
                 children: [
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: ElevatedButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
-                  SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: ElevatedButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(onPressed: () async {
+                        var userRef = await databaseReference.collection(shiftSplit[8]);
+                        var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+                        if (int.parse(shiftSplit[9]) != 0){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                            date: shiftSplit[0],
+                            status: shiftSplit[1],
+                            name: shiftSplit[6],
+                            token: shiftSplit[7],
+                            time: shiftSplit[3],
+                            comment: shiftSplit[4],
+                            awaitConfirmation: int.parse(shiftSplit[9]),
+                            details: shiftSplit[10],
+                            color: shiftSplit[2],
+                            data: dataRef,
+                            userRef: userRef,
+                          ))); } else if (int.parse(shiftSplit[9]) == 0){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                            date: shiftSplit[0],
+                            status: shiftSplit[1],
+                            name: shiftSplit[6],
+                            token: shiftSplit[7],
+                            time: shiftSplit[3],
+                            comment: shiftSplit[4],
+                            awaitConfirmation: int.parse(shiftSplit[9]),
+                            color: shiftSplit[2],
+                            data: dataRef,
+                            userRef: userRef,
+                          )));
+                        }
+                      }, style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
+                      Padding(padding: EdgeInsets.only(left: 5)),
+                      Expanded(child: IconButton(icon: const Icon(Icons.phone, color: Colors.white,), onPressed: (){launch("tel:" + shiftSplit[5]);},)),
+                      Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 10),)
                 ],
-              ),
-             Padding(padding: EdgeInsets.only(top: 20)),
-              Center(child: ElevatedButton(onPressed: () async {
-                var userRef = await databaseReference.collection(shiftSplit[8]);
-                var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
-                if (int.parse(shiftSplit[9]) != 0){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                    date: shiftSplit[0],
-                    status: shiftSplit[1],
-                    name: shiftSplit[6],
-                    token: shiftSplit[7],
-                    time: shiftSplit[3],
-                    comment: shiftSplit[4],
-                    awaitConfirmation: int.parse(shiftSplit[9]),
-                    details: shiftSplit[10],
-                    color: shiftSplit[2],
-                    data: dataRef,
-                    userRef: userRef,
-                  ))); } else if (int.parse(shiftSplit[9]) == 0){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                    date: shiftSplit[0],
-                    status: shiftSplit[1],
-                    name: shiftSplit[6],
-                    token: shiftSplit[7],
-                    time: shiftSplit[3],
-                    comment: shiftSplit[4],
-                    awaitConfirmation: int.parse(shiftSplit[9]),
-                    color: shiftSplit[2],
-                    data: dataRef,
-                    userRef: userRef,
-                  )));
-                }
-              }, style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(Size(150, 50)),
-                  shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      )
-                  )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16),))),
-              Padding(padding: EdgeInsets.only(bottom: 10)),
-            ],
-          ), title: Row(
-            children: [
-              Icon(Icons.work_history_outlined, color: Colors.white),
-              Padding(padding: EdgeInsets.only(right: 10)),
-              Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-            ],
-          ),
-            color: Color(int.parse(shiftSplit[2])),
-          )
-            /*AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
-                  showDialog(context: context, builder: (BuildContext context){
-                    return SimpleDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
-                      children: [
-                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: TextButton.icon(onPressed: () async {
-                          var userRef = await databaseReference.collection(shiftSplit[8]);
-                          var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
-                          if (int.parse(shiftSplit[9]) != 0){
-                            Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: shiftSplit[0],
-                              status: shiftSplit[1],
-                              name: shiftSplit[6],
-                              token: shiftSplit[7],
-                              time: shiftSplit[3],
-                              comment: shiftSplit[4],
-                              awaitConfirmation: int.parse(shiftSplit[9]),
-                              details: shiftSplit[10],
-                              color: shiftSplit[2],
-                              data: dataRef,
-                              userRef: userRef,
-                            ))); } else if (int.parse(shiftSplit[9]) == 0){
-                            Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: shiftSplit[0],
-                              status: shiftSplit[1],
-                              name: shiftSplit[6],
-                              token: shiftSplit[7],
-                              time: shiftSplit[3],
-                              comment: shiftSplit[4],
-                              awaitConfirmation: int.parse(shiftSplit[9]),
-                              color: shiftSplit[2],
-                              data: dataRef,
-                              userRef: userRef,
-                            )));
-                          }
-                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Flere oplysninger", style: TextStyle(color: Colors.blue),),),),
-                        const Divider(thickness: 1),
-                        Container(
-                          padding: EdgeInsets.only(top: 5),
-                          alignment: Alignment.center,
-                          child: Text("Kontakt", style: TextStyle(fontWeight: FontWeight.bold),),),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
-                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
-                          ],
-                        ),
-                      ],
-                  );});
-                })*/
+              ), title: Row(
+              children: [
+                Icon(Icons.person, color: Colors.white),
+                Padding(padding: EdgeInsets.only(right: 10)),
+                Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+              ],
+            ),
+              color: Color(int.parse(shiftSplit[2])),
+            )
         );
       } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
         tomorrowList.add(
-            AdminAvailableShiftCard(text: shiftSplit[6], time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11), subtitle: "Se mere", icon: Icon(Icons.square_rounded, color: Color(int.parse(shiftSplit[2])),), onPressed: (){
-                  showDialog(context: context, builder: (BuildContext context){
-                    return SimpleDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      title: Center(child: Text(shiftSplit[6] + " - " + shiftSplit[0].substring(0,5))),
-                      children: [
-                        Container(padding: EdgeInsets.only(left: 30, right: 30),child: TextButton.icon(onPressed: () async {
-                          var userRef = await databaseReference.collection(shiftSplit[8]);
-                          var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
-                          if (int.parse(shiftSplit[9]) != 0){
-                            Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: shiftSplit[0],
-                              status: shiftSplit[1],
-                              name: shiftSplit[6],
-                              token: shiftSplit[7],
-                              time: shiftSplit[3],
-                              comment: shiftSplit[4],
-                              awaitConfirmation: int.parse(shiftSplit[9]),
-                              details: shiftSplit[10],
-                              color: shiftSplit[2],
-                              data: dataRef,
-                              userRef: userRef,
-                            ))); } else if (int.parse(shiftSplit[9]) == 0){
-                            Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                              date: shiftSplit[0],
-                              status: shiftSplit[1],
-                              name: shiftSplit[6],
-                              token: shiftSplit[7],
-                              time: shiftSplit[3],
-                              comment: shiftSplit[4],
-                              awaitConfirmation: int.parse(shiftSplit[9]),
-                              color: shiftSplit[2],
-                              data: dataRef,
-                              userRef: userRef,
-                            )));
-                          }
-                        }, icon: Icon(Icons.login, color: Colors.blue,), label: Text("Flere oplysninger", style: TextStyle(color: Colors.blue),),),),
-                        const Divider(thickness: 1),
-                        Container(
-                          padding: EdgeInsets.only(top: 5),
-                          alignment: Alignment.center,
-                          child: Text("Kontakt", style: TextStyle(fontWeight: FontWeight.bold),),),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("Opkald") , icon: const Icon(Icons.phone), onPressed: (){launch("tel:" + shiftSplit[5]);},), ),),
-                            SimpleDialogOption(child: Align(alignment: Alignment.centerLeft, child: TextButton.icon(label: const Text("SMS") , icon: const Icon(Icons.message), onPressed: (){launch("sms:" + shiftSplit[5]);},), ),),
-                          ],
-                        ),
-                      ],
-                    );});
-                })
+            TapToExpand(
+              openedHeight: 205,
+              borderRadius: 20,
+              content: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.access_time, color: Colors.black.withOpacity(0.30),),
+                    Padding(padding: EdgeInsets.only(left: 10)),
+                    Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(top: 10, bottom: 10)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   ElevatedButton(onPressed: () async {
+                      var userRef = await databaseReference.collection(shiftSplit[8]);
+                      var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+                      if (int.parse(shiftSplit[9]) != 0){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                          date: shiftSplit[0],
+                          status: shiftSplit[1],
+                          name: shiftSplit[6],
+                          token: shiftSplit[7],
+                          time: shiftSplit[3],
+                          comment: shiftSplit[4],
+                          awaitConfirmation: int.parse(shiftSplit[9]),
+                          details: shiftSplit[10],
+                          color: shiftSplit[2],
+                          data: dataRef,
+                          userRef: userRef,
+                        ))); } else if (int.parse(shiftSplit[9]) == 0){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                          date: shiftSplit[0],
+                          status: shiftSplit[1],
+                          name: shiftSplit[6],
+                          token: shiftSplit[7],
+                          time: shiftSplit[3],
+                          comment: shiftSplit[4],
+                          awaitConfirmation: int.parse(shiftSplit[9]),
+                          color: shiftSplit[2],
+                          data: dataRef,
+                          userRef: userRef,
+                        )));
+                      }
+                    }, style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.white),
+                        minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                        shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                            )
+                        )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
+                    Padding(padding: EdgeInsets.only(left: 5)),
+                    Expanded(child: IconButton(icon: const Icon(Icons.phone, color: Colors.white,), onPressed: (){launch("tel:" + shiftSplit[5]);},)),
+                    Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 20),)
+              ],
+            ), title: Row(
+              children: [
+                Icon(Icons.person, color: Colors.white),
+                Padding(padding: EdgeInsets.only(right: 10)),
+                Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+              ],
+            ),
+              color: Color(int.parse(shiftSplit[2])),
+            )
         );
       }
     }
