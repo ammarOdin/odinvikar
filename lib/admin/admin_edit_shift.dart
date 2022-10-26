@@ -65,17 +65,17 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
                   child: Text(widget.name + "'s "+ "vagt \n", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),),
                 ),
                 Center(
-                  child: Text("Dato: "+widget.date, style: TextStyle(fontSize: 18, color: Colors.white),),
+                  child: Text("Vagt: "+widget.date, style: TextStyle(fontSize: 18, color: Colors.white),),
                 ),
               ],
             ),
           ),
           Container(
-              padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+            alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Text("Indtast nye oplysninger", style:TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),)
           ),
 
-          const Divider(thickness: 1),
           Container(
             padding: EdgeInsets.only(top: 30, bottom: 20),
             child: Row(
@@ -166,7 +166,7 @@ class _EditShiftScreenState extends State<AdminEditShiftScreen> {
               child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 16),
-                    primary: Colors.orange,
+                    backgroundColor: Colors.orange,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

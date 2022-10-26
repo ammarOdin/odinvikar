@@ -179,6 +179,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         if (document['awaitConfirmation'] == 2 && DateFormat('dd-MM-yyyy').format(DateTime.now()).toString() == document['date']) {
                           return TapToExpand(
                             openedHeight: 275,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -239,6 +240,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         } else if (document['awaitConfirmation'] != 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
                           return TapToExpand(
                             openedHeight: 275,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -299,6 +301,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
                           return TapToExpand(
                             openedHeight: 250,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -352,6 +355,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         if (document['awaitConfirmation'] == 2 && DateFormat('dd-MM-yyyy').format(DateTime.now()).toString() == document['date']) {
                           return TapToExpand(
                             openedHeight: 275,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -412,6 +416,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         } else if (document['awaitConfirmation'] != 0 && date.isAfter(DateTime.now())) {
                           return TapToExpand(
                             openedHeight: 275,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -472,6 +477,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now())) {
                           return TapToExpand(
                             openedHeight: 250,
+                            borderRadius: 20,
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
