@@ -90,11 +90,18 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
         todayList.add(
             TapToExpand(
-              openedHeight: 175,
+              openedHeight: 225,
               borderRadius: 20,
               content: Column(
                 children: [
-                  Padding(padding: EdgeInsets.only(top: 10)),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, color: Colors.black.withOpacity(0.30),),
+                      Padding(padding: EdgeInsets.only(left: 10)),
+                      Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10, bottom: 20)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -133,7 +140,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                           minimumSize: MaterialStateProperty.all(Size(150, 50)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(25.0),
                               )
                           )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
                       Padding(padding: EdgeInsets.only(left: 5)),
@@ -141,7 +148,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                       Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
                     ],
                   ),
-                  Padding(padding: EdgeInsets.only(bottom: 10),)
+                  Padding(padding: EdgeInsets.only(bottom: 20),)
                 ],
               ), title: Row(
               children: [
@@ -156,7 +163,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
         tomorrowList.add(
             TapToExpand(
-              openedHeight: 205,
+              openedHeight: 225,
               borderRadius: 20,
               content: Column(
               children: [
@@ -167,7 +174,7 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                   ],
                 ),
-                Padding(padding: EdgeInsets.only(top: 10, bottom: 10)),
+                Padding(padding: EdgeInsets.only(top: 10, bottom: 20)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
