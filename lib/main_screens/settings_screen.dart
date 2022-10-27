@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'package:odinvikar/main_screens/authenticate_email_screen.dart';
 import 'package:odinvikar/main_screens/shift_history.dart';
@@ -352,30 +355,32 @@ class _State extends State<SettingsScreen> {
             children: [
               ElevatedButton(onPressed: (){
                 try{
-                  showDialog(context: context,
-                      builder: (BuildContext context){
-                        return AlertDialog(
-                          title: const Text("Log ud"),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          content: const Text("Er du sikker på at logge ud?"),
-                          actions: [
-                            TextButton(onPressed: () {Navigator.pop(context);},
-                                child: const Text("Annuller")),
-                            TextButton(onPressed: () async {
-                              Navigator.pop(context);
-                              await FirebaseAuth.instance.signOut();
-                              Flushbar(
-                                  margin: EdgeInsets.all(10),
-                                  borderRadius: BorderRadius.circular(10),
-                                  title: 'Log ud',
-                                  backgroundColor: Colors.green,
-                                  duration: Duration(seconds: 3),
-                                  message: 'Du er nu logget ud',
-                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                              Future.delayed(const Duration(seconds: 2));
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
-                            },
-                                child: const Text("Log ud"))],);});
+                  Dialogs.bottomMaterialDialog(
+                      msg: "Du er ved at logge ud",
+                      title: 'Log ud',
+                      context: context,
+                      actions: [
+                        IconsOutlineButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          text: 'Annuller',
+                          iconData: Icons.cancel_outlined,
+                          textStyle: TextStyle(color: Colors.grey),
+                          iconColor: Colors.grey,
+                        ),
+                        IconsButton(
+                          onPressed: () async {
+                            await FirebaseAuth.instance.signOut();
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                          },
+                          text: 'Log ud',
+                          iconData: Icons.logout,
+                          color: Colors.black.withOpacity(0.5),
+                          textStyle: TextStyle(color: Colors.white),
+                          iconColor: Colors.white,
+                        ),
+                      ]);
                 } on FirebaseAuthException catch (e){
                   Flushbar(
                       margin: EdgeInsets.all(10),
@@ -498,23 +503,34 @@ class _State extends State<SettingsScreen> {
                   var name = snapshot.data as DocumentSnapshot;
                   return Row(
                     children: [
-                      Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
-                        return AlertDialog(title: const Text("Nulstil adgangskode"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser."), actions: [
-                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,
-                          TextButton(onPressed: () async {
-                            await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Flushbar(
-                                margin: EdgeInsets.all(10),
-                                borderRadius: BorderRadius.circular(10),
-                                title: 'Nulstil adgangskode',
-                                backgroundColor: Colors.blue,
-                                duration: Duration(seconds: 3),
-                                message: 'E-mail afsendt',
-                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                            },
-                              child: const Text("Send E-mail", style: TextStyle(color: Colors.green),))],);});},
+                      Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {
+                        Dialogs.bottomMaterialDialog(
+                            msg: "Du er ved at nulstille din adgangskode. En e-mail vil blive sendt til " + name['email'] + " med yderligere instrukser",
+                            title: 'Nulstil adgangskode',
+                            context: context,
+                            actions: [
+                              IconsOutlineButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                text: 'Annuller',
+                                iconData: Icons.cancel_outlined,
+                                textStyle: TextStyle(color: Colors.grey),
+                                iconColor: Colors.grey,
+                              ),
+                              IconsButton(
+                                onPressed: () async {
+                                  await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']);
+                                  Navigator.pop(context);
+                                },
+                                text: 'Send',
+                                iconData: Icons.outgoing_mail,
+                                color: Colors.blue,
+                                textStyle: TextStyle(color: Colors.white),
+                                iconColor: Colors.white,
+                              ),
+                            ]);
+                        },
                           child: const Text("Nulstil adgangskode")))),
                       /*Container(padding: const EdgeInsets.all(3), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () async {showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(title: const Text("SLET BRUGER"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: Text("Du er ved at slette din bruger permanent. Denne handling kan ikke fortrydes!"), actions: [
