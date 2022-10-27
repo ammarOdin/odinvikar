@@ -495,7 +495,6 @@ class _State extends State<SettingsScreen> {
             ),
           ],
         ),),
-
           StreamBuilder(
               stream: getUserInfo.snapshots(),
               builder: (context, snapshot) {
@@ -522,6 +521,14 @@ class _State extends State<SettingsScreen> {
                                 onPressed: () async {
                                   await FirebaseAuth.instance.sendPasswordResetEmail(email: name['email']);
                                   Navigator.pop(context);
+                                  Flushbar(
+                                      margin: EdgeInsets.all(10),
+                                      borderRadius: BorderRadius.circular(10),
+                                      title: 'Nulstil adgangskode',
+                                      backgroundColor: Colors.blue,
+                                      duration: Duration(seconds: 3),
+                                      message: 'E-mail afsendt',
+                                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                                 },
                                 text: 'Send',
                                 iconData: Icons.outgoing_mail,
