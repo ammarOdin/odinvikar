@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
 import 'admin_edit_shift.dart';
 
@@ -256,21 +259,33 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                   width: MediaQuery.of(context).size.width / 2.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(title: Text("Slet dag"),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
-                            Flushbar(
-                                margin: EdgeInsets.all(10),
-                                borderRadius: BorderRadius.circular(10),
-                                title: 'Vagt',
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 3),
-                                message: 'Vagt slettet',
-                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                              }
-                                , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                        Dialogs.bottomMaterialDialog(
+                            msg: "Du er ved at slette vagten. Handlingen kan ikke fortrydes",
+                            title: 'Slet vagt',
+                            context: context,
+                            actions: [
+                              IconsOutlineButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                text: 'Annuller',
+                                iconData: Icons.cancel_outlined,
+                                textStyle: TextStyle(color: Colors.grey),
+                                iconColor: Colors.grey,
+                              ),
+                              IconsButton(
+                                onPressed: () async {
+                                  widget.data.delete();
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                text: 'Slet',
+                                iconData: Icons.delete,
+                                color: Colors.red,
+                                textStyle: TextStyle(color: Colors.white),
+                                iconColor: Colors.white,
+                              ),
+                            ]);
                       },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 14),
@@ -342,21 +357,33 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                   width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return AlertDialog(title: Text("Slet dag"),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: Text("Du er ved at slette dagen. Handlingen kan ikke fortrydes."),
-                            actions: [TextButton(onPressed: () {widget.data.delete(); Navigator.pop(context); Navigator.pop(context);
-                            Flushbar(
-                                margin: EdgeInsets.all(10),
-                                borderRadius: BorderRadius.circular(10),
-                                title: 'Vagt',
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 3),
-                                message: 'Vagt slettet',
-                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                              }
-                                , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                        Dialogs.bottomMaterialDialog(
+                            msg: "Du er ved at slette vagten. Handlingen kan ikke fortrydes",
+                            title: 'Slet vagt',
+                            context: context,
+                            actions: [
+                              IconsOutlineButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                text: 'Annuller',
+                                iconData: Icons.cancel_outlined,
+                                textStyle: TextStyle(color: Colors.grey),
+                                iconColor: Colors.grey,
+                              ),
+                              IconsButton(
+                                onPressed: () async {
+                                  widget.data.delete();
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                text: 'Slet',
+                                iconData: Icons.delete,
+                                color: Colors.red,
+                                textStyle: TextStyle(color: Colors.white),
+                                iconColor: Colors.white,
+                              ),
+                            ]);
                       },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 16),
@@ -372,31 +399,49 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                   padding: EdgeInsets.only(left: 2, right: 2),
                   width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(onPressed: () async {
-                    showDialog(context: context, builder: (BuildContext context){
-                      return AlertDialog(title: Text("Afbook vagt"),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        content: Text("Du er ved at afbooke vagten. " + widget.name + " vil blive gjort tilgængelig igen."),
-                        actions: [TextButton(onPressed: () {
-                          widget.data.update({
-                            'isAccepted': false,
-                            'color': '0xFFFFA500',
-                            'status': 'Tilgængelig',
-                            'awaitConfirmation': 0,
-                            'details': FieldValue.delete(),
-                          });
-                          sendCanceledShift(widget.token, widget.date);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Flushbar(
-                              margin: EdgeInsets.all(10),
-                              borderRadius: BorderRadius.circular(10),
-                              title: 'Vagt',
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                              message: 'Vikar status ændret til tilgængelig',
-                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                          }
-                            , child: const Text("Ændre status", style: TextStyle(color: Colors.blue),))],); });
+                    Dialogs.bottomMaterialDialog(
+                        msg: "Du er ved at afbooke vagten. " + widget.name + " vil blive gjort tilgængelig igen.",
+                        title: 'Afbook vagt',
+                        context: context,
+                        actions: [
+                          IconsOutlineButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            text: 'Annuller',
+                            iconData: Icons.cancel_outlined,
+                            textStyle: TextStyle(color: Colors.grey),
+                            iconColor: Colors.grey,
+                          ),
+                          IconsButton(
+                            onPressed: () async {
+                              widget.data.update({
+                                'isAccepted': false,
+                                'color': '0xFFFFA500',
+                                'status': 'Tilgængelig',
+                                'awaitConfirmation': 0,
+                                'details': FieldValue.delete(),
+                              });
+                              sendCanceledShift(widget.token, widget.date);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Flushbar(
+                                  margin: EdgeInsets.all(10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  title: 'Vagt',
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 3),
+                                  message: 'Vikar status ændret til tilgængelig',
+                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+
+                            },
+                            text: 'Afbok',
+                            iconData: Icons.remove_circle_outline,
+                            color: Colors.blue,
+                            textStyle: TextStyle(color: Colors.white),
+                            iconColor: Colors.white,
+                          ),
+                        ]);
                   },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 16),

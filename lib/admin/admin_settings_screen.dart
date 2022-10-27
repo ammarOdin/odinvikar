@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/admin/admin_users_screen.dart';
 import 'package:odinvikar/auth/login.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -176,34 +179,42 @@ class _State extends State<AdminSettingsScreen> {
             children: [
               ElevatedButton(onPressed: (){
                 try{
-                  showDialog(context: context,
-                      builder: (BuildContext context){
-                        return AlertDialog(
-                            title: const Text("Log ud"),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            content: const Text("Er du sikker på at logge ud?"),
-                            actions: [
-                              TextButton(onPressed: () {
-                                Navigator.pop(context);
-                              },
-                                  child: const Text("Annuller")),
-                              TextButton(onPressed: () async {
-                                Navigator.pop(context);
-                                await FirebaseAuth.instance.signOut();
-                                Flushbar(
-                                    margin: EdgeInsets.all(10),
-                                    borderRadius: BorderRadius.circular(10),
-                                    title: 'Log ud',
-                                    backgroundColor: Colors.red,
-                                    duration: Duration(seconds: 3),
-                                    message: 'Du er logget ud',
-                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                Future.delayed(const Duration(seconds: 2));
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
-                              },
-                                  child: const Text("Log ud"))
-                            ]);
-                      });
+                  Dialogs.bottomMaterialDialog(
+                      msg: "Er du sikker på at logge ud?",
+                      title: 'Log ud',
+                      context: context,
+                      actions: [
+                        IconsOutlineButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          text: 'Annuller',
+                          iconData: Icons.cancel_outlined,
+                          textStyle: TextStyle(color: Colors.grey),
+                          iconColor: Colors.grey,
+                        ),
+                        IconsButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await FirebaseAuth.instance.signOut();
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Log ud',
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 3),
+                                message: 'Du er logget ud',
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                            Future.delayed(const Duration(seconds: 2));
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+                            },
+                          text: 'Log ud',
+                          iconData: Icons.remove_circle_outline,
+                          color: Colors.black.withOpacity(0.5),
+                          textStyle: TextStyle(color: Colors.white),
+                          iconColor: Colors.white,
+                        ),
+                      ]);
                 } on FirebaseAuthException catch (e){
                   Flushbar(
                       margin: EdgeInsets.all(10),
@@ -227,7 +238,7 @@ class _State extends State<AdminSettingsScreen> {
           Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Text("Appversion: 2.3.6",
+              child: Text("Appversion: 2.4.0",
                 style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400),)),
         ],
       ),

@@ -404,7 +404,7 @@ class _State extends State<SettingsScreen> {
           Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Text("Appversion: 2.3.6",
+              child: Text("Appversion: 2.4.0",
                 style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400),)),
         ],
       ),

@@ -6,6 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:validators/validators.dart';
 
 class AdminUsersScreen extends StatefulWidget {
@@ -139,6 +142,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                           try{
                             updateUserEmail(uid, controller.text);
                             usersRef.doc(uid).update({reference:controller.text});
+                            Navigator.pop(context);
                             Flushbar(
                                 margin: EdgeInsets.all(10),
                                 borderRadius: BorderRadius.circular(10),
@@ -147,7 +151,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 duration: Duration(seconds: 3),
                                 message: 'Ny e-mail gemt',
                                 flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                            Navigator.pop(context);
                           } on FirebaseAuthException catch(e) {
                             if(e.code == 'invalid-email'){
                               Flushbar(
@@ -174,6 +177,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         case "password":{
                           try{
                             updateUserPassword(uid, controller.text);
+                            Navigator.pop(context);
                             Flushbar(
                                 margin: EdgeInsets.all(10),
                                 borderRadius: BorderRadius.circular(10),
@@ -182,7 +186,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 duration: Duration(seconds: 3),
                                 message: 'Ny adgangskode gemt',
                                 flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                            Navigator.pop(context);
                           } catch(e) {
                             Flushbar(
                                 margin: EdgeInsets.all(10),
@@ -198,6 +201,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         case "phone":{
                           try{
                             usersRef.doc(uid).update({reference:controller.text});
+                            Navigator.pop(context);
                             Flushbar(
                                 margin: EdgeInsets.all(10),
                                 borderRadius: BorderRadius.circular(10),
@@ -206,7 +210,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 duration: Duration(seconds: 3),
                                 message: 'Telefonnummer gemt',
                                 flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                            Navigator.pop(context);
                           } catch(e) {
                             Flushbar(
                                 margin: EdgeInsets.all(10),
@@ -222,6 +225,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         case "name":{
                           try{
                             usersRef.doc(uid).update({reference:controller.text});
+                            Navigator.pop(context);
                             Flushbar(
                                 margin: EdgeInsets.all(10),
                                 borderRadius: BorderRadius.circular(10),
@@ -230,7 +234,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                 duration: Duration(seconds: 3),
                                 message: 'Nyt navn gemt',
                                 flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                            Navigator.pop(context);
                           } catch(e) {
                             Flushbar(
                                 margin: EdgeInsets.all(10),
@@ -418,55 +421,122 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                                       //Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {Navigator.pop(context);}, icon: const Icon(Icons.keyboard_return, color: Colors.white,), label: const Align(alignment: Alignment.centerLeft, child: Text("Tilbage", style: TextStyle(color: Colors.white),)),)),
                                       Container(height: 50, padding: const EdgeInsets.only(top: 10, left: 10, right: 10), child: ElevatedButton.icon(onPressed: () {
                                         if (e['isAdmin'] == true){
-                                          showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Fjern administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at fjerne administrator?"), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
-                                            e.reference.update({'isAdmin': false});
-                                            Flushbar(
-                                                margin: EdgeInsets.all(10),
-                                                borderRadius: BorderRadius.circular(10),
-                                                title: 'Administrator',
-                                                backgroundColor: Colors.green,
-                                                duration: Duration(seconds: 3),
-                                                message: 'Administratorrettigheder fjernet',
-                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                          },
-                                  child: const Text("Fjern administrator", style: TextStyle(color: Colors.red),))],);});
+                                          Dialogs.bottomMaterialDialog(
+                                              msg: "Er du sikker på at fjerne administrator?",
+                                              title: 'Fjern administrator',
+                                              context: context,
+                                              actions: [
+                                                IconsOutlineButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  text: 'Annuller',
+                                                  iconData: Icons.cancel_outlined,
+                                                  textStyle: TextStyle(color: Colors.grey),
+                                                  iconColor: Colors.grey,
+                                                ),
+                                                IconsButton(
+                                                  onPressed: () async {
+                                                    e.reference.update({'isAdmin': false});
+                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);
+                                                    Flushbar(
+                                                        margin: EdgeInsets.all(10),
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        title: 'Administrator',
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 3),
+                                                        message: 'Administratorrettigheder fjernet',
+                                                        flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                                    },
+                                                  text: 'Fjern administrator',
+                                                  iconData: Icons.remove_circle_outline,
+                                                  color: Colors.blue,
+                                                  textStyle: TextStyle(color: Colors.white),
+                                                  iconColor: Colors.white,
+                                                ),
+                                              ]);
                                         } else {
-                                          showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Tilføj administrator"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Du er ved at tilføje administrator-privilegier til denne bruger."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
-                                            e.reference.update({'isAdmin': true});
-                                            Flushbar(
-                                                margin: EdgeInsets.all(10),
-                                                borderRadius: BorderRadius.circular(10),
-                                                title: 'Administrator',
-                                                backgroundColor: Colors.green,
-                                                duration: Duration(seconds: 3),
-                                                message: 'Administratorrettigheder tilføjet',
-                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          },
-                                              child: const Text("Tilføj administrator", style: TextStyle(color: Colors.red),))],);});
+                                          Dialogs.bottomMaterialDialog(
+                                              msg: "Er du sikker på at tildele administratorrettigheder?",
+                                              title: 'Tilføj administrator',
+                                              context: context,
+                                              actions: [
+                                                IconsOutlineButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  text: 'Annuller',
+                                                  iconData: Icons.cancel_outlined,
+                                                  textStyle: TextStyle(color: Colors.grey),
+                                                  iconColor: Colors.grey,
+                                                ),
+                                                IconsButton(
+                                                  onPressed: () async {
+                                                    e.reference.update({'isAdmin': true});
+                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);
+                                                    Flushbar(
+                                                        margin: EdgeInsets.all(10),
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        title: 'Administrator',
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 3),
+                                                        message: 'Administratorrettigheder tilføjet',
+                                                        flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                                  },
+                                                  text: 'Tilføj administrator',
+                                                  iconData: Icons.remove_circle_outline,
+                                                  color: Colors.green,
+                                                  textStyle: TextStyle(color: Colors.white),
+                                                  iconColor: Colors.white,
+                                                ),
+                                              ]);
                                         }
                                       }, icon: const Icon(Icons.admin_panel_settings, color: Colors.white,), label: Align(alignment: Alignment.centerLeft, child: e['isAdmin'] == true ? Text("Fjern som administrator", style: TextStyle(color: Colors.white),) : Text("Gør til administrator", style: TextStyle(color: Colors.white),)),)),
                                     ],
                                   ),)));
                               }, child: const Center(child: Text("Rediger Oplysninger"))),
-                              SimpleDialogOption(onPressed: (){showDialog(context: context, builder: (BuildContext context){return AlertDialog(title: const Text("Slet Bruger"), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), content: const Text("Er du sikker på at slette brugeren? Handlingen kan ikke fortrydes."), actions: [TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Annuller")) ,TextButton(onPressed: () async {
-                                usersRef.doc(e.id).delete();
-                                FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
-                                deleteUser(e.id);
-                                Navigator.pop(context);  Navigator.pop(context); Navigator.pop(context);
-                                Flushbar(
-                                    margin: EdgeInsets.all(10),
-                                    borderRadius: BorderRadius.circular(10),
-                                    title: 'Bruger',
-                                    backgroundColor: Colors.green,
-                                    duration: Duration(seconds: 3),
-                                    message: 'Bruger fjernet fra systemet',
-                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                },
-                                  child: const Text("SLET BRUGER", style: TextStyle(color: Colors.red),))],);});}, child: const Center(child: Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)),),
+                              SimpleDialogOption(onPressed: (){
+                                Dialogs.bottomMaterialDialog(
+                                    msg: "Er du sikker på at fjerne brugeren?",
+                                    title: 'Fjern bruger',
+                                    context: context,
+                                    actions: [
+                                      IconsOutlineButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        text: 'Annuller',
+                                        iconData: Icons.cancel_outlined,
+                                        textStyle: TextStyle(color: Colors.grey),
+                                        iconColor: Colors.grey,
+                                      ),
+                                      IconsButton(
+                                        onPressed: () async {
+                                          usersRef.doc(e.id).delete();
+                                          FirebaseFirestore.instance.collection(e.id).get().then((snapshot){for(DocumentSnapshot ds in snapshot.docs){ds.reference.delete();}});
+                                          deleteUser(e.id);
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          Flushbar(
+                                              margin: EdgeInsets.all(10),
+                                              borderRadius: BorderRadius.circular(10),
+                                              title: 'Bruger',
+                                              backgroundColor: Colors.green,
+                                              duration: Duration(seconds: 3),
+                                              message: 'Bruger fjernet fra systemet',
+                                              flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+                                        },
+                                        text: 'FJERN BRUGER',
+                                        iconData: Icons.remove_circle_outline,
+                                        color: Colors.red,
+                                        textStyle: TextStyle(color: Colors.white),
+                                        iconColor: Colors.white,
+                                      ),
+                                    ]);
+                                }, child: const Center(child: Text("SLET BRUGER", style: TextStyle(color: Colors.red),)))],);});}, child: Center(child: Row(children:  [Align(alignment: Alignment.centerLeft, child: Text(e['name'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),)), const Spacer(), const Align(alignment: Alignment.centerRight, child: Icon(Icons.person, color: Colors.blue,))]),)),),
                     );
 
                   }).toList(),);
