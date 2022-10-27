@@ -4,7 +4,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
+import 'package:odinvikar/auth/forgotten_password.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 import '../assets/bezier_shape.dart';
 import '../main.dart';
@@ -21,7 +25,6 @@ class _LoginState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  final GlobalKey<FormState> _resetKey = GlobalKey<FormState>();
 
   String? validateEmail(String? email) {
     if (email == null || email.isEmpty) {
@@ -220,96 +223,11 @@ class _LoginState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  Form(
-                    key: _resetKey,
-                    child: TextButton(
+                 TextButton(
                         onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Nulstil adgangskode"),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  content: Text(
-                                      "Du er ved at nulstille din adgangskode. Hvis du har en konto, vil en e-mail vil blive sendt til dig med yderligere instrukser."),
-                                  actions: [
-                                    TextFormField(
-                                      validator: validateEmail,
-                                      controller: emailController,
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                          Icons.email,
-                                          color: Colors.grey.withOpacity(0.75),
-                                        ),
-                                        fillColor: Colors.grey.withOpacity(0.25),
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15)),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide:
-                                            BorderSide(color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        labelText: 'Email',
-                                        labelStyle: TextStyle(color: Colors.black),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                            ),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        hintText: "Indtast e-mail",
-                                        hintStyle: TextStyle(color: Colors.grey),
-                                      )
-                                    ),
-                                    TextButton(
-                                        onPressed: () async {
-                                          if (_resetKey.currentState!
-                                              .validate()) {
-                                            try {
-                                              await FirebaseAuth.instance
-                                                  .sendPasswordResetEmail(
-                                                      email:
-                                                          emailController.text);
-                                              Navigator.pop(context);
-                                              Flushbar(
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  title: 'Glemt kodeord',
-                                                  backgroundColor: Colors.blue,
-                                                  duration: Duration(seconds: 3),
-                                                  message: 'E-mail afsendt',
-                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            } on FirebaseAuthException catch (e) {
-                                              if (e.code == "user-not-found") {
-                                                Flushbar(
-                                                    margin: EdgeInsets.all(10),
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    title: 'Navigation',
-                                                    backgroundColor: Colors.red,
-                                                    duration: Duration(seconds: 3),
-                                                    message: 'Du kan ikke navigere tilbage fra denne skærm',
-                                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                              } else {
-                                                Flushbar(
-                                                    margin: EdgeInsets.all(10),
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    title: 'Navigation',
-                                                    backgroundColor: Colors.red,
-                                                    duration: Duration(seconds: 3),
-                                                    message: 'En fejl opstod. Prøv igen',
-                                                    flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                              }
-                                            }
-                                          }
-                                        },
-                                        child: const Text("Send e-mail"))
-                                  ],
-                                );
-                              });
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
                         },
                         child: Text("Glemt adgangskode")),
-                  ),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
