@@ -10,6 +10,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -337,24 +340,42 @@ class _OwnDaysDetailsScreenState extends State<OwnDaysDetailsScreen> {
                       message: "En vagt er allerede tildelt. Du kan ikke slette dagen",
                       flushbarPosition: FlushbarPosition.BOTTOM).show(context);
                 } else {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: Text("Slet dag"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                      content: Text("Er du sikker på at slette dagen?"),
-                      actions: [TextButton(onPressed: () {
-                        widget.data.reference.delete();
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Flushbar(
-                            margin: EdgeInsets.all(10),
-                            borderRadius: BorderRadius.circular(10),
-                            title: 'Vagt',
-                            backgroundColor: Colors.green,
-                            duration: Duration(seconds: 3),
-                            message: "Vagt slettet",
-                            flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                      }
-                          , child: const Text("SLET", style: TextStyle(color: Colors.red),))],); });
+                  Dialogs.bottomMaterialDialog(
+                      msg: 'Er du sikker på at slette dagen?',
+                      title: 'Slet dag',
+                      context: context,
+                      actions: [
+                        IconsOutlineButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          text: 'Annuller',
+                          iconData: Icons.cancel_outlined,
+                          textStyle: TextStyle(color: Colors.grey),
+                          iconColor: Colors.grey,
+                        ),
+                        IconsButton(
+                          onPressed: () {
+                            widget.data.reference.delete();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Flushbar(
+                                margin: EdgeInsets.all(10),
+                                borderRadius: BorderRadius.circular(10),
+                                title: 'Vagt',
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                                message: "Vagt slettet",
+                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+
+                          },
+                          text: 'Slet',
+                          iconData: Icons.delete,
+                          color: Colors.red,
+                          textStyle: TextStyle(color: Colors.white),
+                          iconColor: Colors.white,
+                        ),
+                      ]);
                 }
               } on FirebaseAuthException catch (e){
                 /// show error snackbar

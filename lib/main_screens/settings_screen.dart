@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odinvikar/auth/login.dart';
+import 'package:odinvikar/main_screens/authenticate_email_screen.dart';
 import 'package:odinvikar/main_screens/shift_history.dart';
 import 'package:odinvikar/main_screens/shiftinfo_sync.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -24,9 +25,6 @@ class _State extends State<SettingsScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   final GlobalKey<FormState> _updateInfokey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _authUserkey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _feedbackKey = GlobalKey<FormState>();
-
 
   final emailController = TextEditingController();
   final updatedEmailController = TextEditingController();
@@ -159,6 +157,7 @@ class _State extends State<SettingsScreen> {
                               case "phone":{
                                 try{
                                   usersRef.doc(uid).update({reference:controller.text});
+                                  Navigator.pop(context);
                                   Flushbar(
                                       margin: EdgeInsets.all(10),
                                       borderRadius: BorderRadius.circular(10),
@@ -167,7 +166,7 @@ class _State extends State<SettingsScreen> {
                                       duration: Duration(seconds: 3),
                                       message: "Telefonnummer gemt",
                                       flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                  Navigator.pop(context);}
+                                  }
                                 catch(e){
                                   Flushbar(
                                       margin: EdgeInsets.all(10),
@@ -181,130 +180,7 @@ class _State extends State<SettingsScreen> {
                               }
                               break;
                               case "email":{
-                                showDialog(context: context, builder: (BuildContext context){
-                                  emailController.clear();
-                                  return Form(
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                    key: _authUserkey,
-                                    child: AlertDialog(title: const Text("Autentificer konto"),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                      content: const Text("Du bedes indtaste din gamle E-mail og adgangskode for at komme videre."),
-                                      actions: [
-                                      TextFormField(validator: validateEmail, controller: emailController, decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                          Icons.email,
-                                          color: Colors.grey.withOpacity(0.75),
-                                        ),
-                                        fillColor: Colors.grey.withOpacity(0.25),
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15)),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide:
-                                            BorderSide(color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        labelText: 'Email',
-                                        labelStyle: TextStyle(color: Colors.black),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                            ),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        hintText: "Indtast e-mail",
-                                        hintStyle: TextStyle(color: Colors.grey),
-                                      )),
-                                      TextFormField(validator: validatePassword, controller: passwordController, obscureText: true, decoration: InputDecoration(
-                                        prefixIcon: Icon(
-                                          Icons.lock,
-                                          color: Colors.grey.withOpacity(0.75),
-                                        ),
-                                        fillColor: Colors.grey.withOpacity(0.25),
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15)),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide:
-                                            BorderSide(color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        labelText: 'Adgangskode',
-                                        labelStyle: TextStyle(color: Colors.black),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                            ),
-                                            borderRadius: BorderRadius.circular(15)),
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        hintText: "Indtast adgangskode",
-                                        hintStyle: TextStyle(color: Colors.grey),
-                                      ),),
-                                      TextButton(onPressed: () async {
-                                        if (_authUserkey.currentState!.validate()){
-                                          try{
-                                            await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                                            Flushbar(
-                                                margin: EdgeInsets.all(10),
-                                                borderRadius: BorderRadius.circular(10),
-                                                title: 'Telefonnummer',
-                                                backgroundColor: Colors.green,
-                                                duration: Duration(seconds: 3),
-                                                message: "Telefonnummer gemt",
-                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            FirebaseAuth.instance.currentUser?.updateEmail(controller.text);
-                                            usersRef.doc(uid).update({reference:controller.text});
-                                            Flushbar(
-                                                margin: EdgeInsets.all(10),
-                                                borderRadius: BorderRadius.circular(10),
-                                                title: 'E-mail',
-                                                backgroundColor: Colors.green,
-                                                duration: Duration(seconds: 3),
-                                                message: "E-mail gemt",
-                                                flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          } on FirebaseAuthException catch(e){
-                                            if(e.code == "wrong-password"){
-                                              Flushbar(
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  title: 'Fejl',
-                                                  backgroundColor: Colors.red,
-                                                  duration: Duration(seconds: 3),
-                                                  message: "Forkert adgangskode",
-                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            } else if (e.code == "invalid-email") {
-                                              Flushbar(
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  title: 'Fejl',
-                                                  backgroundColor: Colors.red,
-                                                  duration: Duration(seconds: 3),
-                                                  message: "Forkert e-mail",
-                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            } else if (e.code == "user-not-found"){
-                                              Flushbar(
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  title: 'Fejl',
-                                                  backgroundColor: Colors.red,
-                                                  duration: Duration(seconds: 3),
-                                                  message: "Bruger eksisterer ikke",
-                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            } else {
-                                              Flushbar(
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  title: 'Fejl',
-                                                  backgroundColor: Colors.red,
-                                                  duration: Duration(seconds: 3),
-                                                  message: "Fejlkode ${e.code}",
-                                                  flushbarPosition: FlushbarPosition.BOTTOM).show(context);
-                                            }
-                                          }
-                                        }
-                                        }, child: const Text("Godkend")),
-                                    ],),);
-                                });
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => AuthenticateEmailScreen()));
                               }
                               break;
                             }
