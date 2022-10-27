@@ -5,6 +5,8 @@ import 'package:odinvikar/admin/admin_shift_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tap_to_expand/tap_to_expand.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../assets/card_assets.dart';
 
 
@@ -80,7 +82,7 @@ class _State extends State<AdminCalendar> {
     loading = true;
     var userRef = await databaseReference.collection('user').get();
     List<String> entireShift = [];
-    List<AdminAvailableShiftCard> separatedShiftList = [];
+    List<TapToExpand> separatedShiftList = [];
 
     for (var users in userRef.docs){
       var shiftRef = await databaseReference.collection(users.id).
@@ -121,52 +123,87 @@ class _State extends State<AdminCalendar> {
       List shiftSplit = shifts.split(";");
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(selectedDate)) {
         separatedShiftList.add(
-            AdminAvailableShiftCard(text: shiftSplit[6],
-                time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: " + shiftSplit[3] : shiftSplit[10].substring(0,11),
-                subtitle: "Se mere",
-                icon: Icon(Icons.square_rounded, size: 22, color: Color(int.parse(shiftSplit[2])),),
-                onPressed: () async {
-                  var userRef = await databaseReference.collection(
-                      shiftSplit[8]);
-                  var dataRef = await databaseReference.collection(
-                      shiftSplit[8]).doc(shiftSplit[0]);
-                  if (int.parse(shiftSplit[9]) != 0) {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) =>
-                        AdminShiftDetailsScreen(
-                          date: shiftSplit[0],
-                          status: shiftSplit[1],
-                          name: shiftSplit[6],
-                          token: shiftSplit[7],
-                          time: shiftSplit[3],
-                          comment: shiftSplit[4],
-                          awaitConfirmation: int.parse(shiftSplit[9]),
-                          details: shiftSplit[10],
-                          color: shiftSplit[2],
-                          data: dataRef,
-                          userRef: userRef,
-                        ))).then((value) {
-                      setState((){getDateShifts();});
-                    });
-                  } else if (int.parse(shiftSplit[9]) == 0) {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) =>
-                        AdminShiftDetailsScreen(
-                          date: shiftSplit[0],
-                          status: shiftSplit[1],
-                          name: shiftSplit[6],
-                          token: shiftSplit[7],
-                          time: shiftSplit[3],
-                          comment: shiftSplit[4],
-                          awaitConfirmation: int.parse(shiftSplit[9]),
-                          color: shiftSplit[2],
-                          data: dataRef,
-                          userRef: userRef,
-                        ))).then((value) {
-                          setState((){getDateShifts();});
-                    });
-                  }
-                })
+            TapToExpand(
+              openedHeight: 225,
+              borderRadius: 20,
+              content: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, color: Colors.black.withOpacity(0.30),),
+                      Padding(padding: EdgeInsets.only(left: 10)),
+                      Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10, bottom: 20)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(onPressed: () async {
+                        var userRef = await databaseReference.collection(
+                            shiftSplit[8]);
+                        var dataRef = await databaseReference.collection(
+                            shiftSplit[8]).doc(shiftSplit[0]);
+                        if (int.parse(shiftSplit[9]) != 0) {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) =>
+                              AdminShiftDetailsScreen(
+                                date: shiftSplit[0],
+                                status: shiftSplit[1],
+                                name: shiftSplit[6],
+                                token: shiftSplit[7],
+                                time: shiftSplit[3],
+                                comment: shiftSplit[4],
+                                awaitConfirmation: int.parse(shiftSplit[9]),
+                                details: shiftSplit[10],
+                                color: shiftSplit[2],
+                                data: dataRef,
+                                userRef: userRef,
+                              ))).then((value) {
+                            setState((){getDateShifts();});
+                          });
+                        } else if (int.parse(shiftSplit[9]) == 0) {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) =>
+                              AdminShiftDetailsScreen(
+                                date: shiftSplit[0],
+                                status: shiftSplit[1],
+                                name: shiftSplit[6],
+                                token: shiftSplit[7],
+                                time: shiftSplit[3],
+                                comment: shiftSplit[4],
+                                awaitConfirmation: int.parse(shiftSplit[9]),
+                                color: shiftSplit[2],
+                                data: dataRef,
+                                userRef: userRef,
+                              ))).then((value) {
+                            setState((){getDateShifts();});
+                          });
+                        }
+                      }, style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              )
+                          )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
+                      Padding(padding: EdgeInsets.only(left: 5)),
+                      Expanded(child: IconButton(icon: const Icon(Icons.phone, color: Colors.white,), onPressed: (){launch("tel:" + shiftSplit[5]);},)),
+                      Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 20),)
+                ],
+              ), title: Row(
+              children: [
+                Icon(Icons.person, color: Colors.white),
+                Padding(padding: EdgeInsets.only(right: 10)),
+                Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+              ],
+            ),
+              color: Color(int.parse(shiftSplit[2])),
+            )
         );
       }
     }
@@ -257,7 +294,7 @@ class _State extends State<AdminCalendar> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index){
-                    AdminAvailableShiftCard shiftCard = snapshot.data?[index];
+                    TapToExpand shiftCard = snapshot.data?[index];
                     return SingleChildScrollView(
                       child: Column(
                         children: [

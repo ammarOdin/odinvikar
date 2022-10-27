@@ -183,7 +183,12 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Timer"),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Timer",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
         actions: [
           IconButton(onPressed: () async {
             final pdf = await PdfApi.generateInvoice(

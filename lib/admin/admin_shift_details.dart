@@ -66,7 +66,12 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name + "'s vagt", style: TextStyle(color: Colors.white),),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("${widget.name}'s vagt",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
       ),
       body: ListView(

@@ -360,7 +360,12 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Brugeroplysninger"),
+        elevation: 3,
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Brugeroplysninger",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20,),),
       ),
       body: ListView(

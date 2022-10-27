@@ -42,9 +42,13 @@ class _AssignShiftScreenState extends State<AssignShiftScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 3,
+        centerTitle: false,
         backgroundColor: Colors.blue,
-      title: Text("Tildel vagt"),
-      leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),),
+        toolbarHeight: 100,
+        automaticallyImplyLeading: false,
+        title: Text("Tildel vagt",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),),
     ),
     body: ListView(
       physics: ClampingScrollPhysics(),
