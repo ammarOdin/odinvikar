@@ -66,13 +66,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(onPressed: () async {
-                    if (_resetKey.currentState!
-                        .validate()) {
+                    if (_resetKey.currentState!.validate()) {
                       try {
-                        await FirebaseAuth.instance
-                            .sendPasswordResetEmail(
-                            email:
-                            emailController.text);
+                        await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
                         Navigator.pop(context);
                         Flushbar(
                             margin: EdgeInsets.all(10),
@@ -104,8 +100,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         }
                       }
                     }
-                    if(!mounted)return;
-                    Navigator.pop(context);
                   },
                     child: Text("Send link", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18, color: Colors.white)),
                     style: ButtonStyle(

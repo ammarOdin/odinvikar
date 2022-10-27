@@ -224,7 +224,7 @@ class _LoginState extends State<LoginScreen> {
                     ),
                   ),
                  TextButton(
-                        onPressed: () async {
+                        onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
                         },
                         child: Text("Glemt adgangskode")),
