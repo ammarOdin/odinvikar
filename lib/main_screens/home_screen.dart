@@ -298,7 +298,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                             color: Color(int.parse(document['color'])),
                           );
-                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
+                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || DateFormat('dd-MM-yyyy').format(date) == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
                           return TapToExpand(
                             openedHeight: 250,
                             borderRadius: 20,
@@ -474,7 +474,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                             color: Color(int.parse(document['color'])),
                           );
-                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now())) {
+                        } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || DateFormat('dd-MM-yyyy').format(date) == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
                           return TapToExpand(
                             openedHeight: 250,
                             borderRadius: 20,

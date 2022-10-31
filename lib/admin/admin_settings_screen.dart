@@ -209,7 +209,7 @@ class _State extends State<AdminSettingsScreen> {
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
                             },
                           text: 'Log ud',
-                          iconData: Icons.remove_circle_outline,
+                          iconData: Icons.logout,
                           color: Colors.black.withOpacity(0.5),
                           textStyle: TextStyle(color: Colors.white),
                           iconColor: Colors.white,
