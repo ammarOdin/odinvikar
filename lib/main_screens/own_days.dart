@@ -212,12 +212,12 @@ class OwnDays extends State<OwnDaysScreen> {
                     monthViewSettings: const MonthViewSettings(
                       showAgenda: true,
                       agendaViewHeight: 100,
-                      agendaItemHeight: 60,
+                      agendaItemHeight: 50,
                       agendaStyle: AgendaStyle(
                         backgroundColor: Colors.transparent,
                         appointmentTextStyle: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w500,
                             color: Colors.white),
                         dateTextStyle: TextStyle(
                             fontStyle: FontStyle.normal,
