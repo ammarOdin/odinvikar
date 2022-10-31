@@ -64,15 +64,15 @@ class AvailableShiftCard extends StatelessWidget {
   final String text;
   final String day;
   final String time;
+  final Color color;
   final Icon icon;
-  final Icon icon2;
   final Function() onPressed;
 
   const AvailableShiftCard(
       {required this.text,
         required this.day,
+        required this.color,
         required this.icon,
-        required this.icon2,
         required this.time,
         required this.onPressed,
         Key? key})
@@ -84,26 +84,33 @@ class AvailableShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 120,
-        padding: const EdgeInsets.only(top: 5, bottom: 5),
-        margin: const EdgeInsets.only(bottom: 10, right: 5, left: 5),
+        margin: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+        height: 110,
         decoration: BoxDecoration(
+          /*border: Border(
+            top: BorderSide(width: 1, color: Colors.black.withOpacity(0.25)),
+            //bottom: BorderSide(width: 1)
+          ),*/
           color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
           boxShadow: [
             BoxShadow(
-                offset: const Offset(5, 5),
-                blurRadius: 15,
+                offset: const Offset(2.5, 2.5),
+                blurRadius: 10,
                 color: Colors.grey.withOpacity(.5)),
           ],
         ),
         child: Row(
           children: [
             Container(
+              width: 5,
+              color: color,
+            ),
+            Container(
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 15, top: 15),
+                    padding: EdgeInsets.only(left: 25, top: 15),
                     child: Text(day,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -113,7 +120,7 @@ class AvailableShiftCard extends StatelessWidget {
                         )),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 15, top: 10),
+                    padding: EdgeInsets.only(left: 25, top: 10),
                     child: Text(text,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -123,7 +130,7 @@ class AvailableShiftCard extends StatelessWidget {
                         )),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 15, top: 10),
+                    padding: EdgeInsets.only(left: 25, top: 10),
                     child: Text(time,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -137,11 +144,8 @@ class AvailableShiftCard extends StatelessWidget {
             ),
             const Spacer(),
             Container(
-                padding: EdgeInsets.only(left: 5),
-                child: icon),
-            Container(
                 padding: EdgeInsets.only(left: 5, right: 10),
-                child: icon2),
+                child: icon),
           ],
         ),
       ),

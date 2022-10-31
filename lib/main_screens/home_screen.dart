@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:odinvikar/assets/card_assets.dart';
 import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:week_of_year/week_of_year.dart';
 import '../assets/bezier_shape.dart';
@@ -177,7 +178,9 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                       }
                       if (sliderValue == 1 && currentWeek == documentWeek){
                         if (document['awaitConfirmation'] == 2 && DateFormat('dd-MM-yyyy').format(DateTime.now()).toString() == document['date']) {
-                          return TapToExpand(
+                          /// active shift card
+                          return AvailableShiftCard(text: date.toString() , day: getDayOfWeek(date), icon: Icon(Icons.arrow_forward_ios), time: "time", onPressed: (){}, color: Color(int.parse(document['color'])),);
+                          /* return TapToExpand(
                             openedHeight: 275,
                             borderRadius: 20,
                             content: Column(
@@ -236,9 +239,11 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                             color: Color(int.parse(document['color'])),
-                          );
+                          );*/
                         } else if (document['awaitConfirmation'] != 0 && date.isAfter(DateTime.now()) || date == DateTime.now()) {
-                          return TapToExpand(
+                          /// Awaiting response from user card
+                          return AvailableShiftCard(text: date.toString() , day: getDayOfWeek(date), icon: Icon(Icons.arrow_forward_ios), time: "time", onPressed: (){}, color: Color(int.parse(document['color'])),);
+                          /*return TapToExpand(
                             openedHeight: 275,
                             borderRadius: 20,
                             content: Column(
@@ -297,57 +302,21 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                             color: Color(int.parse(document['color'])),
-                          );
+                          );*/
                         } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || DateFormat('dd-MM-yyyy').format(date) == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-                          return TapToExpand(
-                            openedHeight: 250,
-                            borderRadius: 20,
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time_outlined, color: Colors.black.withOpacity(0.30),),
-                                    Padding(padding: EdgeInsets.only(left: 10)),
-                                    Text("${document['time']}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                                  ],
-                                ),                                Padding(padding: EdgeInsets.only(top: 7)),
-                                Row(
-                                  children: [
-                                    Icon(Icons.comment, color: Colors.black.withOpacity(0.30),),
-                                    Padding(padding: EdgeInsets.only(left: 10)),
-                                    Text("${document['comment']}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                                  ],
-                                ),                                Padding(padding: EdgeInsets.only(top: 30)),
-                                Center(child: ElevatedButton(onPressed: (){
-                                  var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
-                                    date: document.id,
-                                    status: document['status'],
-                                    time: document['time'],
-                                    comment: document['comment'],
-                                    awaitConfirmation: document['awaitConfirmation'],
-                                    color: document['color'],
-                                    data: reference,
-                                  )));
-                                }, style: ButtonStyle(
-                                    minimumSize: MaterialStateProperty.all(Size(150, 50)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        )
-                                    )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16),))),
-                                Padding(padding: EdgeInsets.only(bottom: 10)),
-                              ],
-                            ), title: Row(
-                            children: [
-                              Icon(Icons.work_history_outlined, color: Colors.white),
-                              Padding(padding: EdgeInsets.only(right: 10)),
-                              Text("${getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date']))} d. ${document['date'].substring(0,5)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                            color: Color(int.parse(document['color'])),
-                          );
+                          /// Available user card
+                          return AvailableShiftCard(text: document['date'] , day: getDayOfWeek(date), icon: Icon(Icons.arrow_forward_ios), time: document['time'], onPressed: (){
+                            var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                              date: document.id,
+                              status: document['status'],
+                              time: document['time'],
+                              comment: document['comment'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              color: document['color'],
+                              data: reference,
+                            )));
+                          }, color: Color(int.parse(document['color'])),);
                         } else {
                           return Container();
                         }
@@ -475,55 +444,18 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                             color: Color(int.parse(document['color'])),
                           );
                         } else if (document['awaitConfirmation'] == 0 && date.isAfter(DateTime.now()) || DateFormat('dd-MM-yyyy').format(date) == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-                          return TapToExpand(
-                            openedHeight: 250,
-                            borderRadius: 20,
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time_outlined, color: Colors.black.withOpacity(0.30),),
-                                    Padding(padding: EdgeInsets.only(left: 10)),
-                                    Text("${document['time']}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                                  ],
-                                ),                                Padding(padding: EdgeInsets.only(top: 7)),
-                                Row(
-                                  children: [
-                                    Icon(Icons.comment, color: Colors.black.withOpacity(0.30),),
-                                    Padding(padding: EdgeInsets.only(left: 10)),
-                                    Text("${document['comment']}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                                  ],
-                                ),                                Padding(padding: EdgeInsets.only(top: 30)),
-                                Center(child: ElevatedButton(onPressed: (){
-                                  var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
-                                    date: document.id,
-                                    status: document['status'],
-                                    time: document['time'],
-                                    comment: document['comment'],
-                                    awaitConfirmation: document['awaitConfirmation'],
-                                    color: document['color'],
-                                    data: reference,
-                                  )));
-                                }, style: ButtonStyle(
-                                    minimumSize: MaterialStateProperty.all(Size(150, 50)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        )
-                                    )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16),))),
-                                Padding(padding: EdgeInsets.only(bottom: 10)),
-                              ],
-                            ), title: Row(
-                            children: [
-                              Icon(Icons.work_history_outlined, color: Colors.white),
-                              Padding(padding: EdgeInsets.only(right: 10)),
-                              Text("${getDayOfWeek(DateFormat('dd-MM-yyyy').parse(document['date']))} d. ${document['date'].substring(0,5)}", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                            color: Color(int.parse(document['color'])),
-                          );
+                          return AvailableShiftCard(text: document['date'] , day: getDayOfWeek(date), icon: Icon(Icons.arrow_forward_ios), time: document['time'], onPressed: (){
+                            var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnDaysDetailsScreen(
+                              date: document.id,
+                              status: document['status'],
+                              time: document['time'],
+                              comment: document['comment'],
+                              awaitConfirmation: document['awaitConfirmation'],
+                              color: document['color'],
+                              data: reference,
+                            )));
+                          }, color: Color(int.parse(document['color'])),);
                         } else {
                           return Container();
                         }
