@@ -7,6 +7,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:odinvikar/admin/admin_assign_shift.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'admin_edit_shift.dart';
 
 class AdminShiftDetailsScreen extends StatefulWidget {
@@ -31,6 +32,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
   late String status;
   late String? details ;
   late String color ;
+  late String number;
   late String awaitConfirmation ;
   bool isChecked = false;
 
@@ -62,6 +64,9 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
     details = widget.details;
     color = widget.color;
     awaitConfirmation = widget.awaitConfirmation.toString();
+    FirebaseFirestore.instance.collection('user').doc(widget.userRef.id).get().then((value) {
+      number = value['phone'];
+    });
     super.initState();
   }
 
@@ -76,6 +81,42 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
         automaticallyImplyLeading: false,
         title: Text("${widget.name}'s vagt",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20, color: Colors.white,),),
+        actions: [
+          PopupMenuButton(
+              icon: Icon(Icons.phone),
+              itemBuilder: (context){
+            return[
+              PopupMenuItem<int>(
+                  value: 0,
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone, color: Colors.blue,),
+                      Padding(padding: EdgeInsets.only(left: 10),),
+                      Text("Opkald", style: TextStyle(color: Colors.black)),
+                    ],
+                  )
+              ),
+              PopupMenuItem<int>(
+                  value: 1,
+                  child: Row(
+                    children: [
+                      Icon(Icons.message, color: Colors.blue,),
+                      Padding(padding: EdgeInsets.only(left: 10),),
+                      Text("SMS", style: TextStyle(color: Colors.black)),
+                    ],
+                  )
+              ),
+            ];
+          },
+            onSelected: (value) async {
+              if (value == 0){
+                launch("tel:" + number);
+              } else if (value == 1){
+                launch("sms:" + number);
+              }
+          }
+          )
+        ],
       ),
       body: ListView(
         shrinkWrap: true,
@@ -225,6 +266,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
           if (awaitConfirmation == "0") Container(
             padding: EdgeInsets.only(left: 5, top: 50),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Assign
                 Container(
@@ -251,51 +293,6 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                       ),
                       icon: Icon(Icons.add, color: Colors.white, size: 18,),
                       label: Text("Tildel vagt")),
-                ),
-                // Delete
-                Container(
-                  padding: EdgeInsets.only(top: 20, bottom: 20, right: 5, left: 5),
-                  height: 80,
-                  width: MediaQuery.of(context).size.width / 2.1,
-                  child: ElevatedButton.icon(
-                      onPressed: () async {
-                        Dialogs.bottomMaterialDialog(
-                            msg: "Du er ved at slette vagten. Handlingen kan ikke fortrydes",
-                            title: 'Slet vagt',
-                            context: context,
-                            actions: [
-                              IconsOutlineButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                text: 'Annuller',
-                                iconData: Icons.cancel_outlined,
-                                textStyle: TextStyle(color: Colors.grey),
-                                iconColor: Colors.grey,
-                              ),
-                              IconsButton(
-                                onPressed: () async {
-                                  widget.data.delete();
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                },
-                                text: 'Slet',
-                                iconData: Icons.delete,
-                                color: Colors.red,
-                                textStyle: TextStyle(color: Colors.white),
-                                iconColor: Colors.white,
-                              ),
-                            ]);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 14),
-                        primary: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
-                      label: Text("Slet")),
                 ),
 
                 // Summoned
@@ -354,11 +351,11 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 2, right: 2),
-                  width: MediaQuery.of(context).size.width / 3.1,
+                  width: MediaQuery.of(context).size.width / 2.1,
                   child: ElevatedButton.icon(
                       onPressed: () async {
                         Dialogs.bottomMaterialDialog(
-                            msg: "Du er ved at slette vagten. Handlingen kan ikke fortrydes",
+                            msg: "Du er ved at slette vagten. Dagen vil blive gjort tilgængelig igen",
                             title: 'Slet vagt',
                             context: context,
                             actions: [
@@ -373,9 +370,25 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                               ),
                               IconsButton(
                                 onPressed: () async {
-                                  widget.data.delete();
+                                  widget.data.update({
+                                    'isAccepted': false,
+                                    'color': '0xFFFFA500',
+                                    'status': 'Tilgængelig',
+                                    'awaitConfirmation': 0,
+                                    'details': FieldValue.delete(),
+                                  });
+                                  sendCanceledShift(widget.token, widget.date);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
+                                  Flushbar(
+                                      margin: EdgeInsets.all(10),
+                                      borderRadius: BorderRadius.circular(10),
+                                      title: 'Vagt',
+                                      backgroundColor: Colors.green,
+                                      duration: Duration(seconds: 3),
+                                      message: 'Vikar status ændret til tilgængelig',
+                                      flushbarPosition: FlushbarPosition.BOTTOM).show(context);
+
                                 },
                                 text: 'Slet',
                                 iconData: Icons.delete,
@@ -395,7 +408,7 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                       icon: Icon(Icons.delete_outline, color: Colors.white, size: 18,),
                       label: Text("Slet vagt")),
                 ),
-                Container(
+                /*Container(
                   padding: EdgeInsets.only(left: 2, right: 2),
                   width: MediaQuery.of(context).size.width / 3.1,
                   child: ElevatedButton.icon(onPressed: () async {
@@ -451,10 +464,10 @@ class _AdminShiftDetailsScreenState extends State<AdminShiftDetailsScreen> {
                         ),
                       ),
                       icon: Icon(Icons.remove_circle_outline, color: Colors.white, size: 18,), label: Text("Afbook")),
-                ),
+                ),*/
                 Container(
                   padding: EdgeInsets.only(left: 2, right: 2),
-                  width: MediaQuery.of(context).size.width / 3.1,
+                  width: MediaQuery.of(context).size.width / 2.1,
                   child: ElevatedButton.icon(onPressed: () async {
                     final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminEditShiftScreen(date: widget.date, userRef: widget.userRef, name: widget.name, token: widget.token)));
                     setState(() {

@@ -89,149 +89,71 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
       List shiftSplit = shifts.split(";");
       if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now())) {
         todayList.add(
-            TapToExpand(
-              openedHeight: 225,
-              borderRadius: 20,
-              content: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, color: Colors.black.withOpacity(0.30),),
-                      Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 10, bottom: 20)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(onPressed: () async {
-                        var userRef = await databaseReference.collection(shiftSplit[8]);
-                        var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
-                        if (int.parse(shiftSplit[9]) != 0){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                            date: shiftSplit[0],
-                            status: shiftSplit[1],
-                            name: shiftSplit[6],
-                            token: shiftSplit[7],
-                            time: shiftSplit[3],
-                            comment: shiftSplit[4],
-                            awaitConfirmation: int.parse(shiftSplit[9]),
-                            details: shiftSplit[10],
-                            color: shiftSplit[2],
-                            data: dataRef,
-                            userRef: userRef,
-                          ))); } else if (int.parse(shiftSplit[9]) == 0){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                            date: shiftSplit[0],
-                            status: shiftSplit[1],
-                            name: shiftSplit[6],
-                            token: shiftSplit[7],
-                            time: shiftSplit[3],
-                            comment: shiftSplit[4],
-                            awaitConfirmation: int.parse(shiftSplit[9]),
-                            color: shiftSplit[2],
-                            data: dataRef,
-                            userRef: userRef,
-                          )));
-                        }
-                      }, style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.white),
-                          minimumSize: MaterialStateProperty.all(Size(150, 50)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                              )
-                          )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
-                      Padding(padding: EdgeInsets.only(left: 5)),
-                      Expanded(child: IconButton(icon: const Icon(Icons.phone, color: Colors.white,), onPressed: (){launch("tel:" + shiftSplit[5]);},)),
-                      Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.only(bottom: 20),)
-                ],
-              ), title: Row(
-              children: [
-                Icon(Icons.person, color: Colors.white),
-                Padding(padding: EdgeInsets.only(right: 10)),
-                Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-              ],
-            ),
-              color: Color(int.parse(shiftSplit[2])),
-            )
+          AdminAvailableShiftCard(text: shiftSplit[6], color: Color(int.parse(shiftSplit[2])), time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: ${shiftSplit[3]}" : shiftSplit[10].substring(0,11), onPressed: () async {
+            var userRef = await databaseReference.collection(shiftSplit[8]);
+            var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+            if (int.parse(shiftSplit[9]) != 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: shiftSplit[0],
+                status: shiftSplit[1],
+                name: shiftSplit[6],
+                token: shiftSplit[7],
+                time: shiftSplit[3],
+                comment: shiftSplit[4],
+                awaitConfirmation: int.parse(shiftSplit[9]),
+                details: shiftSplit[10],
+                color: shiftSplit[2],
+                data: dataRef,
+                userRef: userRef,
+              ))); } else if (int.parse(shiftSplit[9]) == 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: shiftSplit[0],
+                status: shiftSplit[1],
+                name: shiftSplit[6],
+                token: shiftSplit[7],
+                time: shiftSplit[3],
+                comment: shiftSplit[4],
+                awaitConfirmation: int.parse(shiftSplit[9]),
+                color: shiftSplit[2],
+                data: dataRef,
+                userRef: userRef,
+              )));
+            }
+          })
         );
       } else if (shiftSplit[0] == DateFormat('dd-MM-yyyy').format(DateTime.now().add(const Duration(days: 1)))){
         tomorrowList.add(
-            TapToExpand(
-              openedHeight: 225,
-              borderRadius: 20,
-              content: Column(
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.access_time, color: Colors.black.withOpacity(0.30),),
-                    Padding(padding: EdgeInsets.only(left: 10)),
-                    Text(shiftSplit[3], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 10, bottom: 20)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                   ElevatedButton(onPressed: () async {
-                      var userRef = await databaseReference.collection(shiftSplit[8]);
-                      var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
-                      if (int.parse(shiftSplit[9]) != 0){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                          date: shiftSplit[0],
-                          status: shiftSplit[1],
-                          name: shiftSplit[6],
-                          token: shiftSplit[7],
-                          time: shiftSplit[3],
-                          comment: shiftSplit[4],
-                          awaitConfirmation: int.parse(shiftSplit[9]),
-                          details: shiftSplit[10],
-                          color: shiftSplit[2],
-                          data: dataRef,
-                          userRef: userRef,
-                        ))); } else if (int.parse(shiftSplit[9]) == 0){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
-                          date: shiftSplit[0],
-                          status: shiftSplit[1],
-                          name: shiftSplit[6],
-                          token: shiftSplit[7],
-                          time: shiftSplit[3],
-                          comment: shiftSplit[4],
-                          awaitConfirmation: int.parse(shiftSplit[9]),
-                          color: shiftSplit[2],
-                          data: dataRef,
-                          userRef: userRef,
-                        )));
-                      }
-                    }, style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.white),
-                        minimumSize: MaterialStateProperty.all(Size(150, 50)),
-                        shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                            )
-                        )),child: Text("Vagtdetaljer", style: TextStyle(fontSize: 16, color: Colors.black),)),
-                    Padding(padding: EdgeInsets.only(left: 5)),
-                    Expanded(child: IconButton(icon: const Icon(Icons.phone, color: Colors.white,), onPressed: (){launch("tel:" + shiftSplit[5]);},)),
-                    Expanded(child: IconButton(icon: const Icon(Icons.message, color: Colors.white,), onPressed: (){launch("sms:" + shiftSplit[5]);},)),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(bottom: 20),)
-              ],
-            ), title: Row(
-              children: [
-                Icon(Icons.person, color: Colors.white),
-                Padding(padding: EdgeInsets.only(right: 10)),
-                Text(shiftSplit[6], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-              ],
-            ),
-              color: Color(int.parse(shiftSplit[2])),
-            )
+          AdminAvailableShiftCard(text: shiftSplit[6], color: Color(int.parse(shiftSplit[2])), time: int.parse(shiftSplit[9]) == 0 ? "Tilgængelig: ${shiftSplit[3]}" : shiftSplit[10].substring(0,11), onPressed: () async {
+            var userRef = await databaseReference.collection(shiftSplit[8]);
+            var dataRef = await databaseReference.collection(shiftSplit[8]).doc(shiftSplit[0]);
+            if (int.parse(shiftSplit[9]) != 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: shiftSplit[0],
+                status: shiftSplit[1],
+                name: shiftSplit[6],
+                token: shiftSplit[7],
+                time: shiftSplit[3],
+                comment: shiftSplit[4],
+                awaitConfirmation: int.parse(shiftSplit[9]),
+                details: shiftSplit[10],
+                color: shiftSplit[2],
+                data: dataRef,
+                userRef: userRef,
+              ))); } else if (int.parse(shiftSplit[9]) == 0){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdminShiftDetailsScreen(
+                date: shiftSplit[0],
+                status: shiftSplit[1],
+                name: shiftSplit[6],
+                token: shiftSplit[7],
+                time: shiftSplit[3],
+                comment: shiftSplit[4],
+                awaitConfirmation: int.parse(shiftSplit[9]),
+                color: shiftSplit[2],
+                data: dataRef,
+                userRef: userRef,
+              )));
+            }
+          })
         );
       }
     }

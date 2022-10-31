@@ -87,10 +87,6 @@ class AvailableShiftCard extends StatelessWidget {
         margin: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 2.5),
         height: 110,
         decoration: BoxDecoration(
-          /*border: Border(
-            top: BorderSide(width: 1, color: Colors.black.withOpacity(0.25)),
-            //bottom: BorderSide(width: 1)
-          ),*/
           color: Colors.white,
           borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
           boxShadow: [
@@ -188,10 +184,6 @@ class ActiveShiftCard extends StatelessWidget {
           margin: const EdgeInsets.only(right: 5, left: 5, top: 5, bottom: 2.5),
           decoration: BoxDecoration(
             color: Colors.white,
-            /*border: Border.all(
-              color: Colors.green,
-              width: 2.5
-            ),*/
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(20),
               bottomRight: Radius.circular(20)
@@ -213,7 +205,7 @@ class ActiveShiftCard extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.only(left: 15, top: 15),
+                      padding: EdgeInsets.only(left: 25, top: 15),
                       child: Text(day,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -223,7 +215,7 @@ class ActiveShiftCard extends StatelessWidget {
                           )),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 15, top: 10),
+                      padding: EdgeInsets.only(left: 25, top: 10),
                       child: Text(text,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -233,7 +225,7 @@ class ActiveShiftCard extends StatelessWidget {
                           )),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 15, top: 10),
+                      padding: EdgeInsets.only(left: 25, top: 10),
                       child: Text(time,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -260,14 +252,12 @@ class ActiveShiftCard extends StatelessWidget {
 class AdminAvailableShiftCard extends StatelessWidget {
   final String text;
   final String time;
-  final String subtitle;
-  final Icon icon;
+  final Color color;
   final Function() onPressed;
 
   const AdminAvailableShiftCard(
       {required this.text,
-        required this.subtitle,
-        required this.icon,
+        required this.color,
         required this.time,
         required this.onPressed,
         Key? key})
@@ -279,59 +269,56 @@ class AdminAvailableShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 110,
-        padding: const EdgeInsets.only(top: 5, bottom: 5),
-        margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+        margin: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 2.5),
+        height: 100,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
           boxShadow: [
             BoxShadow(
-                offset: const Offset(5, 5),
-                blurRadius: 15,
+                offset: const Offset(2.5, 2.5),
+                blurRadius: 10,
                 color: Colors.grey.withOpacity(.5)),
           ],
         ),
         child: Row(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text(text,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 15, top: 10),
-                  child: Text(time,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      )),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
+            Container(
+              width: 5,
+              color: color,
             ),
             Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 25),
+                    child: Text(text,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        )),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 25, top: 10),
+                    child: Text(time,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        )),
+                  ),
+                ],
+              ),
+            ),
+            const Spacer(),
+            Container(
                 padding: EdgeInsets.only(left: 5, right: 10),
-                child: icon),
+                child: Icon(Icons.arrow_forward_ios)),
           ],
         ),
       ),
