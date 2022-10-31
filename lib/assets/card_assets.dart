@@ -84,7 +84,7 @@ class AvailableShiftCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+        margin: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 2.5),
         height: 110,
         decoration: BoxDecoration(
           /*border: Border(
@@ -157,15 +157,15 @@ class ActiveShiftCard extends StatelessWidget {
   final String text;
   final String day;
   final String time;
+  final Color color;
   final Icon icon;
-  final Icon icon2;
   final Function() onPressed;
 
   const ActiveShiftCard(
       {required this.text,
         required this.day,
+        required this.color,
         required this.icon,
-        required this.icon2,
         required this.time,
         required this.onPressed,
         Key? key})
@@ -181,19 +181,21 @@ class ActiveShiftCard extends StatelessWidget {
         badgeColor: Colors.green,
         borderRadius: BorderRadius.circular(8),
         badgeContent: Text('Nuværende vagt', style: TextStyle(color: Colors.white)),
-        position: BadgePosition.topEnd(end: 10),
+        position: BadgePosition.topEnd(end: 15, top: 0.25),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: 120,
-          padding: const EdgeInsets.only(top: 5, bottom: 5),
-          margin: const EdgeInsets.only(bottom: 10, right: 5, left: 5),
+          height: 110,
+          margin: const EdgeInsets.only(right: 5, left: 5, top: 5, bottom: 2.5),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(
+            /*border: Border.all(
               color: Colors.green,
               width: 2.5
+            ),*/
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20),
+              bottomRight: Radius.circular(20)
             ),
-            borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
                   offset: const Offset(5, 5),
@@ -203,6 +205,10 @@ class ActiveShiftCard extends StatelessWidget {
           ),
           child: Row(
             children: [
+              Container(
+                width: 5,
+                color: color,
+              ),
               Container(
                 child: Column(
                   children: [
@@ -243,9 +249,6 @@ class ActiveShiftCard extends StatelessWidget {
               Container(
                   padding: EdgeInsets.only(left: 5),
                   child: icon),
-              Container(
-                  padding: EdgeInsets.only(left: 5, right: 10),
-                  child: icon2),
             ],
           ),
         ),
