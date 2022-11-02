@@ -239,7 +239,7 @@ class ActiveShiftCard extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                  padding: EdgeInsets.only(left: 5),
+                  padding: EdgeInsets.only(left: 5, right: 10),
                   child: icon),
             ],
           ),
