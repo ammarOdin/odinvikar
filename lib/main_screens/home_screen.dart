@@ -92,20 +92,20 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
-          ClipPath(
-            clipper: HomeHeaderCustomClipPath(),
-            child: ClipRRect(
+          Transform.translate(
+            offset: Offset(0, -3),
+            child: ClipPath(
+              clipper: HomeHeaderCustomClipPath(),
               child: Container(
-                //height: MediaQuery.of(context).size.height / 8,
-                height: 80,
-                color: Colors.blue,
-              ),
+                  height: 80,
+                  color: Colors.blue,
+                ),
             ),
           ),
           Row(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 25),
+                padding: EdgeInsets.only(left: 15),
                 child: Text("Kommende vagter", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 16),),
               ),
               const Spacer(),

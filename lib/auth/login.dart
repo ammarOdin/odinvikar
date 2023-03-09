@@ -62,28 +62,33 @@ class _LoginState extends State<LoginScreen> {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 children: [
-                  Container(
-                    color: Colors.blue,
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 8,
-                          left: MediaQuery.of(context).size.width / 20),
-                      child: const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Vikarly \nOdinskolen",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  ClipPath(
-                    clipper: LoginHeaderCustomClipPath(),
-                    child: ClipRRect(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 8,
+                  Column(
+                    children: [
+                      Container(
                         color: Colors.blue,
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height / 8,
+                              left: MediaQuery.of(context).size.width / 20),
+                          child: const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Vikarly \nOdinskolen",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                      Transform.translate(
+                        offset: Offset(0, -3),
+                        child: ClipPath(
+                          clipper: LoginHeaderCustomClipPath(),
+                          child: Container(
+                              height: 80,
+                              color: Colors.blue,
+                            ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                   Container(
                       padding: const EdgeInsets.only(

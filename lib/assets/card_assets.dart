@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 
 class ShiftCard extends StatelessWidget {
@@ -171,13 +171,13 @@ class ActiveShiftCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
-      child: Badge(
+      child: badges.Badge(
         toAnimate: false,
-        shape: BadgeShape.square,
+        shape: badges.BadgeShape.square,
         badgeColor: Colors.green,
         borderRadius: BorderRadius.circular(8),
         badgeContent: Text('Nuværende vagt', style: TextStyle(color: Colors.white)),
-        position: BadgePosition.topEnd(end: 15, top: 0.25),
+        position: badges.BadgePosition.topEnd(end: 15, top: 0.25),
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: 110,
@@ -185,8 +185,8 @@ class ActiveShiftCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20),
-              bottomRight: Radius.circular(20)
+                topRight: Radius.circular(20),
+                bottomRight: Radius.circular(20)
             ),
             boxShadow: [
               BoxShadow(
