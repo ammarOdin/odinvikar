@@ -190,7 +190,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
         automaticallyImplyLeading: false,
         title: Text("Timer",  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
         actions: [
-          IconButton(onPressed: () async {
+          /*IconButton(onPressed: () async {
             final pdf = await PdfApi.generateInvoice(
               dropdownValue,
                 shiftAmount,
@@ -199,7 +199,7 @@ class _AdminTotalHoursState extends State<AdminTotalHours> {
                 double.parse((calculateAverageSalary()).toStringAsFixed(2)).toString(),
                 double.parse((calculateCommission()).toStringAsFixed(2)).toString());
             PdfApi.openFile(pdf);
-          }, icon: Icon(Icons.picture_as_pdf_outlined))
+          }, icon: Icon(Icons.picture_as_pdf_outlined))*/
         ],
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 18,),),
       ),
