@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:odinvikar/assets/card_assets.dart';
-import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:week_of_year/week_of_year.dart';
 import '../assets/bezier_shape.dart';
 import 'own_days_details.dart';
@@ -224,7 +223,7 @@ class _State extends State<HomeScreen> with TickerProviderStateMixin {
                         } else {
                           return Container();
                         }
-                      } else if (sliderValue == 2 && currentMonth == documentMonth){
+                      } else if (sliderValue == 2 && currentMonth == documentMonth && DateTime.now().year.toString() == document['date'].substring(6)){
                         if (document['awaitConfirmation'] == 2 && DateFormat('dd-MM-yyyy').format(DateTime.now()).toString() == document['date']) {
                           return ActiveShiftCard(text: document['date'] , day: getDayOfWeek(date), icon: Icon(Icons.arrow_forward_ios), time: document['details'].substring(0,11), onPressed: (){
                             var reference = document as QueryDocumentSnapshot<Map<String, dynamic>>;
