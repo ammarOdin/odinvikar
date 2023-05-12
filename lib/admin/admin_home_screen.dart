@@ -184,11 +184,11 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
                     "Vikaroversigt",
                     style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                   ))),
-          ClipPath(
-            clipper: HomeHeaderCustomClipPath(),
-            child: ClipRRect(
+          Transform.translate(
+            offset: Offset(0, -3),
+            child: ClipPath(
+              clipper: HomeHeaderCustomClipPath(),
               child: Container(
-                //height: MediaQuery.of(context).size.height / 8,
                 height: 80,
                 color: Colors.blue,
               ),

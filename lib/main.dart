@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:odinvikar/admin/admin_dashboard.dart';
 import 'package:odinvikar/auth/login.dart';
+import 'package:odinvikar/on_launch_loading.dart';
 import 'main_screens/dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -109,12 +110,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    Widget checkHome(){
-      return user == null? const LoginScreen() : const AuthenticationWrapper();
-    }
-
     return MaterialApp(
     localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -136,7 +131,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFF3F5F7),
           appBarTheme: const AppBarTheme(elevation: 0),
         ),
-      home: checkHome(),
+      home: const OnLaunchLoadingScreen(),
       locale: const Locale('da'),
     );
   }
@@ -161,13 +156,6 @@ class AuthenticationWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /*if (screen == false){
-      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
-    } else if (screen == true){
-      return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const IntroScreen());
-    } else {
-      return const LoginScreen();
-    }*/
     return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
   }
 }
