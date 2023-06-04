@@ -1,16 +1,10 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:odinvikar/admin/admin_edit_shift.dart';
-import 'package:tap_to_expand/tap_to_expand.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../assets/bezier_shape.dart';
 import '../assets/card_assets.dart';
-import 'admin_assign_shift.dart';
 import 'admin_shift_details.dart';
 
 
@@ -178,10 +172,12 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
             height: MediaQuery.of(context).size.height / 4.5,
               color: Colors.blue,
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height / 12),
+                  top: MediaQuery.of(context).size.height / 12,
+                  left: 25
+              ),
               child: const Center(
                   child: Text(
-                    "Vikaroversigt",
+                    "Odinskolen",
                     style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                   ))),
           Transform.translate(

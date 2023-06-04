@@ -12,6 +12,7 @@ import 'package:odinvikar/auth/forgotten_password.dart';
 import 'package:odinvikar/main_screens/dashboard.dart';
 import '../assets/bezier_shape.dart';
 import '../main.dart';
+import '../on_launch_loading.dart';
 import 'auth_register.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -188,7 +189,7 @@ class _LoginState extends State<LoginScreen> {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AuthenticationWrapper()));
+                                              const OnLaunchLoadingScreen()));
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == "user-not-found") {
                                     Navigator.pop(context);

@@ -137,10 +137,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthenticationWrapper extends StatelessWidget {
+/*class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
 
-  isAdmin(context)  async  {
+  isAdmin(context) async {
     var admin = await FirebaseFirestore.instance.collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
@@ -158,7 +158,7 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(future: isAdmin(context), builder: (context, snapshot) => snapshot.data == true? const AdminDashboard(): const Dashboard());
   }
-}
+}*/
 
 
 void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) {
