@@ -7,7 +7,6 @@ import '../assets/bezier_shape.dart';
 import '../assets/card_assets.dart';
 import 'admin_shift_details.dart';
 
-
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
 
@@ -173,11 +172,10 @@ class _State extends State<AdminHomeScreen> with TickerProviderStateMixin {
               color: Colors.blue,
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height / 12,
-                  left: 25
               ),
               child: const Center(
                   child: Text(
-                    "Odinskolen",
+                    "Vikaroversigt",
                     style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                   ))),
           Transform.translate(
